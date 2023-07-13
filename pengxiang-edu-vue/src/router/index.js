@@ -24,10 +24,17 @@ const globalRoutes = [
   { path: '/tuitionExpenseInfo', component: _import('common/tuitionExpenseInfo'), name: 'tuitionExpenseInfo', meta: { title: '学杂费收支详情' } },
   { path: '/exercitationEdit', component: _import('common/exercitationEdit'), name: 'exercitationEdit', meta: { title: 'exercitationEdit' } },
   { path: '/remoney', component: _import('common/remoney'), name: 'remoney', meta: { title: '退费详情' } },
-  { path: '/remoneyList', component: _import('common/remoneyList'), name: 'remoneyList', meta: { title: '退费列表' } },
   { path: '/studentList', component: _import('common/studentList'), name: 'studentList', meta: { title: '学生列表' } },
-  { path: '/enrollStuList', component: _import('common/enrollStuList'), name: 'enrollStuList', meta: { title: '招生列表' } }
-
+  { path: '/remoneyList', component: _import('common/remoneyList'), name: 'remoneyList', meta: { title: '退费列表' } },
+  { path: '/qmoney', component: _import('common/qmoney'), name: 'qmoney', meta: { title: '欠费列表' } },
+  { path: '/qmoneyyy', component: _import('common/qmoneyyy'), name: 'qmoneyyy', meta: { title: '欠费详情' } },
+  { path: '/qmoneyEdit', component: _import('common/qmoneyEdit'), name: 'qmoneyEdit', meta: { title: '欠费详情编辑' } },
+  { path: '/employList', component: _import('common/employList'), name: 'employList', meta: { title: '就业列表' } },
+  { path: '/employDetail', component: _import('common/employDetail'), name: 'employDetail', meta: { title: '就业详情' } },
+  { path: '/employModify', component: _import('common/employModify'), name: 'employModify', meta: { title: '就业信息修改' } },
+  { path: '/workList', component: _import('common/workList'), name: 'workList', meta: { title: '实习列表' } },
+  { path: '/workDetail', component: _import('common/workDetail'), name: 'workDetail', meta: { title: '实习详情' } },
+  { path: '/workModify', component: _import('common/workModify'), name: 'workModify', meta: { title: '实习信息修改' } }
 ]
 
 // 主入口路由(需嵌套上左右整体布局)

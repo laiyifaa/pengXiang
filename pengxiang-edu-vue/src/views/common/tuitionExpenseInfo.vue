@@ -1,53 +1,5 @@
 <template>
   <div>
-<!--    <e-desc margin='0 12px' label-width='150px' title="学杂费收支详情" column="2">
-      <e-desc-item label="姓名">{{info.name}}</e-desc-item>
-      <e-desc-item label="年龄">{{ info.age }}岁</e-desc-item>
-      <e-desc-item label="身份证号">{{ info.phone }}</e-desc-item>
-      <e-desc-item label="学号">{{ info.wx}}</e-desc-item>
-      <e-desc-item label="年级">{{ 2022 }}</e-desc-item>
-      <e-desc-item label="学制">{{ 0+3 }}</e-desc-item>
-      <e-desc-item label="招生季"> 春季 </e-desc-item>
-      <e-desc-item label="是否提前入学"> 是 </e-desc-item>
-      <e-desc-item label="当前状态">在校</e-desc-item>
-      <e-desc-item label="学籍状态">在籍在册</e-desc-item>
-      <e-desc-item label="班主任" >{{ info.hobby }}</e-desc-item>
-      <e-desc-item label="班主任电话" >{{ 13085629187 }}</e-desc-item>
-
-      <e-desc-item label="现就读学校">{{ info.school }}</e-desc-item>
-      <e-desc-item label="专业">{{ info.major }}</e-desc-item>
-      <e-desc-item label="系部">机电系</e-desc-item>
-      <e-desc-item label="班级"> 机电1班 </e-desc-item>
-      <e-desc-item label="缴费日期"> 2023-07-03 </e-desc-item>
-
-      <e-desc-item label="缴费学年"> 2023 </e-desc-item>
-      <e-desc-item label="应缴培训费" color="#"  > 100 </e-desc-item>
-      <e-desc-item label="实缴培训费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="应缴服装费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="实缴服装费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="应缴教材费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="实缴教材费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="应缴住宿费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="实缴住宿费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="应缴被褥费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="实缴被褥费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="应缴证书费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="实缴证书费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="应缴国防教育费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="实缴国防教育费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="应缴体检费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="实缴体检费" color="#" > 100 </e-desc-item>
-      <e-desc-item label="减免金额" color="#"> 100 </e-desc-item>
-      <e-desc-item label="贫困生减免金额" color="#"> 100 </e-desc-item>
-      <e-desc-item label="减免项目" color="#"> 培训费 </e-desc-item>
-      <e-desc-item label="免学费减免金额" color="#"> 100 </e-desc-item>
-      <e-desc-item label="返费时间" color="#"> 2023-07-08 </e-desc-item>
-      <e-desc-item label="应返费金额" color="#"> 200 </e-desc-item>
-      <e-desc-item label="返费金额" color="#"> 200 </e-desc-item>
-      <e-desc-item label="返费账户" color="#"> 朱博伦 </e-desc-item>
-      <e-desc-item label="返费账号" color="#"> 202222254658748567 </e-desc-item>
-      <e-desc-item label="返费账户" color="#"> 中国农业银行 </e-desc-item>
-    </e-desc>-->
 
     <e-desc margin='0 12px' label-width='130px' title="学生基本信息">
 
@@ -68,13 +20,6 @@
       <e-desc-item label="班主任">{{ info.hobby }}</e-desc-item>
       <e-desc-item label="班主任电话">18333665566</e-desc-item>
       <e-desc-item label="电子邮件">@.com</e-desc-item>
-
-
-<!--      <e-desc-item label="操作" :span='3'>
-        <template>
-          <el-button size="small" type="primary" @click="handleEdit()">修改</el-button>
-        </template>
-      </e-desc-item>-->
     </e-desc>
     <el-collapse v-model="money"  >
       <el-collapse-item name="1">

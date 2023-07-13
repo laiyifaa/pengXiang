@@ -1,8 +1,7 @@
 <template>
   <el-col :span="computedSpan" class="desc-item">
     <div class="desc-item-content" :class="size">
-
-      <label class="desc-item-label" :style="{width: labelWidth ,background: color }" v-html="label">      }</label>
+      <label class="desc-item-label" :style="{width: labelWidth ,background: color }" v-html="label"> </label>
       <div class="desc-item-value" v-if="$slots">
         <slot/>
       </div>
@@ -55,7 +54,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.desc-item {
+  .desc-item {
   border-right: 1px solid #EBEEF5;
   border-bottom: 1px solid #EBEEF5;
   .desc-item-content {
@@ -84,8 +83,9 @@ export default {
 
     }
     .desc-item-value{
+      justify-content: center;
       background: #fff;
-      padding: 12px 16px;
+      padding: 5px 5px;
       flex-grow: 1;
       overflow: hidden;
       word-break: break-all;
