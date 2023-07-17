@@ -19,22 +19,44 @@ const _import = require('./import-' + process.env.NODE_ENV)
 const globalRoutes = [
   { path: '/404', component: _import('common/404'), name: '404', meta: { title: '404未找到' } },
   { path: '/login', component: _import('common/login'), name: 'login', meta: { title: '登录' } },
-  { path: '/stuStatusInfo', component: _import('common/stuStatusInfo'), name: 'stuStatusInfo', meta: { title: '学籍状态详情' } },
-  { path: '/stuStatusEdit', component: _import('common/stuStatusEdit'), name: 'stuStatusEdit', meta: { title: '学籍状态编辑' } },
-  { path: '/tuitionExpenseInfo', component: _import('common/tuitionExpenseInfo'), name: 'tuitionExpenseInfo', meta: { title: '学杂费收支详情' } },
-  { path: '/exercitationEdit', component: _import('common/exercitationEdit'), name: 'exercitationEdit', meta: { title: 'exercitationEdit' } },
-  { path: '/remoney', component: _import('common/remoney'), name: 'remoney', meta: { title: '退费详情' } },
-  { path: '/studentList', component: _import('common/studentList'), name: 'studentList', meta: { title: '学生列表' } },
-  { path: '/remoneyList', component: _import('common/remoneyList'), name: 'remoneyList', meta: { title: '退费列表' } },
-  { path: '/qmoney', component: _import('common/qmoney'), name: 'qmoney', meta: { title: '欠费列表' } },
-  { path: '/qmoneyyy', component: _import('common/qmoneyyy'), name: 'qmoneyyy', meta: { title: '欠费详情' } },
-  { path: '/qmoneyEdit', component: _import('common/qmoneyEdit'), name: 'qmoneyEdit', meta: { title: '欠费详情编辑' } },
-  { path: '/employList', component: _import('common/employList'), name: 'employList', meta: { title: '就业列表' } },
-  { path: '/employDetail', component: _import('common/employDetail'), name: 'employDetail', meta: { title: '就业详情' } },
-  { path: '/employModify', component: _import('common/employModify'), name: 'employModify', meta: { title: '就业信息修改' } },
-  { path: '/workList', component: _import('common/workList'), name: 'workList', meta: { title: '实习列表' } },
-  { path: '/workDetail', component: _import('common/workDetail'), name: 'workDetail', meta: { title: '实习详情' } },
-  { path: '/workModify', component: _import('common/workModify'), name: 'workModify', meta: { title: '实习信息修改' } }
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/student-workDetail', component: _import('modules/student/workDetail'), name: 'workDetail', meta: { title: '就业详情界面' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/student-workModify', component: _import('modules/student/workModify'), name: 'workModify', meta: { title: '就业修改界面' }},
+//
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/student-employDetail', component: _import('modules/student/employDetail'), name: 'employDetail', meta: { title: '实习详情界面' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/student-employModify', component: _import('modules/student/employModify'), name: 'employModify', meta: { title: '实习详情界面' }},
+//
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/finance-remoneyEdit', component: _import('modules/finance/remoneyEdit'), name: 'remoneyEdit', meta: { title: '退费编辑' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/finance-remoneyDetail', component: _import('modules/finance/remoneyDetail'), name: 'remoneyDetail', meta: { title: '退费详情' }},
+
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/finance-qmoneyEdit', component: _import('modules/finance/qmoneyEdit'), name: 'qmoneyEdit', meta: { title: '欠费编辑' }},
+
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/finance-qmoneyDetail', component: _import('modules/finance/qmoneyDetail'), name: 'qmoneyDetail', meta: { title: '欠费详情' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/student-stuStatusEdit', component: _import('modules/student/stuStatusEdit'), name: 'stuStatusEdit', meta: { title: '学籍变更' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/student-stuStatusDetail', component: _import('modules/student/stuStatusDetail'), name: 'stuStatusDetail', meta: { title: '学籍详情' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/student-enrollStuListDetail', component: _import('modules/student/enrollStuListDetail'), name: 'enrollStuListDetail', meta: { title: '招生详情' }},
+  { path: '/student-enrollStuEdit', component: _import('modules/student/enrollStuEdit'), name: 'enrollStuEdit', meta: { title: '招生编辑' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/finance-tuitionExpenseInfo', component: _import('modules/finance/tuitionExpenseInfo'), name: 'tuitionExpenseInfo', meta: { title: '学杂费详情' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/finance-tuitionExpenseEdit', component: _import('modules/finance/tuitionExpenseEdit'), name: 'tuitionExpenseEdit', meta: { title: '学杂费编辑' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/student-studentDetail', component: _import('modules/student/studentDetail'), name: 'studentDetail', meta: { title: '学生详情' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/edu-certificateDetail', component: _import('modules/edu/certificateDetail'), name: 'certificateDetail', meta: { title: '考证详情' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/edu-certificateEdit', component: _import('modules/edu/certificateEdit'), name: 'certificateEdit', meta: { title: '考证编辑' }}
+
 ]
 
 // 主入口路由(需嵌套上左右整体布局)
@@ -50,9 +72,7 @@ const mainRoutes = {
     // 2. iframeUrl: 是否通过iframe嵌套展示内容, '以http[s]://开头': 是, '': 否
     // 提示: 如需要通过iframe嵌套展示内容, 但不通过tab打开, 请自行创建组件使用iframe处理!
     { path: '/home', component: _import('common/home'), name: 'home', meta: { title: '首页' } },
-    { path: '/theme', component: _import('common/theme'), name: 'theme', meta: { title: '主题' } },
-    { path: '/demo-echarts', component: _import('demo/echarts'), name: 'demo-echarts', meta: { title: 'demo-echarts', isTab: true } },
-    { path: '/demo-ueditor', component: _import('demo/ueditor'), name: 'demo-ueditor', meta: { title: 'demo-ueditor', isTab: true } }
+    { path: '/theme', component: _import('common/theme'), name: 'theme', meta: { title: '主题' } }
   ],
   beforeEnter (to, from, next) {
     let token = Vue.cookie.get('token')
@@ -70,7 +90,6 @@ const router = new Router({
   isAddDynamicMenuRoutes: false, // 是否已经添加动态(菜单)路由
   routes: globalRoutes.concat(mainRoutes)
 })
-/*
 
 router.beforeEach((to, from, next) => {
   // 添加动态(菜单)路由
@@ -102,10 +121,10 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-/!**
+/**
  * 判断当前路由类型, global: 全局路由, main: 主入口路由
  * @param {*} route 当前路由
- *!/
+ */
 function fnCurrentRouteType (route, globalRoutes = []) {
   var temp = []
   for (var i = 0; i < globalRoutes.length; i++) {
@@ -118,11 +137,11 @@ function fnCurrentRouteType (route, globalRoutes = []) {
   return temp.length >= 1 ? fnCurrentRouteType(route, temp) : 'main'
 }
 
-/!**
+/**
  * 添加动态(菜单)路由
  * @param {*} menuList 菜单列表
  * @param {*} routes 递归创建的动态(菜单)路由
- *!/
+ */
 function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
   var temp = []
   for (var i = 0; i < menuList.length; i++) {
@@ -165,12 +184,7 @@ function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
       { path: '*', redirect: { name: '404' } }
     ])
     sessionStorage.setItem('dynamicMenuRoutes', JSON.stringify(mainRoutes.children || '[]'))
-    console.log('\n')
-    console.log('%c!<-------------------- 动态(菜单)路由 s -------------------->', 'color:blue')
-    console.log(mainRoutes.children)
-    console.log('%c!<-------------------- 动态(菜单)路由 e -------------------->', 'color:blue')
   }
 }
-*/
 
 export default router

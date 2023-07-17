@@ -1,4 +1,4 @@
-  <template>
+<!--  <template>
   <div class="mod-home">
     <h3>项目介绍</h3>
     <ul>
@@ -24,7 +24,8 @@
       <li>普通群：145799952(学习交流，互相解答各种疑问)</li>
     </ul>
   </div>
-</template>
+  <
+</template>-->
 
 <script>
   export default {
