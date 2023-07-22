@@ -1,92 +1,64 @@
 <template>
 <div>
     <e-desc margin='0 12px' label-width='130px' title="学生基本信息">
-      <e-desc-item label="学号" >{{ perInfo.wx}}</e-desc-item>
-      <e-desc-item label="姓名" >{{perInfo.name}}</e-desc-item>
-      <e-desc-item label="身份证号码">{{ perInfo.phone }}</e-desc-item>
-      <e-desc-item  label="年龄">{{ perInfo.age }}</e-desc-item>
-      <e-desc-item label="性别">{{ perInfo.sex }}</e-desc-item>
-      <e-desc-item label="民族">汉族</e-desc-item>
-      <e-desc-item label="籍贯">浙江省杭州市</e-desc-item>
-      <e-desc-item label="户口性质">农村</e-desc-item>
-      <e-desc-item label="政治面貌">党员</e-desc-item>
-      <e-desc-item label="联系电话">18333665566</e-desc-item>
-      <e-desc-item label="系部">计算机系</e-desc-item>
-      <e-desc-item label="专业">{{ perInfo.major }}</e-desc-item>
-      <e-desc-item label="班型">就业班</e-desc-item>
-      <e-desc-item label="班级">专业1班</e-desc-item>
-      <e-desc-item label="班主任">{{ perInfo.hobby }}</e-desc-item>
-      <e-desc-item label="班主任电话">18333665566</e-desc-item>
-      <e-desc-item label="电子邮件">@.com</e-desc-item>
-
+      <e-desc-item label="学号" >{{ Info.schoolNumber}}</e-desc-item>
+      <e-desc-item label="姓名" >{{Info.name}}</e-desc-item>
+      <e-desc-item label="身份证号码">{{ Info.idNumber }}</e-desc-item>
+      <e-desc-item  label="年龄">{{ Info.age }}</e-desc-item>
+      <e-desc-item label="性别">{{ Info.gender }}</e-desc-item>
+      <e-desc-item label="民族">{{ Info.nation }}</e-desc-item>
+      <e-desc-item label="籍贯">{{ Info.nativePlace }}</e-desc-item>
+      <e-desc-item label="户口性质">{{ Info.residenceType === 0 ? '非农户口' : '农业户口' }}</e-desc-item>
+      <e-desc-item label="政治面貌">{{ Info.politicalStatus }}</e-desc-item>
+      <e-desc-item label="联系电话">{{ Info.phone }}</e-desc-item>
+      <e-desc-item label="系部">{{ Info.deptName }}</e-desc-item>
+      <e-desc-item label="专业">{{ Info.majorName }}</e-desc-item>
+      <e-desc-item label="班型">{{ Info.classType }}</e-desc-item>
+      <e-desc-item label="班级">{{ Info.className }}</e-desc-item>
+      <e-desc-item label="班主任">{{ Info.headTeacher }}</e-desc-item>
+      <e-desc-item label="班主任电话">{{ Info.headTeacherPhone }}</e-desc-item>
+      <e-desc-item label="电子邮件">{{ Info.email }}</e-desc-item>
     </e-desc>
 
-  <el-collapse  @change="handleChange"  v-model="activeCollapse" >
+  <el-collapse   v-model="activeCollapse" >
     <el-collapse-item name="1">
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">就业详情</span>
       </template>
       <e-desc margin='0 12px' label-width='100px' >
-        <e-desc-item label="离校日期" >{{ empInfo.leaveDate}}</e-desc-item>
-        <e-desc-item label="离校原因" >{{empInfo.leaveReason}}</e-desc-item>
-        <e-desc-item label="就业单位">{{ empInfo.empcpl }}</e-desc-item>
-        <e-desc-item  label=" 就业岗位">{{ empInfo.empjob }}</e-desc-item>
-        <e-desc-item label="试用期薪酬">{{ empInfo.befmon}}</e-desc-item>
-        <e-desc-item label="转正薪酬">{{ empInfo.aftmon}}</e-desc-item>
-        <e-desc-item label="岗位负责人">{{empInfo.resp}}</e-desc-item>
-
+        <e-desc-item label="离校日期" >{{ Info.leaveDate }}</e-desc-item>
+        <e-desc-item label="离校原因" >{{ Info.leaveReason }}</e-desc-item>
+        <e-desc-item label="就业单位">{{ Info.employOrg }}</e-desc-item>
+        <e-desc-item  label=" 就业岗位">{{ Info.employPost }}</e-desc-item>
+        <e-desc-item label="试用期薪酬">{{ Info.probationIncome }}</e-desc-item>
+        <e-desc-item label="转正薪酬">{{ Info.formalIncome }}</e-desc-item>
+        <e-desc-item label="岗位负责人">{{ Info.postLeader }}</e-desc-item>
       </e-desc>
     </el-collapse-item>
   </el-collapse>
-<!--
-  <el-desc  margin='10 20px' label-width='130px' title="就业基本信息">
-    <e-desc-item label="离校日期" >{{ empInfo.leaveDate}}</e-desc-item>
-    <e-desc-item label="离校原因" >{{empInfo.leaveReason}}</e-desc-item>
-    <e-desc-item label="就业单位">{{ empInfo.empcpl }}</e-desc-item>
-    <e-desc-item  label=" 就业岗位">{{ empInfo.empjob }}</e-desc-item>
-    <e-desc-item label="试用期薪酬">{{ empInfo.befmon}}</e-desc-item>
-    <e-desc-item label="转正薪酬">{{ empInfo.aftmon}}</e-desc-item>
-    <e-desc-item label="岗位负责人">{{empInfo.resp}}</e-desc-item>
-  </el-desc>
--->
+
   <el-collapse  v-model="activeCollapse">
     <el-collapse-item name="1">
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">就业回访</span>
       </template>
       <el-tabs type="border-card">
-        <el-tab-pane label="第一次回访">
-          <e-desc margin='0 12px' label-width='140px' column="2" >
-            <e-desc-item label="回访日期" >{{ callBack.prop1}}</e-desc-item>
-            <e-desc-item label="是否在岗" >{{callBack.prop2}}</e-desc-item>
-            <e-desc-item label="是否对岗位满意">{{callBack.prop3 }}</e-desc-item>
-            <e-desc-item  label="学生就业工作情况">{{ callBack.prop4 }}</e-desc-item>
-            <e-desc-item label="离职原因">{{ callBack.prop5 }}</e-desc-item>
-            <e-desc-item label="是否需要二次就业">{{ callBack.prop6 }}</e-desc-item>
-            <e-desc-item label="二次就业分配时间">{{callBack.prop7}}</e-desc-item>
-            <e-desc-item label="就业单位" >{{ callBack.prop8 }}</e-desc-item>
-            <e-desc-item label="就业岗位" >{{callBack.prop9}}</e-desc-item>
-            <e-desc-item label="试用期限">{{ callBack.prop10 }}</e-desc-item>
-            <e-desc-item  label="试用期薪酬">{{ callBack.prop11 }}</e-desc-item>
-            <e-desc-item label="转正薪酬">{{ callBack.prop12}}</e-desc-item>
-            <e-desc-item label="岗位负责人">{{ callBack.prop13}}</e-desc-item>
-          </e-desc>
-        </el-tab-pane>
-        <el-tab-pane label="第二次回访">
-          <e-desc margin='0 12px' label-width='140px' column="2" >
-            <e-desc-item label="回访日期" >{{ callBack.prop1}}</e-desc-item>
-            <e-desc-item label="是否在岗" >{{callBack.prop2}}</e-desc-item>
-            <e-desc-item label="是否对岗位满意">{{callBack.prop3 }}</e-desc-item>
-            <e-desc-item  label="学生就业工作情况">{{ callBack.prop4 }}</e-desc-item>
-            <e-desc-item label="离职原因">{{ callBack.prop5 }}</e-desc-item>
-            <e-desc-item label="是否需要二次就业">{{ callBack.prop6 }}</e-desc-item>
-            <e-desc-item label="二次就业分配时间">{{callBack.prop7}}</e-desc-item>
-            <e-desc-item label="就业单位" >{{ callBack.prop8 }}</e-desc-item>
-            <e-desc-item label="就业岗位" >{{callBack.prop9}}</e-desc-item>
-            <e-desc-item label="试用期限">{{ callBack.prop10 }}</e-desc-item>
-            <e-desc-item  label="试用期薪酬">{{ callBack.prop11 }}</e-desc-item>
-            <e-desc-item label="转正薪酬">{{ callBack.prop12}}</e-desc-item>
-            <e-desc-item label="岗位负责人">{{ callBack.prop13}}</e-desc-item>
+        <el-tab-pane v-for="(item, index) in visit" :key="index" :label="`第${index + 1}次回访记录`">
+          <e-desc margin='0 12px' label-width='140px' column="2">
+            <e-desc-item label="回访日期">{{ item.visitDate }}</e-desc-item>
+            <e-desc-item label="是否在岗">{{ item.isPost === 1 ? '是' : '否' }}</e-desc-item>
+            <e-desc-item label="是否对岗位满意">{{ item.isSatisfied === 1 ? '是' : '否' }}</e-desc-item>
+            <e-desc-item label="学生就业工作情况">{{ item.workSituation }}</e-desc-item>
+            <e-desc-item label="离职原因">{{ item.departReason }}</e-desc-item>
+            <e-desc-item label="是否需要二次就业">{{ item.isSecondEmploy === 1 ? '是' : '否' }}</e-desc-item>
+            <e-desc-item label="二次就业分配时间">{{ item.secondEmployDate }}</e-desc-item>
+            <e-desc-item label="就业单位">{{ item.employOrg }}</e-desc-item>
+            <e-desc-item label="就业岗位">{{ item.employPost }}</e-desc-item>
+            <e-desc-item label="试用期限">{{ item.probationPeriod }}</e-desc-item>
+            <e-desc-item label="试用期限">{{ item.probationPeriod }}</e-desc-item>
+            <e-desc-item label="试用期薪酬">{{ item.probationIncome }}</e-desc-item>
+            <e-desc-item label="转正薪酬">{{ item.formalIncome }}</e-desc-item>
+            <e-desc-item label="岗位负责人">{{ item.postLeader }}</e-desc-item>
           </e-desc>
         </el-tab-pane>
       </el-tabs>
@@ -111,48 +83,40 @@ export default {
   data () {
     return {
       activeCollapse: ['1'],
-      perInfo: {
-        name: 'Jerry',
-        age: 26,
-        sex: '男',
-        school: '廊坊学校',
-        major: '铁路专业',
-        address: '四川省成都市',
-        hobby: '朱博伦',
-        phone: 33030419980953011,
-        wx: '202230603042',
-        qq: 332983810
-      },
-      empInfo: {
-        leaveDate: '2023-07-02',
-        leaveReason: '毕业',
-        empcpl: '字节跳动',
-        empjob: '开发',
-        befmon: 7000,
-        aftmon: 10000,
-        resp: '朱博伦'
-      },
-      callBack: {
-        prop1: '2023-1-1',
-        prop2: '是',
-        prop3: '是',
-        prop4: '已就业',
-        prop5: '无',
-        prop6: '不需要',
-        prop7: '---',
-        prop8: '字节跳动',
-        prop9: '开发',
-        prop10: '2024-06',
-        prop11: '7000',
-        prop12: '10000',
-        prop13: '王德发'
-      }
+      Info: null,
+      visit: null
     }
   },
   methods: {
     returnBack () {
       this.$router.go(-1)
     }
+  },
+  created () {
+    this.$http({
+      url: this.$http.adornUrl('/stu/getEmployList'),
+      method: 'get'
+    }).then(response => {
+      this.Info = response.data.listDto.find(item => item.schoolNumber === this.$route.params.schoolNumber)
+    })
+      .catch(error => {
+        console.error(error)
+      })
+    this.$http({
+      url: this.$http.adornUrl('/stu/getVisitList'),
+      method: 'get'
+    }).then(
+      response => {
+        console.log(response.data)
+        this.visit = response.data.visitList.filter(item => item.schoolNumber == this.$route.params.schoolNumber)
+        console.log(this.visit)
+        // this.visit = this.visit.map((item, index) => {
+        //   item.label = `第${index + 1}次回访记录`;
+        //   return item;
+        // })
+      }).catch(error => {
+        console.error(error)
+      })
   }
 }
 </script>

@@ -5,6 +5,7 @@
   window.SITE_CONFIG = {}
 
   // api接口请求地址
+  // window.SITE_CONFIG['baseUrl'] = 'http://192.168.1.126:9000/'
   window.SITE_CONFIG['baseUrl'] = 'http://192.168.1.118:9000/'
 
   // cdn地址 = 域名 + 版本号

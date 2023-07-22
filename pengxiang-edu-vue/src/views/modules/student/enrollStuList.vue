@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-left: 200px;">
+  <div>
     <el-row style="margin-top: 20px;">
       <el-col :span="9" style="text-align:left;margin-left: 20px">
         <el-button type="primary" icon="el-icon-refresh"></el-button>
@@ -38,22 +38,22 @@
         </div>
       </el-col>
     </el-row>
-    <el-table :data="tableData" border style="width: 1250px; margin-top: 20px;">
+    <el-table :data="tableData" border style="width: 100%; margin-top: 20px;">
       <el-table-column
         type="selection"
         width="50">
       </el-table-column>
-      <el-table-column prop="name" label="姓名" width="70px"></el-table-column>
-      <el-table-column prop="sex" label="性别" width="50px"></el-table-column>
-      <el-table-column prop="major" label="专业" width="120px" style="text-align: center" ></el-table-column>
-      <el-table-column prop="educationalSystem" label="学制" width="70px"></el-table-column>
-      <el-table-column prop="grade" label="年级" width="70px"></el-table-column>
-      <el-table-column prop="enrollmentSeason" label="招生季" width="70px"></el-table-column>
-      <el-table-column prop="enrollmentTeacher" label="招生老师" width="85px"></el-table-column>
-      <el-table-column prop="admissionsDepartment" label="招生老师部门" width="120px"></el-table-column>
-      <el-table-column prop="enrollmentTeacherPhone" label="招生老师电话" width="120px"></el-table-column>
-      <el-table-column prop="phone" label="联系电话" width="120px"></el-table-column>
-      <el-table-column label="操作" width="300px">
+      <el-table-column prop="name" label="姓名"  align="center"></el-table-column>
+      <el-table-column prop="sex" label="性别"  align="center"></el-table-column>
+      <el-table-column prop="major" label="专业"  style="text-align: center" align="center"></el-table-column>
+      <el-table-column prop="educationalSystem" label="学制"  align="center"></el-table-column>
+      <el-table-column prop="grade" label="年级" width="70px" align="center"></el-table-column>
+      <el-table-column prop="enrollmentSeason" label="招生季"  align="center"></el-table-column>
+      <el-table-column prop="enrollmentTeacher" label="招生老师"  align="center"></el-table-column>
+      <el-table-column prop="admissionsDepartment" label="招生老师部门"  align="center"></el-table-column>
+      <el-table-column prop="enrollmentTeacherPhone" label="招生老师电话"  align="center"></el-table-column>
+      <el-table-column prop="phone" label="联系电话"  align="center"></el-table-column>
+      <el-table-column label="操作" width="350px" align="center">
         <template slot-scope="scope">
           <!-- 编辑按钮 -->
           <router-link :to="{name:'enrollStuEdit'}">
@@ -90,7 +90,7 @@
                    :page-sizes="[10, 20, 30, 40]"
                    :page-size="pageSize"
                    layout="total, sizes, prev, pager, next, jumper"
-                   :total="total" style="text-align:right;margin-right: 300px"></el-pagination>
+                   :total="total" style="text-align:right;margin-right: 60px"></el-pagination>
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
 </template>

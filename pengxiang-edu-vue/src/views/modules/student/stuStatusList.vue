@@ -24,18 +24,22 @@
   </el-col>
 </el-row>
 <el-table :data="tableData"  border style="width: 100%;; margin-top: 20px;">
-  <el-table-column prop="col1" width="50" label="序号"></el-table-column>
-  <el-table-column prop="col2" label="姓名"></el-table-column>
-  <el-table-column prop="col3" label="专业"></el-table-column>
-  <el-table-column prop="col4" label="学制"></el-table-column>
-  <el-table-column prop="col5" label="年级"></el-table-column>
-  <el-table-column prop="col6" label="系部"></el-table-column>
-  <el-table-column prop="col7" label="联系电话"></el-table-column>
-  <el-table-column prop="col8" label="学号"></el-table-column>
-  <el-table-column prop="col9" label="政治面貌"></el-table-column>
-  <el-table-column prop="col10" label="当前状态"></el-table-column>
-  <el-table-column prop="col12" label="学籍状态"></el-table-column>
-  <el-table-column label="操作">
+  <el-table-column
+    type="selection"
+    width="50">
+  </el-table-column>
+  <el-table-column prop="col1" width="50" label="序号" align="center"></el-table-column>
+  <el-table-column prop="col2" label="姓名" align="center"></el-table-column>
+  <el-table-column prop="col3" label="专业" align="center"></el-table-column>
+  <el-table-column prop="col4" label="学制" align="center"></el-table-column>
+  <el-table-column prop="col5" label="年级" align="center"></el-table-column>
+  <el-table-column prop="col6" label="系部" align="center"></el-table-column>
+  <el-table-column prop="col7" label="联系电话" align="center"></el-table-column>
+  <el-table-column prop="col8" label="学号" align="center"></el-table-column>
+  <el-table-column prop="col9" label="政治面貌" align="center"></el-table-column>
+  <el-table-column prop="col10" label="当前状态" align="center"></el-table-column>
+  <el-table-column prop="col12" label="学籍状态" align="center"></el-table-column>
+  <el-table-column label="操作" align="center">
     <template slot-scope="scope">
       <el-button type="text" @click="handleDetail">详情</el-button>
       <el-button type="text" @click="handleEdit">修改</el-button>

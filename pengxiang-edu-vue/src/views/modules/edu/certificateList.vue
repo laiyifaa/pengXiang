@@ -9,7 +9,7 @@
     <div style="display: flex; align-items: center;">
       <el-button type="primary" icon="el-icon-plus" style="width: 80px; padding-left: 1px;" @click="addSearchCondition" v-show="searchCount<3">查询条件</el-button>
       <div v-for="(condition, index) in searchConditions" :key="index" style=" margin-left: 10px;">
-        <el-select style="width: 110px;" v-model="condition.option" placeholder="查询条件">
+        <el-select style="width: 110px;" v-model="condition.option" placeholder="查询条件" >
           <el-option label="姓名" value="姓名"></el-option>
           <el-option label="年级" value="年级"></el-option>
           <el-option label="系部" value="系部"></el-option>
@@ -23,24 +23,24 @@
     </div>
   </el-col>
 </el-row>
-<el-table :data="tableData"  border style="width: 100%;; margin-top: 20px;">
-  <el-table-column prop="col1" width="50" label="序号"></el-table-column>
-  <el-table-column prop="col2" label="姓名"></el-table-column>
-  <el-table-column prop="col3" label="专业"></el-table-column>
-  <el-table-column prop="col4" label="学制"></el-table-column>
-  <el-table-column prop="col5" label="年级"></el-table-column>
-  <el-table-column prop="col6" label="系部"></el-table-column>
-  <el-table-column prop="col7" label="联系电话"></el-table-column>
-  <el-table-column prop="col8" label="学号"></el-table-column>
-  <el-table-column prop="col9" label="入学日期"></el-table-column>
-  <el-table-column prop="col10" label="必考证书数量"></el-table-column>
-  <el-table-column prop="col11" label="选考证书数量"></el-table-column>
+<el-table :data="tableData"  border style="width: 100%; margin-top: 20px;">
+  <el-table-column prop="col1" width="50" label="序号" align="center"></el-table-column>
+  <el-table-column prop="name" label="姓名" align="center"></el-table-column>
+  <el-table-column prop="col3" label="专业" align="center"></el-table-column>
+  <el-table-column prop="schoolingLength" label="学制" align="center"></el-table-column>
+  <el-table-column prop="col5" label="年级" align="center"></el-table-column>
+  <el-table-column prop="col6" label="系部" align="center"></el-table-column>
+  <el-table-column prop="phone" label="联系电话" align="center"></el-table-column>
+  <el-table-column prop="schoolNumber" label="学号" align="center"></el-table-column>
+  <el-table-column prop="admissionDate" label="入学日期" align="center"></el-table-column>
+  <el-table-column prop="col10" label="必考证书数量" align="center"></el-table-column>
+  <el-table-column prop="col11" label="选考证书数量" align="center"></el-table-column>
 <!--  <el-table-column prop="col10" label="现实习单位"></el-table-column>
   <el-table-column prop="col11" label="现实习岗位"></el-table-column>
   <el-table-column prop="col12" label="实习类别"></el-table-column>
   <el-table-column prop="col13" label="带队教师"></el-table-column>
   <el-table-column prop="col14" label="实习次数"></el-table-column>-->
-  <el-table-column label="操作">
+  <el-table-column label="操作" align="center">
     <template slot-scope="scope">
       <el-button type="text" @click="handleDetail">详情</el-button>
       <el-button type="text" @click="handleEdit">修改</el-button>
@@ -73,62 +73,62 @@ export default {
       searchText: '',
       tableData: [{
         col1: '1',
-        col2: '张三',
+        name: '张三',
         col3: '计算机',
-        col4: '四年',
+        schoolingLength: '四年',
         col5: '大三',
         col6: '计算机系',
-        col7: '计嵌192',
-        col8: '205191323',
-        col9: '2023-07-08',
+        phone: '计嵌192',
+        schoolNumber: '205191323',
+        admissionDate: '2023-07-08',
         col10: '1',
         col11: '1'
       }, {
         col1: '2',
-        col2: '张三',
+        name: '张三',
         col3: '计算机',
-        col4: '四年',
+        schoolingLength: '四年',
         col5: '大三',
         col6: '计算机系',
-        col7: '计嵌192',
-        col8: '205191323',
-        col9: '2023-07-08',
+        phone: '计嵌192',
+        schoolNumber: '205191323',
+        admissionDate: '2023-07-08',
         col10: '1',
         col11: '1'
       }, {
         col1: '3',
-        col2: '张三',
+        name: '张三',
         col3: '计算机',
-        col4: '四年',
+        schoolingLength: '四年',
         col5: '大三',
         col6: '计算机系',
-        col7: '计嵌192',
-        col8: '205191323',
-        col9: '2023-07-08',
+        phone: '计嵌192',
+        schoolNumber: '205191323',
+        admissionDate: '2023-07-08',
         col10: '1',
         col11: '1'
       }, {
         col1: '4',
         col2: '张三',
         col3: '计算机',
-        col4: '四年',
+        schoolingLength: '四年',
         col5: '大三',
         col6: '计算机系',
-        col7: '计嵌192',
-        col8: '205191323',
-        col9: '2023-07-08',
+        phone: '计嵌192',
+        schoolNumber: '205191323',
+        admissionDate: '2023-07-08',
         col10: '1',
         col11: '1'
       }, {
         col1: '5',
         col2: '张三',
         col3: '计算机',
-        col4: '四年',
+        schoolingLength: '四年',
         col5: '大三',
         col6: '计算机系',
-        col7: '计嵌192',
-        col8: '205191323',
-        col9: '2023-07-08',
+        phone: '计嵌192',
+        schoolNumber: '205191323',
+        admissionDate: '2023-07-08',
         col10: '1',
         col11: '1'
       }]
@@ -184,9 +184,15 @@ export default {
     },
     // 请求数据方法
     getData () {
-      // 根据当前页码和每页显示条数发送请求获取数据
-
-      // 更新表格数据和总条数
+      this.$http({
+        url: this.$http.adornUrl('edu/certificate/list'),
+        method: 'get'
+      }).then(response => {
+        this.tableData = response.data.certificateList;
+      })
+        .catch(error => {
+          console.error(error)
+        })
     }
   }
 }

@@ -24,8 +24,8 @@
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">必考证书</span>
       </template>
-      <el-tabs type="border-card" >
-        <el-tab-pane label="证书一">
+      <el-tabs type="border-card" v-model="activeTab" >
+        <el-tab-pane label="证书一" name="tab1">
           <e-desc margin='0 12px' label-width='140px' column="2" >
             <e-desc-item label="证书名称" >{{ empInfo.pro1}}</e-desc-item>
             <e-desc-item label="考证时间" >{{empInfo.pro2}}</e-desc-item>
@@ -35,7 +35,7 @@
             <e-desc-item label="备注">{{ empInfo.pro6}}</e-desc-item>
           </e-desc>
         </el-tab-pane>
-        <el-tab-pane label="证书二">
+        <el-tab-pane label="证书二" name="tab2">
           <e-desc margin='0 12px' label-width='140px' column="2" >
             <e-desc-item label="证书名称" >{{ empInfo.pro1}}</e-desc-item>
             <e-desc-item label="考证时间" >{{empInfo.pro2}}</e-desc-item>
@@ -50,13 +50,13 @@
     </el-collapse-item>
   </el-collapse>
 
-  <el-collapse  v-model="activeCollapse" >
+  <el-collapse v-model="activeCollapse" >
     <el-collapse-item name="1" >
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">选考证书</span>
       </template>
-      <el-tabs type="border-card" >
-        <el-tab-pane label="证书一">
+      <el-tabs v-model="selectedTab" type="border-card" :active-name="selectedTab" >
+        <el-tab-pane label="证书一" name="1">
           <e-desc margin='0 12px' label-width='140px' column="2" >
             <e-desc-item label="证书名称" >{{ empInfo.pro1}}</e-desc-item>
             <e-desc-item label="考证时间" >{{empInfo.pro2}}</e-desc-item>
@@ -66,7 +66,7 @@
             <e-desc-item label="备注">{{ empInfo.pro6}}</e-desc-item>
           </e-desc>
         </el-tab-pane>
-        <el-tab-pane label="证书二">
+        <el-tab-pane label="证书二" name="2">
           <e-desc margin='0 12px' label-width='140px' column="2" >
             <e-desc-item label="证书名称" >{{ empInfo.pro1}}</e-desc-item>
             <e-desc-item label="考证时间" >{{empInfo.pro2}}</e-desc-item>
@@ -104,6 +104,8 @@ export default {
   data () {
     return {
       activeCollapse: ['1'],
+      selectedTab: '2',
+      activeTab: 'tab1',
       perInfo: {
         name: 'Jerry',
         age: 26,
@@ -132,6 +134,8 @@ export default {
       this.$router.go(-1)
     }
   }
+
+
 }
 </script>
 

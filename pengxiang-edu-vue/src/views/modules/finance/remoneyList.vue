@@ -27,92 +27,114 @@
     </el-row> -->
 
 
-    <!-- 按钮 -->
-    <el-row style="padding: 20px;" >
-  <el-button type="primary">刷新</el-button>
+<!--    &lt;!&ndash; 按钮 &ndash;&gt;-->
+<!--    <el-row style="padding: 20px;" >-->
+<!--  <el-button type="primary">刷新</el-button>-->
 
-  <el-button type="info">信息导入</el-button>
-  <el-button type="warning">信息导出</el-button>
-  <el-button  type="primary" icon="el-icon-plus"  @click="addRow()">新 增</el-button>
-</el-row>
-<HR style="border: 3 double #987cb9" width=95% color=#987cb9 size="3"></HR>
+<!--  <el-button type="info">信息导入</el-button>-->
+<!--  <el-button type="warning">信息导出</el-button>-->
+<!--  <el-button  type="primary" icon="el-icon-plus"  @click="addRow()">新 增</el-button>-->
+<!--</el-row>-->
+<!--<HR style="border: 3 double #987cb9" width=95% color=#987cb9 size="3"></HR>-->
 
-<!-- 搜索框 -->
-<el-select
-    v-model="value"
-    multiple
-    filterable
-    remote
-    reserve-keyword
-    placeholder="请输入关键词"
-    :remote-method="remoteMethod"
-    :loading="loading"
-    style="position: absolute ;top: 20px;right:200px;">
-    <el-option
-      v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select>
+<!--&lt;!&ndash; 搜索框 &ndash;&gt;-->
+<!--<el-select-->
+<!--    v-model="value"-->
+<!--    multiple-->
+<!--    filterable-->
+<!--    remote-->
+<!--    reserve-keyword-->
+<!--    placeholder="请输入关键词"-->
+<!--    :remote-method="remoteMethod"-->
+<!--    :loading="loading"-->
+<!--    style="position: absolute ;top: 20px;right:200px;">-->
+<!--    <el-option-->
+<!--      v-for="item in options"-->
+<!--      :key="item.value"-->
+<!--      :label="item.label"-->
+<!--      :value="item.value">-->
+<!--    </el-option>-->
+<!--  </el-select>-->
+
+    <el-row style="margin-top: 20px;">
+      <el-col :span="3" style="text-align:left;margin-left: 20px">
+        <el-button type="success" @click="handleImport">导入</el-button>
+        <el-button type="success" @click="handleExport">导出</el-button>
+      </el-col>
+      <el-col :span="20" >
+        <div style="display: flex; align-items: center;">
+          <el-button type="primary" icon="el-icon-plus" style="width: 80px; padding-left: 1px;" @click="addSearchCondition" v-show="searchCount<3">查询条件</el-button>
+          <div v-for="(condition, index) in searchConditions" :key="index" style=" margin-left: 10px;">
+            <el-select style="width: 110px;" v-model="condition.option" placeholder="查询条件">
+              <el-option label="姓名" value="姓名"></el-option>
+              <el-option label="年级" value="年级"></el-option>
+<!--              <el-option label="系部" value="系部"></el-option>-->
+              <el-option label="专业" value="专业"></el-option>
+              <el-option label="退费账号" value="退费账号"></el-option>
+            </el-select>
+            <el-input v-model="condition.value" placeholder="请输入" style="width: 200px;"></el-input>
+            <el-button type="danger" icon="el-icon-delete" @click="removeSearchCondition(index)">删除</el-button>
+          </div>
+          <el-button type="primary" icon="el-icon-search" @click="handleSearch" style=" margin-left: 4px;">搜索</el-button>
+        </div>
+      </el-col>
+    </el-row>
   <!-- 表格 -->
-  <el-table 
-   :data="tableData"  
-   :header-cell-style="{'text-align':'center'}"
-   :cell-style="{'text-align':'center'}"
-  style="width: 100%; margin-top: 20px;">
-
-      <el-table-column
+  <el-table :data="tableData"  border style="width: 100%;; margin-top: 20px;">
+    <el-table-column
       type="selection"
       width="50">
     </el-table-column>
 
 
 
-    <el-table-column prop="col1" label="序号" width="50"></el-table-column>
-    <el-table-column prop="col2" label="姓名" width="50"></el-table-column>
+    <el-table-column prop="col1" label="序号" width="50" align="center"></el-table-column>
+    <el-table-column prop="col2" label="姓名" width="50" align="center"></el-table-column>
     <!-- <el-table-column prop="col3" label="身份证号"></el-table-column> -->
-    <el-table-column prop="col4" label="年级" width="50"></el-table-column>
-    <el-table-column prop="col5" label="招生季" width="80"></el-table-column>
-    <el-table-column prop="col6" label="入学日期" width="100"></el-table-column>
-    <el-table-column prop="col7" label="专业"></el-table-column>
+    <el-table-column prop="col4" label="年级" width="50" align="center"></el-table-column>
+    <el-table-column prop="col5" label="招生季" width="80" align="center"></el-table-column>
+    <el-table-column prop="col6" label="入学日期" width="100" align="center"></el-table-column>
+    <el-table-column prop="col7" label="专业" align="center"></el-table-column>
     <!-- <el-table-column prop="col8" label="班型"></el-table-column>
     <el-table-column prop="col9" label="学制"></el-table-column> -->
 
-    <el-table-column prop="col10" label="退费时间" width="100"></el-table-column>
-    <el-table-column prop="col11" label="退费学年"></el-table-column>
-    <el-table-column prop="col12" label="退费金额" width="100"></el-table-column>
-   
-    <el-table-column prop="col23" label="退费账户" width="100"></el-table-column>
-    <el-table-column prop="col24" label="退费账号"></el-table-column>
-    <el-table-column prop="col25" label="退费开户行"></el-table-column>
-    <el-table-column prop="col26" label="退费合计" width="100"></el-table-column>
+    <el-table-column prop="col10" label="退费时间" width="100" align="center"></el-table-column>
+    <el-table-column prop="col11" label="退费学年" align="center"></el-table-column>
+    <el-table-column prop="col12" label="退费金额" width="100" align="center"></el-table-column>
 
-    <el-table-column label="操作" width="140px">
+    <el-table-column prop="col23" label="退费账户" width="100" align="center"></el-table-column>
+    <el-table-column prop="col24" label="退费账号" align="center"></el-table-column>
+    <el-table-column prop="col25" label="退费开户行" align="center"></el-table-column>
+    <el-table-column prop="col26" label="退费合计" width="100" align="center"></el-table-column>
+
+    <el-table-column label="操作" width="140px" align="center">
       <template slot-scope="scope">
+        <!-- 详情按钮 -->
+        <router-link :to="{name:'remoneyDetail'}">
+          <el-button
+            type="text"
+            @click="handleDelete(scope.$index, scope.row)">详情</el-button>
+        </router-link>
+
         <!-- 编辑按钮 -->
 
-          <el-button
-            size="mini"
-            type:="primary"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <!-- 详情按钮 -->
-          <router-link :to="{name:'remoneyDetail'}">
-            <el-button
-            size="mini"
-            type="success"
-            @click="handleDelete(scope.$index, scope.row)">详情</el-button>
-            </router-link>
+        <el-button type="text" @click="handleEdit">修改</el-button>
+
+
       </template>
     </el-table-column>
   </el-table>
     <!-- 分页 -->
-    <el-pagination
-  background
-  layout="prev, pager, next"
-  :total="1000"
-  style="position: absolute;right: 200px;padding: 20px;">
-</el-pagination> <!-- 分页 -->
+    <el-pagination @size-change="handleSizeChange"
+                   @current-change="handleCurrentChange"
+                   :current-page="currentPage"
+                   :page-sizes="[10, 20, 30, 40]"
+                   :page-size="pageSize"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="total" style="text-align:right;margin-right: 60px">
+
+    </el-pagination>
+    <!-- 分页 -->
 <!--<remoney-edit v-if="showEdit" ref="edit"></remoney-edit>-->
     </div>
 </template>

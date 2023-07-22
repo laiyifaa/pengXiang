@@ -1,58 +1,44 @@
 <template>
 <div>
   <e-desc margin='0 12px' label-width='130px' title="学生基本信息">
-    <e-desc-item label="学号" >{{ perInfo.wx}}</e-desc-item>
-    <e-desc-item label="姓名" >{{perInfo.name}}</e-desc-item>
-    <e-desc-item label="身份证号码">{{ perInfo.phone }}</e-desc-item>
-    <e-desc-item  label="年龄">{{ perInfo.age }}</e-desc-item>
-    <e-desc-item label="性别">{{ perInfo.sex }}</e-desc-item>
-    <e-desc-item label="民族">汉族</e-desc-item>
-    <e-desc-item label="籍贯">浙江省杭州市</e-desc-item>
-    <e-desc-item label="户口性质">农村</e-desc-item>
-    <e-desc-item label="政治面貌">党员</e-desc-item>
-    <e-desc-item label="联系电话">18333665566</e-desc-item>
-    <e-desc-item label="系部">计算机系</e-desc-item>
-    <e-desc-item label="专业">{{ perInfo.major }}</e-desc-item>
-    <e-desc-item label="班型">就业班</e-desc-item>
-    <e-desc-item label="班级">专业1班</e-desc-item>
-    <e-desc-item label="班主任">{{ perInfo.hobby }}</e-desc-item>
-    <e-desc-item label="班主任电话">18333665566</e-desc-item>
-    <e-desc-item label="电子邮件">@.com</e-desc-item>
+    <e-desc-item label="学号" >{{ Info.schoolNumber}}</e-desc-item>
+    <e-desc-item label="姓名" >{{Info.name}}</e-desc-item>
+    <e-desc-item label="身份证号码">{{ Info.idNumber }}</e-desc-item>
+    <e-desc-item  label="年龄">{{ Info.age }}</e-desc-item>
+    <e-desc-item label="性别">{{ Info.gender }}</e-desc-item>
+    <e-desc-item label="民族">{{ Info.nation }}</e-desc-item>
+    <e-desc-item label="籍贯">{{ Info.nativePlace }}</e-desc-item>
+    <e-desc-item label="户口性质">{{ Info.residenceType === 0 ? '非农户口' : '农业户口' }}</e-desc-item>
+    <e-desc-item label="政治面貌">{{ Info.politicalStatus }}</e-desc-item>
+    <e-desc-item label="联系电话">{{ Info.phone }}</e-desc-item>
+    <e-desc-item label="系部">{{ Info.deptName }}</e-desc-item>
+    <e-desc-item label="专业">{{ Info.majorName }}</e-desc-item>
+    <e-desc-item label="班型">{{ Info.classType }}</e-desc-item>
+    <e-desc-item label="班级">{{ Info.className }}</e-desc-item>
+    <e-desc-item label="班主任">{{ Info.headTeacher }}</e-desc-item>
+    <e-desc-item label="班主任电话">{{ Info.headTeacherPhone }}</e-desc-item>
+    <e-desc-item label="电子邮件">{{ Info.email }}</e-desc-item>
   </e-desc>
+
   <el-collapse  v-model="activeCollapse" >
     <el-collapse-item name="1" >
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">实习详情</span>
       </template>
-      <el-tabs type="border-card" >
-        <el-tab-pane label="第一阶段实习">
-          <e-desc margin='0 12px' label-width='140px' column="2" >
-            <e-desc-item label="实习类别" >{{ empInfo.pro1}}</e-desc-item>
-            <e-desc-item label="实习单位" >{{empInfo.pro2}}</e-desc-item>
-            <e-desc-item label="实习报酬">{{ empInfo.pro3 }}</e-desc-item>
-            <e-desc-item  label="实习岗位">{{ empInfo.pro4 }}</e-desc-item>
-            <e-desc-item label="实习离校日期">{{ empInfo.pro5}}</e-desc-item>
-            <e-desc-item label="预计实习结束日期">{{ empInfo.pro6}}</e-desc-item>
-            <e-desc-item label="实际实习结束日期">{{empInfo.pro7}}</e-desc-item>
-            <e-desc-item label="学生实习鉴定结果" >{{ empInfo.pro8}}</e-desc-item>
-            <e-desc-item label="是否对岗位满意" >{{empInfo.pro9}}</e-desc-item>
-            <e-desc-item label="带队教师">{{ empInfo.pro10 }}</e-desc-item>
-            <e-desc-item  label="带队教师电话">{{ empInfo.pro11 }}</e-desc-item>
-          </e-desc>
-        </el-tab-pane>
-        <el-tab-pane label="第一阶段实习">
-          <e-desc margin='0 12px' label-width='140px' column="2" >
-            <e-desc-item label="实习类别" >{{ empInfo.pro1}}</e-desc-item>
-            <e-desc-item label="实习单位" >{{empInfo.pro2}}</e-desc-item>
-            <e-desc-item label="实习报酬">{{ empInfo.pro3 }}</e-desc-item>
-            <e-desc-item  label="实习岗位">{{ empInfo.pro4 }}</e-desc-item>
-            <e-desc-item label="实习离校日期">{{ empInfo.pro5}}</e-desc-item>
-            <e-desc-item label="预计实习结束日期">{{ empInfo.pro6}}</e-desc-item>
-            <e-desc-item label="实际实习结束日期">{{empInfo.pro7}}</e-desc-item>
-            <e-desc-item label="学生实习鉴定结果" >{{ empInfo.pro8}}</e-desc-item>
-            <e-desc-item label="是否对岗位满意" >{{empInfo.pro9}}</e-desc-item>
-            <e-desc-item label="带队教师">{{ empInfo.pro10 }}</e-desc-item>
-            <e-desc-item  label="带队教师电话">{{ empInfo.pro11 }}</e-desc-item>
+      <el-tabs type="border-card" key>
+        <el-tab-pane v-for="(item, index) in workInfo" :key="index" :label="`第${index + 1}阶段实习`">
+          <e-desc margin='0 12px' label-width='140px' column="3" >
+            <e-desc-item label="实习类别" >{{ item.practiceType === 1 ? '认识实习': '岗位实习'}}</e-desc-item>
+            <e-desc-item label="实习单位" >{{item.practiceOrg }}</e-desc-item>
+            <e-desc-item label="实习报酬">{{ item.practiceIncome }}</e-desc-item>
+            <e-desc-item  label="实习岗位">{{ item.practicePost }}</e-desc-item>
+            <e-desc-item label="实习离校日期">{{ item.leaveDate }}</e-desc-item>
+            <e-desc-item label="预计实习结束日期">{{ item.expectEndDate }}</e-desc-item>
+            <e-desc-item label="实际实习结束日期">{{item.realEndDate }}</e-desc-item>
+            <e-desc-item label="学生实习鉴定结果" >{{ item.practiceResult }}</e-desc-item>
+            <e-desc-item label="是否对岗位满意" >{{item.isSatisfied === 1?'满意':'不满意'}}</e-desc-item>
+            <e-desc-item label="带队教师">{{ item.postLeader }}</e-desc-item>
+            <e-desc-item  label="带队教师电话">{{ item.postLeaderPhone }}</e-desc-item>
           </e-desc>
         </el-tab-pane>
       </el-tabs>
@@ -76,34 +62,32 @@ export default {
   },
   data () {
     return {
+      Info:null,
       activeCollapse: ['1'],
-      perInfo: {
-        name: 'Jerry',
-        age: 26,
-        sex: '男',
-        school: '廊坊学校',
-        major: '铁路专业',
-        address: '四川省成都市',
-        hobby: '朱博伦',
-        phone: 33030419980953011,
-        wx: '202230603042',
-        qq: 332983810
-      },
-      empInfo: {
-        pro1: '短期实习',
-        pro2: '字节跳动',
-        pro3: '7000',
-        pro4: '开发',
-        pro5: '2023-02-06',
-        pro6: '2023-08-06',
-        pro7: '2023-08-06',
-        pro8: '合格',
-        pro9: '满意',
-        pro10: '王德发',
-        pro11: '15715166898'
-      }
+      workInfo: null
     }
   },
+  // created() {
+  //   this.$http({
+  //     url: this.$http.adornUrl('/stu/getEmployList'),
+  //     method: 'get'
+  //   }).then(response => {
+  //     this.Info = response.data.listDto.find(item => item.schoolNumber === this.$route.params.schoolNumber)
+  //   })
+  //     .catch(error => {
+  //       console.error(error)
+  //     })
+  //   this.$http({
+  //     url: this.$http.adornUrl('/stuWork/getPractice'),
+  //     method: 'get'
+  //   }).then(response => {
+  //     this.workInfo = response.data.prEntities.filter(item => item.schoolNumber == this.$route.params.schoolNumber);
+  //     console.log(this.workInfo)
+  //   })
+  //     .catch(error => {
+  //       console.error(error)
+  //     })
+  // },
   methods: {
     returnBack () {
       this.$router.go(-1)

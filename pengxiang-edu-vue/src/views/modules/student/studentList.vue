@@ -5,7 +5,9 @@
         <el-button type="primary" icon="el-icon-refresh"></el-button>
         <el-button type="success" @click="deleteIf" style="background-color: lightgreen">新增</el-button>
         <el-button type="success" @click="handleImport">导入</el-button>
+        <student-import v-if="Visiable" ref="dialog"></student-import>
         <el-button type="success" @click="handleExport">导出</el-button>
+        <student-out v-if="Visiableee" ref="dialoggg"></student-out>
         <el-button type="success" @click="deleteIf" style="background-color: red">删除</el-button>
       </el-col>
       <el-col :span="10" >
@@ -49,8 +51,8 @@
       <el-table-column prop="ethnic" label="民族" width="50px"></el-table-column>
       <el-table-column prop="origin" label="籍贯"></el-table-column>
       <el-table-column prop="political" label="政治面貌" ></el-table-column>
-      <el-table-column prop="phone" label="联系电话"width="120px"></el-table-column>
-      <el-table-column prop="department" label="系部"width="100px"></el-table-column>
+      <el-table-column prop="phone" label="联系电话" width="120px"></el-table-column>
+      <el-table-column prop="department" label="系部" width="100px"></el-table-column>
       <el-table-column prop="major" label="专业"></el-table-column>
       <el-table-column prop="classType" label="班型"></el-table-column>
       <el-table-column prop="class" label="班级"></el-table-column>
@@ -60,7 +62,7 @@
       <el-table-column prop="account" label="户口性质"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="text" @click="handleDetail(scope.row)"style="margin-left: 1px">详情</el-button>
+          <el-button type="text" @click="handleDetail(scope.row)" style="margin-left: 1px">详情</el-button>
           <el-button type="text" @click="deleteIf" style="margin-left: 1px">删除</el-button>
         </template>
       </el-table-column>
@@ -77,10 +79,17 @@
 
 
 <script>
+import studentImport from './studentImport'
+import studentOut from './studentOut'
+
 export default {
   mounted () {
     // 初始化时请求数据
     this.getData()
+  },
+  components: {
+    studentImport,
+    studentOut
   },
   methods: {
     addSearchCondition () {
@@ -123,11 +132,25 @@ export default {
       console.log(this.searchConditions)
       // 处理搜索逻辑
     },
-    handleImport () {
+    handleImport (data) {
       // 处理导入逻辑
+      this.Visiable = true
+      this.$nextTick(() => {
+          // 这里的dialog与上面dialog-component组件里面的ref属性值是一致的
+          // init调用的是dialog-component组件里面的init方法
+          // data是传递给弹窗页面的值
+        this.$refs.dialog.init(data)
+      })
     },
-    handleExport () {
+    handleExport (dataaa) {
       // 处理导出逻辑
+      this.Visiableee = true
+      this.$nextTick(() => {
+          // 这里的dialog与上面dialog-component组件里面的ref属性值是一致的
+          // init调用的是dialog-component组件里面的init方法
+          // data是传递给弹窗页面的值
+        this.$refs.dialoggg.inittt(dataaa)
+      })
     },
     handleSizeChange (size) {
       this.pageSize = size
@@ -149,6 +172,8 @@ export default {
   },
   data () {
     return {
+      Visiable: false,
+      Visiableee: false,
       searchCount: 1,
       searchConditions: [{
         option: '',

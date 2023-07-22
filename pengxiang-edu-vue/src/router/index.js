@@ -55,7 +55,9 @@ const globalRoutes = [
   // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/edu-certificateDetail', component: _import('modules/edu/certificateDetail'), name: 'certificateDetail', meta: { title: '考证详情' }},
   // eslint-disable-next-line standard/object-curly-even-spacing
-  { path: '/edu-certificateEdit', component: _import('modules/edu/certificateEdit'), name: 'certificateEdit', meta: { title: '考证编辑' }}
+  { path: '/edu-certificateEdit', component: _import('modules/edu/certificateEdit'), name: 'certificateEdit', meta: { title: '考证编辑' }},
+  { path: '/student-studentImport', component: _import('modules/student/studentImport'), name: 'studentImport', meta: { title: '学生列表导入' }},
+  { path: '/student-studentOut', component: _import('modules/student/studentOut'), name: 'studentOut', meta: { title: '学生列表导出' }},
 
 ]
 
