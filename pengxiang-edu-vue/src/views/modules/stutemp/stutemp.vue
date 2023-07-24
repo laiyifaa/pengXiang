@@ -114,7 +114,7 @@
 import AddOrUpdate from './stutemp-add-or-update'
 
 export default {
-  data() {
+  data () {
     return {
       dataForm: {
         key: ''
@@ -132,7 +132,7 @@ export default {
   components: {
     AddOrUpdate
   },
-  activated() {
+  activated () {
     this.getDataList()
   },
   methods: {
@@ -174,18 +174,18 @@ export default {
       })
     },
     // 每页数
-    sizeChangeHandle(val) {
+    sizeChangeHandle (val) {
       this.pageSize = val
       this.pageIndex = 1
       this.getDataList()
     },
     // 当前页
-    currentChangeHandle(val) {
+    currentChangeHandle (val) {
       this.pageIndex = val
       this.getDataList()
     },
     // 多选
-    selectionChangeHandle(val) {
+    selectionChangeHandle (val) {
       this.dataListSelections = val
     },
     // 新增 / 修改
@@ -198,7 +198,7 @@ export default {
       })
     },
     // 删除
-    deleteHandle(id) {
+    deleteHandle (id) {
       var ids = id ? [id] : this.dataListSelections.map(item => {
         return item.id
       })

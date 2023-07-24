@@ -13,7 +13,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 Vue.use(VueCookie)
 Vue.config.productionTip = false
-
+Vue.config.warnHandler = () => null
 // 非生产环境, 适配mockjs模拟数据                 // api: https://github.com/nuysoft/Mock
 if (process.env.NODE_ENV !== 'production') {
   require('@/mock')
