@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.edu.dao.FeeTrainInOutDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.edu.entity.FeeTrainInOutEntity" id="feeTrainInOutMap">
+        <result property="id" column="id"/>
+        <result property="stuId" column="stu_id"/>
+        <result property="academyId" column="academy_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="trainType" column="train_type"/>
+        <result property="certificateName" column="certificate_name"/>
+        <result property="certificateLevel" column="certificate_level"/>
+        <result property="needFeeNum" column="need_fee_num"/>
+        <result property="factFeeNum" column="fact_fee_num"/>
+        <result property="derateFeeNum" column="derate_fee_num"/>
+        <result property="teacher" column="teacher"/>
+        <result property="teacherPhone" column="teacher_phone"/>
+        <result property="returnFeeTime" column="return_fee_time"/>
+        <result property="needReturnFeeNum" column="need_return_fee_num"/>
+        <result property="factReturnFeeNum" column="fact_return_fee_num"/>
+        <result property="returnAccount" column="return_account"/>
+        <result property="returnAccountNumber" column="return_account_number"/>
+        <result property="backFeeTime" column="back_fee_time"/>
+        <result property="backFeeNum" column="back_fee_num"/>
+        <result property="backAccount" column="back_account"/>
+        <result property="backAccountNumber" column="back_account_number"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createUser" column="create_user"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+    <select id="selectFeeTrainInOutPage" resultType="io.renren.modules.edu.vo.FeeTrainInOutVo">
+        SELECT
+            f.*,
+            a.academy_info
+        FROM
+            `fee_train_in_out` f
+            LEFT JOIN academy a on f.academy_id = a.academy_id
+        WHERE
+            f.is_deleted = 0
+        <if test="param.name != null and param.name != '' ">
+            and f.name like concat('%', #{param.name}, '%')
+        </if>
+        <if test="param.idCard != null and param.idCard != '' ">
+            and f.id_card like concat('%', #{param.idCard}, '%')
+        </if>
+        ORDER BY
+            f.create_time DESC
+    </select>
+
+
+</mapper>

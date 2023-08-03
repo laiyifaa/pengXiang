@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.edu.dao.EnterTypeListDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.edu.entity.EnterTypeListEntity" id="enterTypeListMap">
+        <result property="typeId" column="type_id"/>
+        <result property="enterTypeName" column="enter_type_name"/>
+    </resultMap>
+  <select id="selectEnterTypeListPage" resultType="io.renren.modules.edu.vo.EnterTypeListVo">
+
+    select *,dept.`name` academyInfo from enter_type_list etl
+
+    left join sys_dept dept on dept.dept_id = etl.academy_id
+
+    where etl.is_deleted = 0
+    <if test="key != null">
+      and etl.enter_type_name like concat('%', #{key}, '%')
+    </if>
+    <if test="academyId != -1">
+      and etl.academy_id = #{academyId}
+    </if>
+
+  </select>
+    <select id="selectEnterTypeListSelectVo" resultType="io.renren.modules.edu.vo.EnterTypeListSelectVo">
+
+      select type_id `value`,enter_type_name label
+      from enter_type_list
+      where academy_id = #{academyId}
+
+    </select>
+</mapper>

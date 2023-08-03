@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.edu.dao.SysDeptDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.edu.entity.SysDeptEntity" id="sysDeptMap">
+        <result property="deptId" column="dept_id"/>
+        <result property="pid" column="pid"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="deptType" column="dept_type"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+
+    <select id="listAll" resultMap="sysDeptMap">
+        SELECT  *
+        FROM   sys_dept
+        WHERE  1 = 1
+        AND    is_deleted = 0
+    </select>
+
+    <select id="selectSysDeptPage" resultType="io.renren.modules.edu.vo.SysDeptVo">
+        SELECT
+        *
+        FROM
+        sys_dept sd
+        where sd.is_deleted = 0
+        <if test="null != key  and key !='' ">
+            AND sd.name like concat('%', #{key}, '%') or sd.description like concat('%', #{key}, '%')
+        </if>
+        <!--      <if test="param.stuIdNumber != null and param.stuIdNumber != '' ">-->
+        <!--        and st.stu_id_number like concat('%', #{param.stuIdNumber}, '%')-->
+        <!--      </if>-->
+        <if test="null != deptType">
+            AND sd.dept_type = #{deptType}
+        </if>
+        order by sd.dept_type ASC
+
+
+    </select>
+    <select id="getNextLevelDepts" resultType="io.renren.modules.edu.vo.SysDeptVo">
+
+      SELECT
+        dept.*,
+        type.type_info AS dept_type_info
+      FROM
+        sys_dept dept LEFT JOIN sys_dept_type `type` ON `type`.type_id = dept.dept_type
+      WHERE
+        dept.dept_id = #{pid} OR dept.pid = #{pid}
+
+    </select>
+    <select id="getMajorListByTempStuId" resultType="io.renren.modules.edu.vo.MajorSelectVo">
+
+    SELECT
+        dept1.dept_id `value`,
+        dept1.`name` label
+    from stu_temp temp
+    LEFT JOIN sys_dept dept1 on dept1.pid = temp.academy_id
+    <where>
+        1 = 1
+        and is_deleted = 0
+        <if test="null != tempStuId">
+            AND temp.id = #{tempStuId}
+        </if>
+
+    </where>
+
+  </select>
+    <select id="getAcademyList" resultType="io.renren.modules.edu.vo.AcademySelectVo">
+
+        select dept_id `value`,`name` label from sys_dept
+        where dept_type= 0
+        <if test="adminAcademyId!=-1">and dept_id = #{adminAcademyId}</if>
+
+    </select>
+    <select id="getDeptInfoByDeptId" resultType="java.lang.String">
+
+        select concat(dept2.`name`,dept1.`name`) from sys_dept dept1
+        left join sys_dept dept2 on dept1.pid = dept2.dept_id
+        where dept1.dept_id = #{gradeId}
+
+    </select>
+
+    <select id="listDesc" parameterType="io.renren.modules.edu.dto.DeptdescriptionDto" resultType="io.renren.modules.edu.dto.DeptdescriptionDto">
+        SELECT
+        d.dept_id AS academyId,
+        d.name AS academyName,
+        g.dept_id AS gradeId,
+        g.name AS gradeName,
+        g.dept_id AS deptId,
+        p.dept_id AS majorId,
+        p.name AS majorName,
+        c.dept_id AS classId,
+        c.name AS className,
+        c.description AS description
+        FROM
+        sys_dept AS c
+        LEFT JOIN sys_dept AS p ON c.pid = p.dept_id
+        LEFT JOIN sys_dept AS g ON p.pid = g.dept_id
+        LEFT JOIN sys_dept AS d ON g.pid = d.dept_id
+        <where>
+        c.is_deleted = 0
+        AND
+        c.pid &lt;&gt; -1
+        AND
+        p.pid &lt;&gt; -1
+        AND
+        g.pid &lt;&gt; -1
+        AND
+        d.pid = -1
+        AND
+        g.pid is NOT NULL
+        AND
+        c.pid IS NOT NULL
+        AND
+        p.pid IS NOT NULL
+
+        <if test="null != classId">
+        AND    c.dept_id = #{classId}
+        </if>
+       <if test="null != gradeId">
+        AND    p.dept_id = #{gradeId}
+       </if>
+      <if test="null != majorId">
+        AND    g.dept_id = #{majorId}
+      </if>
+        <if test="null != academyId">
+        AND  d.dept_id = #{academyId}
+        </if>
+        </where>
+    </select>
+
+    <select id="listStuTempDesc" parameterType="io.renren.modules.edu.dto.DeptdescriptionDto" resultType="io.renren.modules.edu.dto.DeptdescriptionDto">
+        SELECT
+        d.dept_id AS academyId,
+        d.name AS academyName,
+        g.dept_id AS gradeId,
+        g.name AS gradeName,
+        g.dept_id AS deptId,
+        p.dept_id AS majorId,
+        p.name AS majorName,
+        p.description AS description
+        FROM
+        sys_dept AS p
+        LEFT JOIN sys_dept AS g ON p.pid = g.dept_id
+        LEFT JOIN sys_dept AS d ON g.pid = d.dept_id
+        <where>
+            p.is_deleted = 0
+            AND
+            p.pid &lt;&gt; -1
+            AND
+            g.pid &lt;&gt; -1
+            AND
+            d.pid = -1
+            AND
+            g.pid is NOT NULL
+            AND
+            p.pid IS NOT NULL
+            <if test="null != gradeId">
+                AND    p.dept_id = #{gradeId}
+            </if>
+            <if test="null != majorId">
+                AND    g.dept_id = #{majorId}
+            </if>
+            <if test="null != academyId">
+                AND  d.dept_id = #{academyId}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="deptId">
+        INSERT INTO sys_dept (
+                              pid,
+                              name,
+                              description,
+        dept_type,
+         create_time, update_time, create_by, update_by, is_deleted)
+        VALUES
+        <foreach collection="deptList" item="item" separator=",">
+            (
+            #{item.pid},
+            #{item.name},
+            #{item.description},
+            #{item.deptType},
+            #{item.createTime},
+            #{item.updateTime},
+            #{item.createBy},
+            #{item.updateBy},
+            #{item.isDeleted})
+        </foreach>
+    </insert>
+</mapper>

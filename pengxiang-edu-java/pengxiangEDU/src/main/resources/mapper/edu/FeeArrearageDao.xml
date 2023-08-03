@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.edu.dao.FeeArrearageDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.edu.entity.FeeArrearageEntity" id="feeArrearageMap">
+        <result property="id" column="id"/>
+        <result property="stuId" column="stu_id"/>
+        <result property="academyId" column="academy_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="year" column="year"/>
+        <result property="trainFee" column="train_fee"/>
+        <result property="clothesFee" column="clothes_fee"/>
+        <result property="bookFee" column="book_fee"/>
+        <result property="hotelFee" column="hotel_fee"/>
+        <result property="bedFee" column="bed_fee"/>
+        <result property="insuranceFee" column="insurance_fee"/>
+        <result property="publicFee" column="public_fee"/>
+        <result property="certificateFee" column="certificate_fee"/>
+        <result property="defenseEduFee" column="defense_edu_fee"/>
+        <result property="bodyExamFee" column="body_exam_fee"/>
+        <result property="feeNum" column="fee_num"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+
+    <select id="qMoneyAndInfoListDto" resultType="io.renren.modules.edu.dto.qMoneyAndInfoListDto">
+
+        SELECT DISTINCT a.*, b.*
+        FROM fee_arrearage AS a
+                 INNER JOIN stu_base_info AS b ON a.stu_id = b.stu_id
+    </select>
+
+    <select id="getOneListDto" resultType="io.renren.modules.edu.dto.qMoneyAndInfoListDto">
+
+        SELECT DISTINCT a.*, b.*
+        FROM fee_arrearage AS a
+                 INNER JOIN stu_base_info AS b ON a.stu_id = b.stu_id
+                 where id = #{id}
+    </select>
+
+    <select id="getOneQmoneyListDto" resultType="io.renren.modules.edu.entity.FeeArrearageEntity">
+
+        SELECT * FROM fee_arrearage WHERE stu_id = #{stuId}
+        ORDER BY `year`
+    </select>
+
+</mapper>

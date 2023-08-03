@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.edu.dao.TrainStuInfoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.edu.entity.TrainStuInfoEntity" id="trainStuInfoMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="gender" column="gender"/>
+        <result property="age" column="age"/>
+        <result property="educationBackground" column="education_background"/>
+        <result property="idNumber" column="id_number"/>
+        <result property="nativePlace" column="native_place"/>
+        <result property="phone" column="phone"/>
+        <result property="addres" column="addres"/>
+        <result property="work" column="work"/>
+        <result property="trainCategory" column="train_category"/>
+        <result property="certificate" column="certificate"/>
+        <result property="certificateLevel" column="certificate_level"/>
+        <result property="isSocialSecurity" column="is_social_security"/>
+        <result property="paymentAmount" column="payment_amount"/>
+        <result property="paymentDate" column="payment_date"/>
+        <result property="trainStartDate" column="train_start_date"/>
+        <result property="trainEndDate" column="train_end_date"/>
+        <result property="periodSum" column="period_sum"/>
+        <result property="period" column="period"/>
+        <result property="teacher" column="teacher"/>
+        <result property="studyMode" column="study_mode"/>
+        <result property="trainPlace" column="train_place"/>
+        <result property="practicePeriod" column="practice_period"/>
+        <result property="infoSource" column="info_source"/>
+        <result property="admissionTeacher" column="admission_teacher"/>
+        <result property="admissionTeacherPhone" column="admission_teacher_phone"/>
+        <result property="certificateNumber" column="certificate_number"/>
+        <result property="lodgmentDate" column="lodgment_date"/>
+        <result property="stuStatus" column="stu_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createUser" column="create_user"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+
+
+</mapper>

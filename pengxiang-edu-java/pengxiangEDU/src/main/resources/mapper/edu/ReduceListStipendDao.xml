@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.edu.dao.ReduceListStipendDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.edu.entity.ReduceListStipendEntity" id="reduceListStipendMap">
+        <result property="id" column="id"/>
+        <result property="typeName" column="type_name"/>
+        <result property="reduceTrainFee" column="reduce_train_fee"/>
+        <result property="reduceClothesFee" column="reduce_clothes_fee"/>
+        <result property="reduceBookFee" column="reduce_book_fee"/>
+        <result property="reduceHotelFee" column="reduce_hotel_fee"/>
+        <result property="reduceBedFee" column="reduce_bed_fee"/>
+        <result property="reduceInsuranceFee" column="reduce_insurance_fee"/>
+        <result property="reducePublicFee" column="reduce_public_fee"/>
+        <result property="reduceCertificateFee" column="reduce_certificate_fee"/>
+        <result property="reduceDefenseEduFee" column="reduce_defense_edu_fee"/>
+        <result property="reduceBodyExamFee" column="reduce_body_exam_fee"/>
+    </resultMap>
+    <select id="selectReduceListStipendPage" resultType="io.renren.modules.edu.vo.ReduceListStipendVo">
+        SELECT sti.*,dept.`name` as academy_name
+        FROM reduce_list_stipend sti LEFT JOIN sys_dept dept on
+        dept.dept_id = sti.academy_id
+        WHERE 1=1
+        <if test="academyId != -1">
+            and sti.academy_id = #{academyId}
+        </if>
+        <if test="difficultType != null and difficultType !=''">
+            and sti.type_name = like concat('%', #{difficultType}, '%')
+        </if>
+    </select>
+    <select id="getStipendListForCheckVosByTempStuId" resultType="io.renren.modules.edu.vo.StipendListForCheckVo">
+
+      SELECT stipend.id,stipend.type_name
+      FROM stu_temp temp LEFT JOIN reduce_list_stipend stipend ON stipend.academy_id = temp.academy_id
+      WHERE temp.id=#{tempStuId}
+
+    </select>
+    <select id="getStipendListByAcademyId" resultType="io.renren.modules.edu.vo.StipendListForCheckVo">
+
+      SELECT stipend.id,stipend.type_name
+      FROM reduce_list_stipend stipend
+      WHERE stipend.academy_id=#{academyId}
+
+    </select>
+
+
+</mapper>

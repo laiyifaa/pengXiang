@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.edu.dao.StuChangeDao">
+
+    <insert id="addStatusChange" parameterType="io.renren.modules.edu.entity.StuStatusChangeInfoEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT
+        INTO
+        stu_status_change_info
+        (
+        stu_id,
+        level_date,
+        end_date,
+        old_school_roll_status,
+        new_school_roll_status,
+        old_current_status,
+        new_current_status,
+        create_time,
+        update_time,
+        create_by,
+        update_by,
+        is_deleted
+        )
+        VALUES
+        (
+        #{stuId},
+        #{levelDate},#{endDate},#{oldSchoolRollStatus},#{newSchoolRollStatus},#{oldCurrentStatus},#{newCurrentStatus},
+        #{createTime},
+        #{updateTime},
+        #{createBy},
+        #{updateBy},
+        #{isDeleted}
+        )
+    </insert>
+</mapper>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.edu.dao.FeeSchoolSundryDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.edu.entity.FeeSchoolSundryEntity" id="feeSchoolSundryMap">
+        <result property="id" column="id"/>
+        <result property="stuId" column="stu_id"/>
+        <result property="academyId" column="academy_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="paySchoolDate" column="pay_school_date"/>
+        <result property="paySchoolYear" column="pay_school_year"/>
+        <result property="trainFee" column="train_fee"/>
+        <result property="clothesFee" column="clothes_fee"/>
+        <result property="bookFee" column="book_fee"/>
+        <result property="hotelFee" column="hotel_fee"/>
+        <result property="bedFee" column="bed_fee"/>
+        <result property="insuranceFee" column="insurance_fee"/>
+        <result property="publicFee" column="public_fee"/>
+        <result property="certificateFee" column="certificate_fee"/>
+        <result property="defenseEduFee" column="defense_edu_fee"/>
+        <result property="bodyExamFee" column="body_exam_fee"/>
+        <result property="derateMoney" column="derate_money"/>
+        <result property="derateType" column="derate_type"/>
+        <result property="derateDetail" column="derate_detail"/>
+        <result property="returnFeeTime" column="return_fee_time"/>
+        <result property="needReturnFeeNum" column="need_return_fee_num"/>
+        <result property="factReturnFeeNum" column="fact_return_fee_num"/>
+        <result property="account" column="account"/>
+        <result property="accountNumber" column="account_number"/>
+        <result property="depositBank" column="deposit_bank"/>
+        <result property="payTrainFee" column="pay_train_fee"/>
+        <result property="payClothesFee" column="pay_clothes_fee"/>
+        <result property="payBookFee" column="pay_book_fee"/>
+        <result property="payHotelFee" column="pay_hotel_fee"/>
+        <result property="payBedFee" column="pay_bed_fee"/>
+        <result property="payInsuranceFee" column="pay_insurance_fee"/>
+        <result property="payPublicFee" column="pay_public_fee"/>
+        <result property="payCertificateFee" column="pay_certificate_fee"/>
+        <result property="payDefenseEduFee" column="pay_defense_edu_fee"/>
+        <result property="payBodyExamFee" column="pay_body_exam_fee"/>
+        <result property="isArrearage" column="is_arrearage"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+    <select id="selectFeeSundryVo" resultType="io.renren.modules.edu.vo.FeeSchoolSundryVo">
+
+        select fss.*,
+            sd1.name academyName,
+            sd2.name majorName,
+            sd3.name gradeName,
+            sd4.name className,
+            sbi.*,
+            sbi.schooling_length schoolingLength
+
+
+
+        from fee_school_sundry fss
+        left join stu_base_info sbi on sbi.stu_id = fss.stu_id
+
+        <if test="academyId!=-1">
+            and sbi.academy_id = #{academyId}
+        </if>
+        <if test="key.idNumber!=null">
+             and sbi.id_number = #{key.idNumber}
+        </if>
+        <if test="key.schoolNumber!=null">
+            and sbi.school_number = #{key.schoolNumber}
+        </if>
+        <if test="key.stuName!=null">
+            and sbi.stu_name = #{key.stuName}
+        </if>
+        <if test="deptId!=null">
+            and
+            (
+                sbi.academy_id = #{deptId} or
+                 sbi.major_id = #{deptId} or
+                 sbi.grade_id = #{deptId} or
+                 sbi.class_id = #{deptId}
+            )
+        </if>
+        left join sys_dept sd1 on sbi.academy_id = sd1.dept_id
+        left join sys_dept sd2 on sbi.major_id = sd2.dept_id
+        left join sys_dept sd3 on sbi.grade_id = sd3.dept_id
+        left join sys_dept sd4 on sbi.class_id = sd4.dept_id
+        where fss.is_deleted = 0 and sbi.stu_id = fss.stu_id
+        <if test="year!=null">
+            and fss.pay_school_year = #{year}
+        </if>
+
+    </select>
+
+    <select id="getIdList" resultType="java.lang.Long">
+        SELECT stu_id
+        from
+            fee_school_sundry
+    </select>
+
+</mapper>

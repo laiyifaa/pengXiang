@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.edu.dao.StuDetailInfoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.edu.entity.StuDetailInfoEntity" id="stuDetailInfoMap">
+        <result property="stuId" column="stu_id"/>
+        <result property="eduLevel" column="edu_level"/>
+        <result property="skillBeforeAdmission" column="skill_before_admission"/>
+        <result property="entranceQual" column="entrance_qual"/>
+        <result property="graduatedSchool" column="graduated_school"/>
+        <result property="registeredResidence" column="registered_residence"/>
+        <result property="isDifficulty" column="is_difficulty"/>
+        <result property="difficultyType" column="difficulty_type"/>
+        <result property="supportType" column="support_type"/>
+        <result property="totalIncome" column="total_income"/>
+        <result property="aveIncome" column="ave_income"/>
+        <result property="incomeSource" column="income_source"/>
+        <result property="firstSemesterLevel" column="first_semester_level"/>
+        <result property="secendSemesterLevel" column="secend_semester_level"/>
+        <result property="thirdSemesterLevel" column="third_semester_level"/>
+        <result property="fourthSemesterLevel" column="fourth_semester_level"/>
+        <result property="fifthSemesterLevel" column="fifth_semester_level"/>
+        <result property="sixthSemesterLevel" column="sixth_semester_level"/>
+        <result property="bankAccount" column="bank_account"/>
+        <result property="bankCardNum" column="bank_card_num"/>
+        <result property="deposit" column="deposit"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+
+
+</mapper>

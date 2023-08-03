@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.edu.dao.EduCertificateDao">
+
+    <update id="deleteByIds" parameterType="java.util.List" >
+        UPDATE edu_certificate
+        SET is_deleted = 1
+        WHERE id IN
+        <foreach collection="idList" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="selectCertificateVoInfo" resultType="io.renren.modules.edu.vo.CertificateVo">
+
+        SELECT base.stu_id AS stuId,
+               base.stu_name AS stuName,
+               base.school_number AS schoolNumber,
+               base.schooling_length AS schoolingLength,
+               base.phone AS phone,
+               academy.`name` AS academyName,
+               major.`name` AS majorName,
+               grade.`name` AS gradeName,
+               class.`name` AS className,
+                IFNULL(count.necessaryCount,0) AS necessaryCount ,
+                IFNULL(count.optionCount,0) AS optionCount
+        FROM stu_base_info base
+                                LEFT JOIN sys_dept major on base.major_id = major.dept_id
+                                LEFT JOIN sys_dept grade on base.grade_id = grade.dept_id
+                                LEFT JOIN sys_dept class on base.class_id = class.dept_id
+                                LEFT JOIN sys_dept academy on base.academy_id = academy.dept_id
+                                LEFT JOIN (
+                                            SELECT stu_id,
+                                            SUM(CASE WHEN type = 0 THEN 1 ELSE 0 END) AS optionCount,
+                                            SUM(CASE WHEN type = 1 THEN 1 ELSE 0 END) AS necessaryCount
+                                            FROM edu_certificate
+                                            WHERE is_deleted = 0
+                                            GROUP BY stu_id
+                                           )  count on count.stu_id = base.stu_id
+
+        <where>
+                (1 = 1 AND base.is_deleted = 0 )
+            <if test="null != deptId">
+                AND
+                (
+                    base.academy_id = #{deptId} or
+                    base.major_id = #{deptId} or
+                    base.grade_id = #{deptId} or
+                    base.class_id = #{deptId}
+                )
+            </if>
+            <if test="null != key">
+                <if test="null != key.stuName">
+                    AND base.stu_name  like concat('%',#{key.stuName},'%')
+                </if>
+                <if test="null != key.schoolNumber">
+                    AND base.school_number  like concat('%',#{key.schoolNumber},'%')
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO edu_certificate ( stu_id, certificate_name, information, exam_time, issue_time, remarks, type, STATUS, create_time, update_time, create_by, update_by, is_deleted )
+        VALUES
+        <foreach collection="stuList" item="item" separator=",">
+            (#{certificate.stuId},
+            #{certificate.certificateName},
+            #{certificate.information},
+            #{certificate.examTime},
+            #{certificate.issueTime},
+            #{certificate.remarks},
+            #{certificate.type},
+            #{certificate.status},
+            #{certificate.createTime},
+            #{certificate.updateTime},
+            #{certificate.createBy},
+            #{certificate.updateBy},
+            #{certificate.isDeleted})
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.edu.dao.FeeReturnDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.edu.entity.FeeReturnEntity" id="feeReturnMap">
+        <result property="id" column="id"/>
+        <result property="stuId" column="stu_id"/>
+        <result property="returnMoneyTime" column="return_money_time"/>
+        <result property="academyId" column="academy_id"/>
+        <result property="returnSchoolYear" column="return_school_year"/>
+        <result property="returnFeeNum" column="return_fee_num"/>
+        <result property="trainFee" column="train_fee"/>
+        <result property="clothesFee" column="clothes_fee"/>
+        <result property="bookFee" column="book_fee"/>
+        <result property="hotelFee" column="hotel_fee"/>
+        <result property="bedFee" column="bed_fee"/>
+        <result property="insuranceFee" column="insurance_fee"/>
+        <result property="publicFee" column="public_fee"/>
+        <result property="certificateFee" column="certificate_fee"/>
+        <result property="defenseEduFee" column="defense_edu_fee"/>
+        <result property="bodyExamFee" column="body_exam_fee"/>
+        <result property="account" column="account"/>
+        <result property="accountNumber" column="account_number"/>
+        <result property="depositBank" column="deposit_bank"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+    <select id="selectFeeReturnPage" resultType="io.renren.modules.edu.vo.FeeReturnVo">
+        SELECT
+            f.*,
+            s.school_number,
+            s.stu_name,
+            s.id_number,
+            s.grade,
+            s.admission_season,
+            s.admission_date,
+            s.major,
+            s.class_type,
+            s.schooling_length
+        FROM
+            `fee_return` f
+            LEFT JOIN stu_base_info s ON f.stu_id = s.stu_id
+        WHERE
+            f.is_deleted = 0
+        <if test="param.schoolNumber != null and param.schoolNumber != '' ">
+            and s.school_number like concat('%', #{param.schoolNumber}, '%')
+        </if>
+        <if test="param.stuName != null and param.stuName != '' ">
+            and s.stu_name like concat('%', #{param.stuName}, '%')
+        </if>
+        <if test="param.idNumber != null and param.idNumber != '' ">
+            and s.id_number like concat('%', #{param.idNumber}, '%')
+        </if>
+        ORDER BY f.create_time DESC
+    </select>
+
+    <select id="selectReturnFeeDto" resultType="io.renren.modules.edu.dto.ReturnFeeDto">
+
+        select fss.*,
+        sd1.name academyName,
+        sd2.name majorName,
+        sd3.name gradeName,
+        sd4.name className,
+        sbi.*
+        from fee_return fss
+        left join stu_base_info sbi on sbi.stu_id = fss.stu_id
+
+        <if test="academyId!=-1">
+            and sbi.academy_id = #{academyId}
+        </if>
+        <if test="deptId!=null">
+            and
+            (
+            sbi.academy_id = #{deptId} or
+            sbi.major_id = #{deptId} or
+            sbi.grade_id = #{deptId} or
+            sbi.class_id = #{deptId}
+            )
+        </if>
+        left join sys_dept sd1 on sbi.academy_id = sd1.dept_id
+        left join sys_dept sd2 on sbi.major_id = sd2.dept_id
+        left join sys_dept sd3 on sbi.grade_id = sd3.dept_id
+        left join sys_dept sd4 on sbi.class_id = sd4.dept_id
+        where fss.is_deleted = 0 and sbi.stu_id = fss.stu_id
+
+    </select>
+
+    <select id="getIdList" resultType="java.lang.Long">
+        SELECT stu_id
+        from
+            fee_return
+    </select>
+</mapper>

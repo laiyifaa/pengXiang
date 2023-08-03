@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.edu.dao.FeeStuPaidDao">
+
+    <select id="findDidntPayClearly" resultType="io.renren.modules.edu.entity.StuBaseInfoEntity">
+
+        SELECT bi.*
+        FROM fee_stu_paid fsp
+        LEFT JOIN stu_base_info bi ON bi.stu_id = fsp.stu_id
+        <if test="type==1">
+            and bi.academy_id = #{deptId}
+        </if>
+        <if test="type==2">
+            and bi.major_id = #{deptId}
+        </if>
+        <if test="type==3">
+            and bi.grade_id = #{deptId}
+        </if>
+        <if test="type==4">
+            and bi.class_id = #{deptId}
+        </if>
+        <if test="academyId != -1">
+            and bi.academy_id = #{academyId}
+        </if>
+        LEFT JOIN fee_stu_need_pay fsnp ON fsp.fee_need_pay_id = fsnp.id
+
+        where fsp.fee_status = 801 and fsp.is_deleted = 0 and fsnp.school_year_info = #{schoolYearInfo}
+
+    </select>
+</mapper>

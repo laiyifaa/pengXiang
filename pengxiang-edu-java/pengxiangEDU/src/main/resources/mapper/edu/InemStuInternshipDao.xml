@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.edu.dao.InemStuInternshipDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.edu.entity.InemStuInternshipEntity" id="inemStuInternshipMap">
+        <result property="id" column="id"/>
+        <result property="stuId" column="stu_id"/>
+        <result property="internshipType" column="Internship_type"/>
+        <result property="internshipUnit" column="Internship_unit"/>
+        <result property="internshipSalary" column="Internship_salary"/>
+        <result property="internshipPost" column="Internship_post"/>
+        <result property="internshipLeaveDate" column="Internship_leave_date"/>
+        <result property="expectedEndDate" column="expected_end_date"/>
+        <result property="actualEndDate" column="actual_end_date"/>
+        <result property="internshipResults" column="internship_results"/>
+        <result property="isSatisfied" column="is_satisfied"/>
+        <result property="leadTeacher" column="lead_teacher"/>
+    </resultMap>
+    <select id="selectInernshipList" resultType="io.renren.modules.edu.vo.StuInternshipVo">
+
+      select
+        isi.*,
+        sbi.stu_name stu_name,
+        sbi.school_number school_number,
+        sbi.status_school status_school,
+        sbi.study_in study_in,
+        dept1.`name` academy_name,
+        dept2.`name` major,
+        dept3.`name` grade,
+        dept4.`name` class_name
+      from inem_stu_internship isi
+      left join stu_base_info sbi on isi.stu_id = sbi.stu_id
+      left join sys_dept dept1 on sbi.academy_id = dept1.dept_id
+      left join sys_dept dept2 on sbi.major_id = dept2.dept_id
+      left join sys_dept dept3 on sbi.grade_id = dept3.dept_id
+      left join sys_dept dept4 on sbi.class_id = dept4.dept_id
+      where isi.is_deleted = 0
+      <if test="key!=null and key != ''">
+        and sbi.stu_name like concat('%', #{key}, '%') or sbi.school_number like concat('%', #{key}, '%')
+      </if>
+      <if test="academyId!=-1">
+        and sbi.academy_id = #{academyId}
+      </if>
+    </select>
+  <select id="getStuInternshipVoById" resultType="io.renren.modules.edu.vo.StuInternshipVo">
+
+    select
+        isi.*,
+        sbi.stu_name stu_name,
+        sbi.school_number school_number,
+        sbi.status_school status_school,
+        sbi.study_in study_in
+      from inem_stu_internship isi
+      left join stu_base_info sbi on isi.stu_id = sbi.stu_id
+      where isi.is_deleted = 0 and isi.id = #{id}
+
+  </select>
+
+
+</mapper>
