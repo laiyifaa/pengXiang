@@ -20,7 +20,7 @@
     <e-desc-item label="电子邮件">{{ Info.email }}</e-desc-item>
   </e-desc>
 
-  <el-collapse  v-model="activeCollapse" >
+  <el-collapse v-show="schoolNumberIsNull"  v-model="activeCollapse" >
     <el-collapse-item name="1" >
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">实习详情</span>
@@ -62,32 +62,29 @@ export default {
   },
   data () {
     return {
-      Info:null,
+      schoolNumberIsNull:'',
+      Info: null,
       activeCollapse: ['1'],
       workInfo: null
     }
   },
-  // created() {
-  //   this.$http({
-  //     url: this.$http.adornUrl('/stu/getEmployList'),
-  //     method: 'get'
-  //   }).then(response => {
-  //     this.Info = response.data.listDto.find(item => item.schoolNumber === this.$route.params.schoolNumber)
-  //   })
-  //     .catch(error => {
-  //       console.error(error)
-  //     })
-  //   this.$http({
-  //     url: this.$http.adornUrl('/stuWork/getPractice'),
-  //     method: 'get'
-  //   }).then(response => {
-  //     this.workInfo = response.data.prEntities.filter(item => item.schoolNumber == this.$route.params.schoolNumber);
-  //     console.log(this.workInfo)
-  //   })
-  //     .catch(error => {
-  //       console.error(error)
-  //     })
-  // },
+  created () {
+    this.Info = this.$route.params.Info
+    if(this.$route.params.schoolNumber!=null){
+      this.schoolNumberIsNull=true
+      this.$http({
+        url: this.$http.adornUrl('/stuWork/getPractice'),
+        method: 'get'
+      }).then(response => {
+        this.workInfo = response.data.prEntities.filter(item => item.schoolNumber == this.$route.params.schoolNumber)
+      })
+        .catch(error => {
+          this.$message.error(error)
+        })
+    }else {
+      this.schoolNumberIsNull=false
+    }
+  },
   methods: {
     returnBack () {
       this.$router.go(-1)

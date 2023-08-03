@@ -2,34 +2,34 @@
   <div>
 
     <e-desc margin='0 12px' label-width='100px' title="学生基本信息">
-      <HR style="border: 3 double #987cb9" width=95% color=#987cb9 size="3"></HR>
-
-      <e-desc-item label="姓名" >{{info.name}}</e-desc-item>
-      <e-desc-item label="年龄" >{{ info.age }}岁</e-desc-item>
-      <e-desc-item label="性别">{{ info.sex }}</e-desc-item>
+      <e-desc-item label="姓名" >{{info.stuName}}</e-desc-item>
+      <e-desc-item label="性别">{{ info.gender }}</e-desc-item>
       <e-desc-item label="学校">{{ info.school }}</e-desc-item>
       <e-desc-item label="专业">{{ info.major }}</e-desc-item>
-      <e-desc-item label="班主任">{{ info.hobby }}</e-desc-item>
-      <e-desc-item label="宿舍楼号">2</e-desc-item>
-      <e-desc-item label="房间号">132</e-desc-item>
-      <e-desc-item label="床位号">2</e-desc-item>
-      <e-desc-item label="入住日期">2023.6.5</e-desc-item>
-      <e-desc-item label="离宿日期">2023.6.5</e-desc-item>
-      <e-desc-item label="身份证号码">{{ info.phone }}</e-desc-item>
-      <e-desc-item label="学号">{{ info.wx}}</e-desc-item>
-      <e-desc-item label="籍贯">浙江省杭州市</e-desc-item>
-      <e-desc-item label="民族">汉族</e-desc-item>
-      <e-desc-item label="联系电话">18333665566</e-desc-item>
-      <e-desc-item label="家庭联系人">18333665566</e-desc-item>
-      <e-desc-item label="家庭住址">浙江杭州</e-desc-item>
-      <e-desc-item label="家庭年总收入（元）">8000</e-desc-item>
-      <e-desc-item label="家庭人均收入（元）">6000</e-desc-item>
-      <e-desc-item label="家庭经济来源">务农</e-desc-item>
-      <e-desc-item label="学制">4年制</e-desc-item>
-      <e-desc-item label="招生季">春季</e-desc-item>
-      <e-desc-item label="政治面貌">党员</e-desc-item>
-      <e-desc-item label="入学日期">2022.6.1</e-desc-item>
-      <e-desc-item label="注册学籍日期">2022.6.1</e-desc-item>
+      <e-desc-item label="班主任">{{ info.headTeacher }}</e-desc-item>
+      <e-desc-item label="宿舍楼号">{{ info.dormNum }}</e-desc-item>
+      <e-desc-item label="房间号">{{ info.roomNum }}</e-desc-item>
+      <e-desc-item label="床位号">{{ info.bedNum }}</e-desc-item>
+      <e-desc-item label="入住日期">{{ info.checkIn }}</e-desc-item>
+      <e-desc-item label="离宿日期">{{ info.leaveDate}}</e-desc-item>
+      <e-desc-item label="身份证号码">{{ info.idNumber}}</e-desc-item>
+      <e-desc-item label="学号">{{ info.schoolNumber}}</e-desc-item>
+      <e-desc-item label="籍贯">{{ info.nativePlace}}</e-desc-item>
+      <e-desc-item label="民族">{{ info.nation}}</e-desc-item>
+      <e-desc-item label="联系电话">{{ info.phone}}</e-desc-item>
+      <e-desc-item label="家庭联系人">{{ info.familyMemberName}}</e-desc-item>
+      <e-desc-item label="家庭住址">{{ info.familyAddr}}</e-desc-item>
+      <e-desc-item label="家庭年总收入（元）">{{ info.totalIncome}}</e-desc-item>
+      <e-desc-item label="家庭人均收入（元）">{{ info.aveIncome}}</e-desc-item>
+      <e-desc-item label="家庭经济来源">{{ info.incomeSource}}</e-desc-item>
+      <e-desc-item label="学制">{{ info.schoolingLength}}</e-desc-item>
+      <e-desc-item label="招生季">{{ info.admissionSeason}}</e-desc-item>
+      <e-desc-item label="政治面貌">{{ info.politicalStatus}}</e-desc-item>
+      <e-desc-item label="入学日期">{{ info.admissionDate}}</e-desc-item>
+      <e-desc-item label="注册学籍日期">{{ info.registerDate}}</e-desc-item>
+
+
+
     </e-desc>
 
       <!-- 退费详情 -->
@@ -41,51 +41,31 @@
         </template>
 
       <e-desc margin='0 12px' label-width='100px' >
-        <HR style="border: 3 double #987cb9" width=95% color=#987cb9 size="3"></HR>
-
-     <e-desc-item label="退费时间">2024.6.1</e-desc-item>
-      <e-desc-item label="退费学年">2023</e-desc-item>
-      <e-desc-item label="退费金额">200</e-desc-item>
-      <e-desc-item label="退培训费">200</e-desc-item>
-      <e-desc-item label="退服装费">200</e-desc-item>
-      <e-desc-item label="退教材费">20</e-desc-item>
-      <e-desc-item label="退住宿费">690</e-desc-item>
-      <e-desc-item label="退被褥费">202</e-desc-item>
-      <e-desc-item label="退保险费">202</e-desc-item>
-      <e-desc-item label="退公物押金">202</e-desc-item>
-      <e-desc-item label="退证书费">20</e-desc-item>
-      <e-desc-item label="退国防教育费">0</e-desc-item>
-      <e-desc-item label="退体检费">66</e-desc-item>
-      <e-desc-item label="退费账户">王聪</e-desc-item>
-      <e-desc-item label="退费账号">45567786768970</e-desc-item>
-      <e-desc-item label="退费开户行">中国农业银行</e-desc-item>
-      <e-desc-item label="应收合计">6690</e-desc-item>
+     <e-desc-item label="退费时间">{{ info.returnMoneyTime }}</e-desc-item>
+      <e-desc-item label="退费学年">{{ info.returnSchoolYear}}</e-desc-item>
+      <e-desc-item label="退费金额">{{ info.returnFeeNum}}</e-desc-item>
+      <e-desc-item label="退培训费">{{ info.trainFee}}</e-desc-item>
+      <e-desc-item label="退服装费">{{ info.clothesFee}}</e-desc-item>
+      <e-desc-item label="退教材费">{{ info.bookFee}}</e-desc-item>
+      <e-desc-item label="退住宿费">{{ info.hotelFee}}</e-desc-item>
+      <e-desc-item label="退被褥费">{{ info.bedFee}}</e-desc-item>
+      <e-desc-item label="退保险费">{{ info.insuranceFee}}</e-desc-item>
+      <e-desc-item label="退公物押金">{{ info.publicFee}}</e-desc-item>
+      <e-desc-item label="退证书费">{{ info.certificateFee}}</e-desc-item>
+      <e-desc-item label="退国防教育费">{{ info.defenseEduFee}}</e-desc-item>
+      <e-desc-item label="退体检费">{{ info.bodyExamFee}}</e-desc-item>
+      <e-desc-item label="退费账户">{{ info.account}}</e-desc-item>
+      <e-desc-item label="退费账号">{{ info.accountNumber}}</e-desc-item>
+      <e-desc-item label="退费开户行">{{ info.depositBank}}</e-desc-item>
+      <e-desc-item label="应收合计">{{ info.returnFeeNum}}</e-desc-item>
 
     </e-desc>
 
   </el-collapse-item>
     </el-collapse>
-
      <el-row style="padding: 40px;text-align: center;" >
-
      <el-button type="primary" @click="returnBack">返回</el-button>
      </el-row>
-
-
-
-
-    <el-dialog title="编辑"
-               :visible.sync="dialogFormVisible"
-    >
-
-      <div slot="footer"
-           class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary"
-                   @click="dialogFormVisible = false">确 定</el-button>
-      </div>
-    </el-dialog>
-
   </div>
 
 </template>
@@ -101,36 +81,23 @@ export default {
   data () {
     return {
       imageUrl: '',
-      dialogFormVisible: false,
-      form: {
-        account: '',
-        username: '',
-        id: ''
-      },
       formLabelWidth: '50px',
-      info: {
-        name: 'Jerry',
-        age: 26,
-        sex: '男',
-        school: '廊坊学校',
-        major: '铁路专业',
-        address: '四川省成都市',
-        hobby: '朱博伦',
-        phone: 33030419980953011,
-        wx: '202230603042',
-        qq: 332983810
-      },
-      checkAll: false,
-      checkedCities: ['上海', '北京'],
-      isIndeterminate: true,
-      activeNames: ['1'],
-      f_activeNames: ['1'],
-      f_workMessage: ['1'],
-      f_tryWork: ['1'],
+      info: {},
       money: ['1']
     }
   },
+  mounted () {
+    // 初始化时请求数据
+    this.getDataList()
+  },
   methods: {
+    getDataList () {
+      this.$http.get(this.$http.adornUrl(`/generator/feereturn/info/${this.$route.params.index}`)).then(({data}) => {
+        if (data && data.code === 0) {
+          this.info = data.returnFeeDto
+        }
+      })
+    },
     returnBack () {
       this.$router.go(-1)
     },

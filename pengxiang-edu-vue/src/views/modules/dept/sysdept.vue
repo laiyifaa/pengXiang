@@ -1,31 +1,46 @@
 <template>
   <div class="mod-config">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('sysdept:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('sysdept:delete')" type="danger" @click="deleteHandle()"
-                   :disabled="dataListSelections.length <= 0">批量删除
-        </el-button>
-      </el-form-item>
-    </el-form>
-    <el-row :gutter="20">
-      <el-col :span="6">
+
+    <el-row  :gutter="20">
+      <el-col :span="3">
+        <el-input
+          placeholder="输入关键字进行过滤"
+          style="width:90%"
+          v-model="filterText">
+        </el-input>
         <el-tree
+          class="filter-tree"
+          style="padding-top: 20px;"
+          highlight-current
           :data="treeList"
           node-key="id"
           :default-expanded-keys="[]"
           :default-checked-keys="[]"
           :props="defaultProps"
+          :filter-node-method="filterNode"
+          ref="tree"
           @node-click="(data, node, item)=>getDeptsByPid(data, node, item)"
         >
+          <span slot-scope="{ node }" class="custom-tree-node">
+            <span v-if="!filterText">{{ node.label }}</span>
+            <span v-if="filterText" v-html="node.label.replace(new RegExp(filterText,'g'),`<font style='color:lightseagreen'>${filterText}</font>`)" />
+        </span>
         </el-tree>
       </el-col>
-      <el-col :span="18">
-        <el-table
+      <el-col :span="21">
+        <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+          <el-form-item>
+            <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="getDataList()">查询</el-button>
+            <el-button v-if="isAuth('sysdept:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+            <el-button v-if="isAuth('sysdept:delete')" type="danger" @click="deleteHandle()"
+                       :disabled="dataListSelections.length <= 0">批量删除
+            </el-button>
+          </el-form-item>
+        </el-form>
+        <el-table :header-cell-style="{color:'#3b3d3f'}"
           :data="dataList"
           border
           v-loading="dataListLoading"
@@ -43,32 +58,6 @@
             align="center"
             label="名称">
           </el-table-column>
-          <!--      <el-table-column-->
-          <!--        prop="deptId"-->
-          <!--        header-align="center"-->
-          <!--        align="center"-->
-          <!--        label="ID">-->
-          <!--      </el-table-column>-->
-          <!--      <el-table-column-->
-          <!--        prop="typeFlag"-->
-          <!--        header-align="center"-->
-          <!--        align="center"-->
-          <!--        label="标志位：0-寝室，1-院系专业">-->
-          <!--      </el-table-column>-->
-
-          <!--          <el-table-column-->
-          <!--            prop="pid"-->
-          <!--            header-align="center"-->
-          <!--            align="center"-->
-          <!--            label="上级部门">-->
-          <!--          </el-table-column>-->
-<!--          <el-table-column-->
-<!--            prop="subCount"-->
-<!--            header-align="center"-->
-<!--            align="center"-->
-<!--            label="子部门数目">-->
-<!--          </el-table-column>-->
-
           <el-table-column
             prop="description"
             header-align="center"
@@ -82,45 +71,6 @@
             align="center"
             label="部门类型">
           </el-table-column>
-
-
-          <!--      <el-table-column-->
-          <!--        prop="deptSort"-->
-          <!--        header-align="center"-->
-          <!--        align="center"-->
-          <!--        label="排序">-->
-          <!--      </el-table-column>-->
-          <!--      <el-table-column-->
-          <!--        prop="enabled"-->
-          <!--        header-align="center"-->
-          <!--        align="center"-->
-          <!--        label="状态">-->
-          <!--      </el-table-column>-->
-          <!--      <el-table-column-->
-          <!--        prop="createBy"-->
-          <!--        header-align="center"-->
-          <!--        align="center"-->
-          <!--        label="创建者">-->
-          <!--      </el-table-column>-->
-          <!--      <el-table-column-->
-          <!--        prop="updateBy"-->
-          <!--        header-align="center"-->
-          <!--        align="center"-->
-          <!--        label="更新者">-->
-          <!--      </el-table-column>-->
-          <!--      <el-table-column-->
-          <!--        prop="createTime"-->
-          <!--        header-align="center"-->
-          <!--        align="center"-->
-          <!--        label="创建日期">-->
-          <!--      </el-table-column>-->
-          <!--      <el-table-column-->
-          <!--        prop="updateTime"-->
-          <!--        header-align="center"-->
-          <!--        align="center"-->
-          <!--        label="更新时间">-->
-          <!--      </el-table-column>-->
-          <!--          fixed="right"-->
           <el-table-column
 
             header-align="center"
@@ -133,17 +83,17 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+          @size-change="sizeChangeHandle"
+          @current-change="currentChangeHandle"
+          :current-page="pageIndex"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="pageSize"
+          :total="totalPage"
+          layout="total, sizes, prev, pager, next, jumper">
+        </el-pagination>
       </el-col>
     </el-row>
-    <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
-    </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
@@ -153,19 +103,24 @@
 import AddOrUpdate from './sysdept-add-or-update'
 
 export default {
-  data () {
+  watch: {
+    filterText (val) {
+      this.$refs.tree.filter(val)
+    }
+  },
+  data: function () {
     return {
 
       treeList: [],
-
+      filterText: '',
       defaultProps: {
         children: 'children',
         label: 'label'
       },
-
       dataForm: {
         key: ''
       },
+
       dataList: [],
       pageIndex: 1,
       pageSize: 10,
@@ -183,6 +138,10 @@ export default {
     this.getDeptTreeList()
   },
   methods: {
+    filterNode (value, data, node) {
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
+    },
     // 获取数据列表
     getDeptTreeList () {
       this.$http({
@@ -205,7 +164,6 @@ export default {
           'key': this.dataForm.key
         })
       }).then(({data}) => {
-        console.log(data)
         if (data && data.code === 0) {
           this.dataList = data.page.list
           this.totalPage = data.page.totalCount
@@ -215,11 +173,10 @@ export default {
         }
         this.dataListLoading = false
       })
-      this.getDeptTreeList ()
+      this.getDeptTreeList()
     },
 
     getDeptsByPid (data, node, item) {
-      // console.log(data)
       this.$http({
         url: this.$http.adornUrl(`/generator/sysdept/getSubDeptsByPid/${data.id}`),
         method: 'get',
@@ -229,7 +186,6 @@ export default {
           'key': this.dataForm.key
         })
       }).then(({data}) => {
-        console.log(data)
         if (data && data.code === 0) {
           this.dataList = data.page.list
           this.totalPage = data.page.totalCount
@@ -262,8 +218,9 @@ export default {
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id)
       })
+      this.getDataList()
+      this.getDeptTreeList()
     },
-    // 删除
     deleteHandle (id) {
       var ids = id ? [id] : this.dataListSelections.map(item => {
         return item.deptId
@@ -296,7 +253,9 @@ export default {
   }
 }
 </script>
+
 <style>
+
 .el-row {
   margin-bottom: 20px;
 

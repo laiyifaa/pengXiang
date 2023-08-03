@@ -1,48 +1,33 @@
 <template>
 <div>
   <e-desc margin='0 12px' label-width='130px' title="学生基本信息">
-    <e-desc-item label="学号" >{{perInfo.wx}}</e-desc-item>
-    <e-desc-item label="姓名" >{{perInfo.name}}</e-desc-item>
-    <e-desc-item label="身份证号码">{{ perInfo.phone }}</e-desc-item>
-    <e-desc-item  label="年龄">{{ perInfo.age }}</e-desc-item>
-    <e-desc-item label="性别">{{ perInfo.sex }}</e-desc-item>
-    <e-desc-item label="民族">汉族</e-desc-item>
-    <e-desc-item label="籍贯">浙江省杭州市</e-desc-item>
-    <e-desc-item label="户口性质">农村</e-desc-item>
-    <e-desc-item label="政治面貌">党员</e-desc-item>
-    <e-desc-item label="联系电话">18333665566</e-desc-item>
-    <e-desc-item label="系部">计算机系</e-desc-item>
-    <e-desc-item label="专业">{{ perInfo.major }}</e-desc-item>
-    <e-desc-item label="班型">就业班</e-desc-item>
-    <e-desc-item label="班级">专业1班</e-desc-item>
-    <e-desc-item label="班主任">{{ perInfo.hobby }}</e-desc-item>
-    <e-desc-item label="班主任电话">18333665566</e-desc-item>
-    <e-desc-item label="电子邮件">@.com</e-desc-item>
+    <e-desc-item label="学号" >{{info.baseInfo.schoolNumber}}</e-desc-item>
+    <e-desc-item label="姓名" >{{info.baseInfo.stuName}}</e-desc-item>
+    <e-desc-item label="出生年月">{{ info.  baseInfo.birthday }}</e-desc-item>
+    <e-desc-item label="性别">{{ info.baseInfo.sex }}</e-desc-item>
+    <e-desc-item label="院校">{{ info.baseInfo.academyName }}</e-desc-item>
+    <e-desc-item label="年级">{{ info.baseInfo.gradeName }}</e-desc-item>
+    <e-desc-item label="专业">{{info.baseInfo.majorName }}</e-desc-item>
+    <e-desc-item label="班级">{{ info.baseInfo.className }}</e-desc-item>
+    <e-desc-item label="班型">{{ info.baseInfo.classType === 1?'就业':'升学'}}</e-desc-item>
+    <e-desc-item label="班主任" >{{ info.baseInfo.headTeacher }}</e-desc-item>
+    <e-desc-item label="班主任电话" >{{ info.baseInfo.headTeacherPhone }}</e-desc-item>
   </e-desc>
-  <el-collapse  v-model="activeCollapse" >
+
+  <el-collapse  v-model="necessary" >
     <el-collapse-item name="1" >
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">必考证书</span>
       </template>
-      <el-tabs type="border-card" v-model="activeTab" >
-        <el-tab-pane label="证书一" name="tab1">
+      <el-tabs type="border-card" key>
+        <el-tab-pane v-for="(item, index) in info.necessaryList" :key="index" :label="`证书${index+1}`">
           <e-desc margin='0 12px' label-width='140px' column="2" >
-            <e-desc-item label="证书名称" >{{ empInfo.pro1}}</e-desc-item>
-            <e-desc-item label="考证时间" >{{empInfo.pro2}}</e-desc-item>
-            <e-desc-item label="考证状态">{{ empInfo.pro3 }}</e-desc-item>
-            <e-desc-item  label="发证日期">{{ empInfo.pro4 }}</e-desc-item>
-            <e-desc-item label="错补证信息">{{ empInfo.pro5}}</e-desc-item>
-            <e-desc-item label="备注">{{ empInfo.pro6}}</e-desc-item>
-          </e-desc>
-        </el-tab-pane>
-        <el-tab-pane label="证书二" name="tab2">
-          <e-desc margin='0 12px' label-width='140px' column="2" >
-            <e-desc-item label="证书名称" >{{ empInfo.pro1}}</e-desc-item>
-            <e-desc-item label="考证时间" >{{empInfo.pro2}}</e-desc-item>
-            <e-desc-item label="考证状态">{{ empInfo.pro3 }}</e-desc-item>
-            <e-desc-item  label="发证日期">{{ empInfo.pro4 }}</e-desc-item>
-            <e-desc-item label="错补证信息">{{ empInfo.pro5}}</e-desc-item>
-            <e-desc-item label="备注">{{ empInfo.pro6}}</e-desc-item>
+            <e-desc-item label="证书名称" >{{ item.certificateName}}</e-desc-item>
+            <e-desc-item label="考证时间" >{{item.examTime}}</e-desc-item>
+            <e-desc-item label="考证状态">{{ item.status === 1 ? '已考': item.status === 0 ? '未考':'无' }}</e-desc-item>
+            <e-desc-item  label="发证日期">{{ item.issueTime }}</e-desc-item>
+            <e-desc-item label="错补证信息">{{ item.information === 2 ? '2未补发' :item.information === 1?'1已补发':'无'}}</e-desc-item>
+            <e-desc-item label="备注">{{ item.remarks}}</e-desc-item>
           </e-desc>
         </el-tab-pane>
       </el-tabs>
@@ -50,40 +35,26 @@
     </el-collapse-item>
   </el-collapse>
 
-  <el-collapse v-model="activeCollapse" >
+  <el-collapse v-model="option" >
     <el-collapse-item name="1" >
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">选考证书</span>
       </template>
-      <el-tabs v-model="selectedTab" type="border-card" :active-name="selectedTab" >
-        <el-tab-pane label="证书一" name="1">
+      <el-tabs type="border-card" key>
+        <el-tab-pane v-for="(item, index) in info.optionList" :key="index" :label="`证书${index+1}`">
           <e-desc margin='0 12px' label-width='140px' column="2" >
-            <e-desc-item label="证书名称" >{{ empInfo.pro1}}</e-desc-item>
-            <e-desc-item label="考证时间" >{{empInfo.pro2}}</e-desc-item>
-            <e-desc-item label="考证状态">{{ empInfo.pro3 }}</e-desc-item>
-            <e-desc-item  label="发证日期">{{ empInfo.pro4 }}</e-desc-item>
-            <e-desc-item label="错补证信息">{{ empInfo.pro5}}</e-desc-item>
-            <e-desc-item label="备注">{{ empInfo.pro6}}</e-desc-item>
-          </e-desc>
-        </el-tab-pane>
-        <el-tab-pane label="证书二" name="2">
-          <e-desc margin='0 12px' label-width='140px' column="2" >
-            <e-desc-item label="证书名称" >{{ empInfo.pro1}}</e-desc-item>
-            <e-desc-item label="考证时间" >{{empInfo.pro2}}</e-desc-item>
-            <e-desc-item label="考证状态">{{ empInfo.pro3 }}</e-desc-item>
-            <e-desc-item  label="发证日期">{{ empInfo.pro4 }}</e-desc-item>
-            <e-desc-item label="错补证信息">{{ empInfo.pro5}}</e-desc-item>
-            <e-desc-item label="备注">{{ empInfo.pro6}}</e-desc-item>
+            <e-desc-item label="证书名称" >{{ item.certificateName}}</e-desc-item>
+            <e-desc-item label="考证时间" >{{item.examTime}}</e-desc-item>
+            <e-desc-item label="考证状态">{{ item.status === 1 ? '已考': item.status === 0 ? '未考':'无' }}</e-desc-item>
+            <e-desc-item  label="发证日期">{{ item.issueTime }}</e-desc-item>
+            <e-desc-item label="错补证信息">{{ item.information === 2 ? '2未补发' :item.information === 1?'1已补发':'无'}}</e-desc-item>
+            <e-desc-item label="备注">{{ item.remarks}}</e-desc-item>
           </e-desc>
         </el-tab-pane>
       </el-tabs>
 
     </el-collapse-item>
   </el-collapse>
-
-
-
-
 
   <div class="button-container">
     <button class="custom-button" @click="returnBack">返回</button>
@@ -103,39 +74,43 @@ export default {
 
   data () {
     return {
-      activeCollapse: ['1'],
-      selectedTab: '2',
-      activeTab: 'tab1',
-      perInfo: {
-        name: 'Jerry',
-        age: 26,
-        sex: '男',
-        school: '廊坊学校',
-        major: '铁路专业',
-        address: '四川省成都市',
-        hobby: '朱博伦',
-        phone: 33030419980953011,
-        wx: '202230603042',
-        qq: 332983810
-      },
-      empInfo: {
-        pro1: '计算机一级',
-        pro2: '2023-02-06',
-        pro3: '/',
-        pro4: '2023-08-06',
-        pro5: '无',
-        pro6: '无'
-
+      option: ['1'],
+      necessary: ['1'],
+      stuId: -1,
+      info: {
+        necessaryList: [],
+        optionList: [],
+        baseInfo: {
+        }
       }
     }
+  },
+  created () {
+    this.stuId = this.$route.params.stuId
+  },
+  mounted () {
+    this.getData()
   },
   methods: {
     returnBack () {
       this.$router.go(-1)
+    },
+    getData () {
+      this.$http({
+        url: this.$http.adornUrl('/edu/certificate/info'),
+        method: 'get',
+        params: this.$http.adornParams({
+          'id': this.stuId
+        })
+      }).then(({data}) => {
+        if (data && data.code === 0) {
+          this.info = data.info
+        } else {
+          this.$message.error(data.method)
+        }
+      })
     }
   }
-
-
 }
 </script>
 

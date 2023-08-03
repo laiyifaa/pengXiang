@@ -52,89 +52,63 @@
           <el-button type="primary" icon="el-icon-search" @click="handleSearch" style=" margin-left: 4px;">搜索</el-button>
         </div>
       </el-col>
-    </el-row>
+      <el-col :span="6">
+        <el-tree
+          :data="treeList"
+          node-key="id"
+          :default-expanded-keys="[]"
+          :default-checked-keys="[]"
+          :props="defaultProps"
+          @node-click="(data, node, item)=>getDeptsByPid(data, node, item)"
+        >
+        </el-tree>
+      </el-col>
 
+      <el-col :span="18">
    <!-- 表格 -->
    <el-table :data="tableData"  border style="width: 100%;; margin-top: 20px;">
       <el-table-column
       type="selection"
       width="55">
     </el-table-column>
-
-
     <el-table-column
-      prop="name"
+      prop="schoolNumber"
+      label="学号"
+      width="100" align="center">
+    </el-table-column>
+    <el-table-column
+      prop="stuName"
       label="姓名"
-      width="100" align="center">
-     <!-- 编辑尝试 -->
-<!--      <template slot-scope="scope">-->
-<!--            <el-input  v-model="scope.row.name" :disabled="!(scope.row.isEdit || scope.row.isAdd)" />-->
-<!--          </template>-->
-
-    </el-table-column>
-    <el-table-column
-      prop="id"
-      label="身份证号"
       width="140" align="center">
     </el-table-column>
     <el-table-column
-      prop="year"
-      label="欠费学年"
-      width="140" align="center">
-    </el-table-column>
-    <el-table-column
-      prop="peixun"
-      label="欠培训费"
+      prop="gender"
+      label="性别"
       width="80" align="center">
     </el-table-column>
     <el-table-column
-      prop="fuzhuang"
-      label="欠服装费"
+      prop="gradeName"
+      label="年级"
       width="80" align="center">
     </el-table-column>
     <el-table-column
-      prop="jiaocai"
-      label="欠教材费"
+      prop="deptName"
+      label="系部"
       width="80" align="center">
     </el-table-column>
     <el-table-column
-      prop="zhusu"
-      label="欠住宿费"
+      prop="majorName"
+      label="专业"
       width="80" align="center">
     </el-table-column>
     <el-table-column
-      prop="beiru"
-      label="欠被褥费"
+      prop="className"
+      label="班级"
       width="80" align="center">
     </el-table-column>
     <el-table-column
-      prop="baoxian"
-      label="欠保险费"
-      width="80" align="center">
-    </el-table-column>
-    <el-table-column
-      prop="gongwu"
-      label="欠公物押金"
-      width="100" align="center">
-    </el-table-column>
-    <el-table-column
-      prop="zhengshu"
-      label="欠证书费"
-      width="80" align="center">
-    </el-table-column>
-    <el-table-column
-      prop="guofang"
-      label="欠国防教育费"
-      width="120" align="center">
-    </el-table-column>
-    <el-table-column
-      prop="tijian"
-      label="欠体检费"
-      width="80" align="center">
-    </el-table-column>
-    <el-table-column
-      prop="heji"
-      label="欠费合计"
+      prop="headTeacher"
+      label="班主任"
       width="80" align="center">
     </el-table-column>
       <el-table-column label="操作" style="text-align: center" align="center">
@@ -146,30 +120,13 @@
               type="text"
               @click="handleDelete(scope.$index, scope.row)">详情</el-button>
           </router-link>
-
           <!-- 编辑按钮 -->
           <el-button type="text" @click="handleEdit">修改</el-button>
-            <!-- 删除按钮 -->
-<!--
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-             -->
-
-
-
-
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页 -->
-<!--    <el-pagination-->
-<!--  background-->
-<!--  layout="prev, pager, next"-->
-<!--  :total="1000"-->
-<!--  style="position: absolute;right: 200px;padding: 20px;">-->
-<!--</el-pagination>-->
+      </el-col>
+    </el-row>
     <el-pagination @size-change="handleSizeChange"
                    @current-change="handleCurrentChange"
                    :current-page="currentPage"
@@ -182,14 +139,16 @@
 </div>
   </template>
 
-
-
-
-
   <script>
   export default {
     data () {
       return {
+        treeList: [],
+
+        defaultProps: {
+          children: 'children',
+          label: 'label'
+        },
         visible: false,
         searchConditions: [{
           option: '',
@@ -200,134 +159,70 @@
         pageSize: 10, // 每页显示条数
         total: 0, // 总条数
 
-        tableData: [{
-          date: '2016-05-02',
-          name: '王聪',
-          address: '上海市普陀区金沙江路 1518 弄',
-          id: 1372847839884,
-          year: '2020上半学年',
-          peixun: 300,
-          fuzhuang: 200,
-          jiaocai: 200,
-          zhusu: 1200,
-          beiru: 200,
-          baoxian: 200,
-          gongwu: 200,
-          zhengshu: 200,
-          guofang: 200,
-          tijian: 200,
-          heji: 2000
-        }, {
-          date: '2016-05-04',
-          name: '李娜',
-          address: '上海市普陀区金沙江路 1517 弄',
-          id: 1372847839884,
-          year: '2020上半学年',
-          peixun: 300,
-          fuzhuang: 200,
-          jiaocai: 200,
-          zhusu: 1200,
-          beiru: 200,
-          baoxian: 200,
-          gongwu: 200,
-          zhengshu: 200,
-          guofang: 200,
-          tijian: 200,
-          heji: 2000
-        }, {
-          date: '2016-05-01',
-          name: '李颖',
-          address: '上海市普陀区金沙江路 1519 弄',
-          id: 1372847839884,
-          year: '2020上半学年',
-          peixun: 300,
-          fuzhuang: 200,
-          jiaocai: 200,
-          zhusu: 1200,
-          beiru: 200,
-          baoxian: 200,
-          gongwu: 200,
-          zhengshu: 200,
-          guofang: 200,
-          tijian: 200,
-          heji: 2000
-        }, {
-          date: '2016-05-03',
-          name: '赵峥',
-          address: '上海市普陀区金沙江路 1516 弄',
-          id: 1372847839884,
-          year: '2020上半学年',
-          peixun: 300,
-          fuzhuang: 200,
-          jiaocai: 200,
-          zhusu: 1200,
-          beiru: 200,
-          baoxian: 200,
-          gongwu: 200,
-          zhengshu: 200,
-          guofang: 200,
-          tijian: 200,
-          heji: 2000
-        }, {
-          date: '2016-05-04',
-          name: '李娜',
-          address: '上海市普陀区金沙江路 1517 弄',
-          id: 1372847839884,
-          year: '2020上半学年',
-          peixun: 300,
-          fuzhuang: 200,
-          jiaocai: 200,
-          zhusu: 1200,
-          beiru: 200,
-          baoxian: 200,
-          gongwu: 200,
-          zhengshu: 200,
-          guofang: 200,
-          tijian: 200,
-          heji: 2000
-        }, {
-          date: '2016-05-01',
-          name: '李颖',
-          address: '上海市普陀区金沙江路 1519 弄',
-          id: 1372847839884,
-          year: '2020上半学年',
-          peixun: 300,
-          fuzhuang: 200,
-          jiaocai: 200,
-          zhusu: 1200,
-          beiru: 200,
-          baoxian: 200,
-          gongwu: 200,
-          zhengshu: 200,
-          guofang: 200,
-          tijian: 200,
-          heji: 2000
-        }, {
-          date: '2016-05-03',
-          name: '赵峥',
-          address: '上海市普陀区金沙江路 1516 弄',
-          id: 1372847839884,
-          year: '2020上半学年',
-          peixun: 300,
-          fuzhuang: 200,
-          jiaocai: 200,
-          zhusu: 1200,
-          beiru: 200,
-          baoxian: 200,
-          gongwu: 200,
-          zhengshu: 200,
-          guofang: 200,
-          tijian: 200,
-          heji: 2000
-        }]
+        tableData: []
       }
     },
+    activated () {
+      this.getDataList()
+      this.getDeptTreeList()
+    },
     methods: {
+      getDeptTreeList () {
+        this.$http({
+          url: this.$http.adornUrl('/generator/sysdept/getDeptTreeList'),
+          method: 'get'
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.treeList = data.data
+          }
+        })
+      },
+      getDataList () {
+        this.dataListLoading = true
+        this.$http({
+          url: this.$http.adornUrl('/generator/feearrearage/list'),
+          method: 'get',
+          params: this.$http.adornParams({
+            'page': this.pageIndex,
+            'limit': this.pageSize,
+            'key': this.dataForm.key
+          })
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.tableData = data.page.list
+            this.totalPage = data.page.totalCount
+          } else {
+            this.tableData = []
+            this.totalPage = 0
+          }
+          this.dataListLoading = false
+        })
+        this.getDeptTreeList()
+      },
+      // 树形列表
+      getDeptsByPid (data, node, item) {
+        this.$http({
+          url: this.$http.adornUrl(`/generator/sysdept/getSubDeptsByPid/${data.id}`),
+          method: 'get',
+          params: this.$http.adornParams({
+            'page': this.pageIndex,
+            'limit': this.pageSize,
+            'key': this.dataForm.key
+          })
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.dataList = data.page.list
+            this.totalPage = data.page.totalCount
+          } else {
+            this.dataList = []
+            this.totalPage = 0
+          }
+          this.dataListLoading = false
+        })
+      },
       handleEdit (index, row) {
-        console.log(index, row)
       },
       handleDelete (index, row) {
-        console.log(index, row)
       },
       handleImport () {
         // 处理导入逻辑

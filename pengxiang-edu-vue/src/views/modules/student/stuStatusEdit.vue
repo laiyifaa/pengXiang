@@ -1,51 +1,185 @@
 <template>
   <div>
-    <e-desc margin='0 12px' label-width='120px' title="学籍状态编辑">
-      <e-desc-item label="姓名">{{info.name}}</e-desc-item>
-      <e-desc-item label="年龄">{{ info.age }}岁</e-desc-item>
-      <e-desc-item label="性别">{{ info.sex }}</e-desc-item>
-      <e-desc-item label="现就读学校">{{ info.school }}</e-desc-item>
-      <e-desc-item label="现学籍学校">{{ info.school }}</e-desc-item>
-      <e-desc-item label="专业">{{ info.major }}</e-desc-item>
-      <e-desc-item label="系部">机电系</e-desc-item>
-      <e-desc-item label="班主任" >{{ info.hobby }}</e-desc-item>
-      <e-desc-item label="班主任电话" >{{ 13085629187 }}</e-desc-item>
-      <e-desc-item label="身份证号码">{{ info.phone }}</e-desc-item>
-      <e-desc-item label="学号">{{ info.wx}}</e-desc-item>
-      <e-desc-item label="当前状态" >
-        <el-select v-model="info.status" placeholder="请选择当前状态">
-        <el-option label="在校" value="在校"></el-option>
-        <el-option label="退学" value="退学"></el-option>
-        <el-option label="实习" value="实习"></el-option>
-        <el-option label="就业" value="就业"></el-option>
-        <el-option label="请假" value="请假"></el-option>
-        <el-option label="休学" value="休学"></el-option>
-        <el-option label="毕业" value="毕业"></el-option>
-        </el-select>
-      </e-desc-item>
-      <e-desc-item label="学籍状态" >
-        <el-select v-model="info.stuStatus" placeholder="请选择学籍状态">
-          <el-option label="在册在籍" value="在册在籍"></el-option>
-          <el-option label="在册不在籍" value="在册不在籍"></el-option>
-          <el-option label="在籍退学" value="在籍退学"></el-option>
-          <el-option label="非在册非在籍" value="非在册非在籍"></el-option>
-          <el-option label="提前入学" value="提前入学"></el-option>
-        </el-select>
-      </e-desc-item>
-      <e-desc-item label="学籍变更时间" >
-        {{ info.dateValue}}
-      </e-desc-item>
-      <e-desc-item label="结束日期" >
-        <el-date-picker
-        v-model="info.dateValue"
-        type="date"
-        placeholder="选择日期">
-      </el-date-picker>
-      </e-desc-item>
-      <e-desc-item label="学籍变更原因" >
-{{info.desc}}
-      </e-desc-item>
+    <e-desc margin='0 12px' label-width='120px' title="学生基本信息">
+      <e-desc-item label="姓名">{{baseInfo.stuName}}</e-desc-item>
+      <e-desc-item label="出生年月">{{ baseInfo.birthday }}</e-desc-item>
+      <e-desc-item label="性别">{{ baseInfo.gender}}</e-desc-item>
+      <e-desc-item label="现就读学校" >{{ baseInfo.studyIn }}</e-desc-item>
+      <e-desc-item label="现学籍学校">{{ baseInfo.statusSchool }}</e-desc-item>
+      <e-desc-item label="院校">{{ baseInfo.academyName }}</e-desc-item>
+      <e-desc-item label="年级">{{ baseInfo.gradeName }}</e-desc-item>
+      <e-desc-item label="专业">{{ baseInfo.majorName }}</e-desc-item>
+      <e-desc-item label="班级">{{ baseInfo.className }}</e-desc-item>
+      <e-desc-item label="班型">{{ baseInfo.classType === 1?'就业':'升学'}}</e-desc-item>
+      <e-desc-item label="班主任" >{{ baseInfo.headTeacher }}</e-desc-item>
+      <e-desc-item label="班主任电话" >{{ baseInfo.headTeacherPhone }}</e-desc-item>
+      <e-desc-item label="身份证号码">{{ baseInfo.idNumber }}</e-desc-item>
+      <e-desc-item label="学号">{{ baseInfo.schoolNumber }}</e-desc-item>
+      <e-desc-item label="当前状态">{{ getCurrentStatusText(baseInfo.currentStatus) }}</e-desc-item>
+      <e-desc-item label="学籍状态">{{ getSchoolStatusText(baseInfo.schoolRollStatus) }}</e-desc-item>
+
     </e-desc>
+
+    <el-collapse  v-model="activeCollapse" >
+      <el-collapse-item name="1" >
+        <template slot="title">
+          <span style="text-align: center; font-weight: bold; font-size: 16px;">学籍变更记录</span>
+        </template>
+        <el-tabs type="border-card" key>
+          <el-tab-pane v-for="(item, index) in changeList" :key="index" :label="`${item.updateTime}变更`">
+            <e-desc margin='0 12px' label-width='160px' column="3" >
+              <e-desc-item label="变更前的当前状态">
+                <el-select v-model="item.oldCurrentStatus" placeholder="请选择变更前的当前状态"  >
+                  <el-option label="在校" :value="0"></el-option>
+                  <el-option label="退学" :value="1"></el-option>
+                  <el-option label="实习" :value="2"></el-option>
+                  <el-option label="就业" :value="3"></el-option>
+                  <el-option label="请假" :value="4"></el-option>
+                  <el-option label="休学" :value="5"></el-option>
+                  <el-option label="毕业" :value="6"></el-option>
+                </el-select>
+              </e-desc-item>
+              <e-desc-item label="变更后的当前状态">
+                <el-select v-model="item.newCurrentStatus" placeholder="请选择变更后的当前状态" >
+                  <el-option label="在校" :value="0"></el-option>
+                  <el-option label="退学" :value="1"></el-option>
+                  <el-option label="实习" :value="2"></el-option>
+                  <el-option label="就业" :value="3"></el-option>
+                  <el-option label="请假" :value="4"></el-option>
+                  <el-option label="休学" :value="5"></el-option>
+                  <el-option label="毕业" :value="6"></el-option>
+                </el-select>
+              </e-desc-item>
+              <e-desc-item label="变更前的学籍状态">
+                <el-select v-model="item.oldSchoolRollStatus" placeholder="请选择学籍状态" >
+                  <el-option label="在册在籍" :value="0"></el-option>
+                  <el-option label="在册不在籍" :value="1"></el-option>
+                  <el-option label="在籍退学" :value="2"></el-option>
+                  <el-option label="非在册非在籍" :value="3"></el-option>
+                  <el-option label="提前入学" :value="4"></el-option>
+                </el-select>
+              </e-desc-item>
+              <e-desc-item label="变更后的学籍状态">
+                <el-select v-model="item.newSchoolRollStatus" placeholder="请选择学籍状态" >
+                  <el-option label="在册在籍" :value="0"></el-option>
+                  <el-option label="在册不在籍" :value="1"></el-option>
+                  <el-option label="在籍退学" :value="2"></el-option>
+                  <el-option label="非在册非在籍" :value="3"></el-option>
+                  <el-option label="提前入学" :value="4"></el-option>
+                </el-select>
+              </e-desc-item>
+              <e-desc-item label="学籍变更时间">
+                <el-date-picker
+                  v-model="item.updateTime"
+                  type="date"
+                  placeholder="选择日期">
+                </el-date-picker>
+              </e-desc-item>
+              <e-desc-item label="离校日期">
+                <el-date-picker
+                  v-model="item.levelDate"
+                  type="date"
+                  placeholder="选择日期">
+                </el-date-picker>
+              </e-desc-item>
+              <e-desc-item label="结束日期">
+                <el-date-picker
+                  v-model="item.endDate"
+                  type="date"
+                  placeholder="选择日期">
+                </el-date-picker>
+                </e-desc-item>
+              <e-desc-item label="学籍变更原因">
+                <el-input  style="width: 700px;" v-model="item.changeDetail"></el-input>
+              </e-desc-item>
+              <e-desc-item label="提交修改">
+                <el-button  type="primary" @click="handleSubmit(item,false)" >操作</el-button>
+              </e-desc-item>
+            </e-desc>
+          </el-tab-pane>
+          <el-tab-pane :name="addTabs.name" :closable = "addTabs.closeable">
+            <div style="width: 100%; height: 100%;" slot="label"  @click="addTab">{{addTabs.title}}</div>
+          </el-tab-pane>
+        </el-tabs>
+
+      </el-collapse-item>
+    </el-collapse>
+
+
+    <el-dialog :visible.sync="dialogVisible" title="新增变更记录"   :modal="false" >
+      <e-desc margin='0 12px' label-width='160px' column="2">
+        <e-desc-item label="变更前的当前状态">
+          <el-select v-model="addStatus.oldCurrentStatus" placeholder="请选择变更前的当前状态"  disabled>
+            <el-option label="在校" :value="0"></el-option>
+            <el-option label="退学" :value="1"></el-option>
+            <el-option label="实习" :value="2"></el-option>
+            <el-option label="就业" :value="3"></el-option>
+            <el-option label="请假" :value="4"></el-option>
+            <el-option label="休学" :value="5"></el-option>
+            <el-option label="毕业" :value="6"></el-option>
+          </el-select>
+        </e-desc-item>
+        <e-desc-item label="变更后的当前状态">
+          <el-select v-model="addStatus.newCurrentStatus" placeholder="请选择变更后的当前状态" >
+            <el-option label="在校" :value="0"></el-option>
+            <el-option label="退学" :value="1"></el-option>
+            <el-option label="实习" :value="2"></el-option>
+            <el-option label="就业" :value="3"></el-option>
+            <el-option label="请假" :value="4"></el-option>
+            <el-option label="休学" :value="5"></el-option>
+            <el-option label="毕业" :value="6"></el-option>
+          </el-select>
+        </e-desc-item>
+        <e-desc-item label="变更前的学籍状态">
+          <el-select v-model="addStatus.oldSchoolRollStatus" placeholder="请选择学籍状态" disabled>
+            <el-option label="在册在籍" :value="0"></el-option>
+            <el-option label="在册不在籍" :value="1"></el-option>
+            <el-option label="在籍退学" :value="2"></el-option>
+            <el-option label="非在册非在籍" :value="3"></el-option>
+            <el-option label="提前入学" :value="4"></el-option>
+          </el-select>
+        </e-desc-item>
+        <e-desc-item label="变更后的学籍状态">
+          <el-select v-model="addStatus.newSchoolRollStatus" placeholder="请选择学籍状态" >
+            <el-option label="在册在籍" :value="0"></el-option>
+            <el-option label="在册不在籍" :value="1"></el-option>
+            <el-option label="在籍退学" :value="2"></el-option>
+            <el-option label="非在册非在籍" :value="3"></el-option>
+            <el-option label="提前入学" :value="4"></el-option>
+          </el-select>
+        </e-desc-item>
+        <e-desc-item label="学籍变更时间">
+          <el-date-picker
+            v-model="addStatus.updateTime"
+            type="date"
+            placeholder="选择日期"
+            value-format="yyyy-MM-dd"
+          >
+          </el-date-picker>
+        </e-desc-item>
+        <e-desc-item label="离校日期">
+          <el-date-picker
+            v-model="addStatus.levelDate"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </e-desc-item>
+        <e-desc-item label="结束日期">
+          <el-date-picker
+            v-model="addStatus.endDate"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </e-desc-item>
+        <e-desc-item label="学籍变更原因">
+          <el-input  style="width: 700px;" v-model="addStatus.changeDetail"></el-input>
+        </e-desc-item>
+      </e-desc>
+      <div slot="footer">
+        <el-button @click="cancelDialog">取消</el-button>
+        <el-button type="primary" @click="handleSubmit(addStatus,true)">确定</el-button>
+      </div>
+    </el-dialog>
     <div class="button-container">
       <button class="custom-button" @click="returnBack">返回</button>
     </div>
@@ -57,77 +191,148 @@
 <script>
 import EDesc from '../other/EDesc'
 import EDescItem from '../other/EDescItem'
-const cityOptions = ['学生详情', '贫困情况', '缴费信息', '评定信息', '就业信息', '实习信息']
 export default {
   components: {
     EDesc, EDescItem
   },
   data () {
     return {
+      dialogVisible: false,
       formLabelWidth: '50px',
-      info: {
-        name: 'Jerry',
-        age: 26,
-        sex: '男',
-        school: '廊坊学校',
-        major: '铁路专业',
-        address: '四川省成都市',
-        hobby: '朱博伦',
-        phone: 33030419980953011,
-        wx: '202230603042',
-        qq: 332983810,
-        status: '在校',
-        stuStatus: '在册在籍',
-        dateValue: '2023-07-07',
-        desc: '我今天家里有事！我今天家里有事！我今天家里有事！我今天家里有事！我今天家里有事！'
+      baseInfo: {
       },
-      checkAll: false,
-      checkedCities: ['上海', '北京'],
-      cities: cityOptions,
-      isIndeterminate: true,
-      activeNames: ['1'],
-      f_activeNames: ['1'],
-      f_workMessage: ['1'],
-      f_tryWork: ['1'],
-      money: ['1']
+      addStatus: {
+        stuId: null,
+        oldCurrentStatus: '',
+        newCurrentStatus: '',
+        oldSchoolRollStatus: '',
+        newSchoolRollStatus: '',
+        updateTime: '',
+        levelDate: '',
+        endDate: '',
+        changeDetail: ''
+      },
+      activeCollapse: ['1'],
+      changeList: [],
+      addTabs: {
+        title: '+',
+        name: '+',
+        closeable: false
+      }
     }
   },
+  created () {
+    this.baseInfo = this.$route.params.stuBaseInfoEntity
+    console.log(this.baseInfo)
+  },
+  mounted () {
+    this.getData()
+  },
   methods: {
+    getCurrentStatusText (status) {
+      switch (status) {
+        case 0:
+          return '在校'
+        case 1:
+          return '实习'
+        case 2:
+          return '就业'
+        case 3:
+          return '请假'
+        case 4:
+          return '休学'
+        case 5:
+          return '退学'
+        case 6:
+          return '毕业'
+        default:
+          return ''
+      }
+    },
+    getSchoolStatusText (status) {
+      switch (status) {
+        case 0:
+          return '在册在籍'
+        case 1:
+          return '在册不在籍'
+        case 2:
+          return '在籍退学'
+        case 3:
+          return '非在册非在籍'
+        case 4:
+          return '提前入学'
+        default:
+          return ''
+      }
+    },
+    addTab () {
+      this.addStatus.oldCurrentStatus = this.baseInfo.currentStatus
+      this.addStatus.newCurrentStatus = ''
+      this.addStatus.oldSchoolRollStatus = this.baseInfo.schoolRollStatus
+      this.addStatus.newSchoolRollStatus = ''
+      var date = new Date()
+      this.addStatus.updateTime = date
+      this.addStatus.levelDate = ''
+      this.addStatus.endDate = ''
+      this.addStatus.changeDetail = ''
+      this.dialogVisible = true
+    },
+    getData () {
+      this.$http({
+        url: this.$http.adornUrl('stu/change/info'),
+        method: 'get',
+        params: this.$http.adornParams({
+          'stuId': this.baseInfo.stuId
+        })
+      }).then(({data}) => {
+        if (data && data.code === 0) {
+          this.changeList = data.changeList
+        } else {
+          this.$message.error(data.method)
+        }
+      })
+    },
     returnBack () {
       this.$router.go(-1)
     },
-    handleChange () {
-      ;
+    cancelDialog () {
+      this.dialogVisible = false
     },
-    handleEdit () {
-      this.dialogFormVisible = true
-    },
-    open () {
-      this.$confirm('此操作将修改学生数据，是否继续？', '提示', {
+    handleSubmit (val, isAdd) {
+      if (isAdd) {
+        val.stuId = this.baseInfo.stuId
+      }
+      if (isAdd && (this.addStatus.stuId === null || this.addStatus.stuId === '')) {
+        this.$message.error('请返回列表重新修改')
+        return
+      }
+      this.$confirm('确认更改状态吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
-        center: true
+        type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '修改成功!'
+        this.$http({
+          url: this.$http.adornUrl('stu/change/save'),
+          data: val,
+          method: 'post'
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+                this.dialogVisible = false
+              }
+            })
+            this.getData()
+          } else {
+            this.$message.error('操作失败，请联系管理员')
+          }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消修改'
-        })
+        this.$message.success('已取消')
       })
-    },
-    handleCheckAllChange (val) {
-      this.checkedCities = val ? cityOptions : []
-      this.isIndeterminate = false
-    },
-    handleCheckedCitiesChange (value) {
-      let checkedCount = value.length
-      this.checkAll = checkedCount === this.cities.length
-      this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length
     }
   }
 }

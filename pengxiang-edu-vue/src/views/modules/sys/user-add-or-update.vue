@@ -131,7 +131,6 @@
         }).then(({data}) => {
           this.academyOptions = data.data
           this.academyOptions.push({value:-1,label:'所有院校'})
-
         })
       },
       init (id) {

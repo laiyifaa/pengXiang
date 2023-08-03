@@ -3,7 +3,8 @@
     <e-desc margin='0 12px' label-width='130px' title="学生基本信息">
       <e-desc-item label="学号" >{{ Info.schoolNumber}}</e-desc-item>
       <e-desc-item label="姓名" >{{Info.name}}</e-desc-item>
-      <e-desc-item label="身份证号码">{{ Info.idNumber }}</e-desc-item>
+      <e-desc-item label="证件类型">身份证</e-desc-item>
+      <e-desc-item label="证件号码">{{ Info.idNumber }}</e-desc-item>
       <e-desc-item  label="年龄">{{ Info.age }}</e-desc-item>
       <e-desc-item label="性别">{{ Info.gender }}</e-desc-item>
       <e-desc-item label="民族">{{ Info.nation }}</e-desc-item>
@@ -20,7 +21,7 @@
       <e-desc-item label="电子邮件">{{ Info.email }}</e-desc-item>
     </e-desc>
 
-  <el-collapse   v-model="activeCollapse" >
+  <el-collapse v-show="schoolNumberIsNull"   v-model="activeCollapse" >
     <el-collapse-item name="1">
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">就业详情</span>
@@ -37,7 +38,7 @@
     </el-collapse-item>
   </el-collapse>
 
-  <el-collapse  v-model="activeCollapse">
+  <el-collapse v-show="schoolNumberIsNull"  v-model="activeCollapse">
     <el-collapse-item name="1">
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">就业回访</span>
@@ -54,7 +55,6 @@
             <e-desc-item label="二次就业分配时间">{{ item.secondEmployDate }}</e-desc-item>
             <e-desc-item label="就业单位">{{ item.employOrg }}</e-desc-item>
             <e-desc-item label="就业岗位">{{ item.employPost }}</e-desc-item>
-            <e-desc-item label="试用期限">{{ item.probationPeriod }}</e-desc-item>
             <e-desc-item label="试用期限">{{ item.probationPeriod }}</e-desc-item>
             <e-desc-item label="试用期薪酬">{{ item.probationIncome }}</e-desc-item>
             <e-desc-item label="转正薪酬">{{ item.formalIncome }}</e-desc-item>
@@ -80,43 +80,37 @@ export default {
   components: {
     EDesc, EDescItem
   },
-  data () {
+  data() {
     return {
+      schoolNumberIsNull:'',
       activeCollapse: ['1'],
       Info: null,
       visit: null
     }
   },
   methods: {
-    returnBack () {
+    returnBack() {
       this.$router.go(-1)
     }
   },
-  created () {
-    this.$http({
-      url: this.$http.adornUrl('/stu/getEmployList'),
-      method: 'get'
-    }).then(response => {
-      this.Info = response.data.listDto.find(item => item.schoolNumber === this.$route.params.schoolNumber)
-    })
-      .catch(error => {
-        console.error(error)
+  created() {
+
+    this.Info = this.$route.params.Info
+    if (this.$route.params.schoolNumber != null) {
+      this.schoolNumberIsNull = true
+
+      this.$http({
+        url: this.$http.adornUrl('/stu/getVisitList'),
+        method: 'get'
+      }).then(
+        response => {
+          this.visit = response.data.visitList.filter(item => item.schoolNumber == this.$route.params.schoolNumber)
+        }).catch(error => {
+        this.$message.error(error)
       })
-    this.$http({
-      url: this.$http.adornUrl('/stu/getVisitList'),
-      method: 'get'
-    }).then(
-      response => {
-        console.log(response.data)
-        this.visit = response.data.visitList.filter(item => item.schoolNumber == this.$route.params.schoolNumber)
-        console.log(this.visit)
-        // this.visit = this.visit.map((item, index) => {
-        //   item.label = `第${index + 1}次回访记录`;
-        //   return item;
-        // })
-      }).catch(error => {
-        console.error(error)
-      })
+    } else {
+      this.schoolNumberIsNull = false
+    }
   }
 }
 </script>

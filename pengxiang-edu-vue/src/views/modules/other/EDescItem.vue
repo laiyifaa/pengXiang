@@ -1,8 +1,9 @@
 <template>
   <el-col :span="computedSpan" class="desc-item">
     <div class="desc-item-content" :class="size">
+      <span style="color: red">{{icon}}</span>
       <label class="desc-item-label" :style="{width: labelWidth ,background: color }" v-html="label"> </label>
-      <div class="desc-item-value" v-if="$slots">
+      <div class="desc-item-value"   v-if="$slots">
         <slot/>
       </div>
     </div>
@@ -28,6 +29,11 @@ export default {
       type: String,
       required: false,
       default: '12'
+    },
+    icon: {
+      type: String,
+      required: false,
+      default: ''
     }
   },
   data () {
@@ -64,7 +70,7 @@ export default {
     color: rgba(0,0,0,.65);
     font-size: 14px;
     line-height: 1.5;
-    width: 300px;
+    width: 350px;
     background-color: #fafafa;
     height: 100%;
     .desc-item-label{
@@ -90,6 +96,7 @@ export default {
       overflow: hidden;
       word-break: break-all;
       height: 100%;
+      width: 100%;
       display: flex;
       align-items: center;
       color: #555;

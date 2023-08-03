@@ -1,5 +1,35 @@
 <template>
 <div>
+  <el-row  :gutter="20">
+
+    <el-col :span="3">
+      <el-input
+        placeholder="输入关键字进行过滤"
+        style="padding-top: 20px;width:90%"
+        v-model="filterText">
+      </el-input>
+      <el-tree
+        class="filter-tree"
+        style="padding-top: 20px;"
+        highlight-current
+        :data="treeList"
+        node-key="id"
+        :default-expanded-keys="[]"
+        :default-checked-keys="[]"
+        :props="defaultProps"
+        :filter-node-method="filterNode"
+        ref="tree"
+        @node-click="(data, node, item)=>getDeptsByPid(data, node, item)"
+      >
+          <span slot-scope="{ node }" class="custom-tree-node">
+            <span v-if="!filterText">{{ node.label }}</span>
+            <span v-if="filterText" v-html="node.label.replace(new RegExp(filterText,'g'),`<font style='color:lightseagreen'>${filterText}</font>`)" />
+        </span>
+
+
+      </el-tree>
+    </el-col>
+    <el-col :span="21">
 <el-row style="margin-top: 20px;">
   <el-col :span="3" style="text-align:left;margin-left: 20px">
     <el-button type="success" @click="handleImport">导入</el-button>
@@ -23,13 +53,14 @@
     </div>
   </el-col>
 </el-row>
+
 <el-table :data="tableData"  border style="width: 100%;; margin-top: 20px;">
   <el-table-column
     type="selection"
     width="50">
   </el-table-column>
   <el-table-column prop="col1" width="50" label="序号" align="center"></el-table-column>
-  <el-table-column prop="col2" label="姓名" align="center"></el-table-column>
+  <el-table-column prop="col2" label="姓名" width="90" align="center"></el-table-column>
   <el-table-column prop="col3" label="专业" align="center"></el-table-column>
   <el-table-column prop="col4" label="学制" align="center"></el-table-column>
   <el-table-column prop="col5" label="年级" align="center"></el-table-column>
@@ -54,6 +85,9 @@
                :page-size="pageSize"
                layout="total, sizes, prev, pager, next, jumper"
                :total="total" style="text-align:right;margin-right: 60px"> </el-pagination>
+  </el-col>
+  </el-row>
+
 </div>
 </template>
 
@@ -62,6 +96,13 @@ export default {
   name: 'workList',
   data () {
     return {
+      treeList: [],
+      filterText: '',
+
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
       searchCount: 1,
       searchConditions: [{
         option: '',
@@ -71,87 +112,13 @@ export default {
       pageSize: 10, // 每页显示条数
       total: 0, // 总条数
       searchText: '',
-      tableData: [{
-        col1: '1',
-        col2: '张三',
-        col3: '计算机',
-        col4: '四年',
-        col5: '大三',
-        col6: '计算机系',
-        col7: '13085629187',
-        col8: '205191323',
-        col9: '春季',
-        col10: '就业班',
-        col11: '王德发',
-        col12: '13085629187',
-        col13: '王德发',
-        col14: '1'
-      }, {
-        col1: '2',
-        col2: '张三',
-        col3: '计算机',
-        col4: '四年',
-        col5: '大三',
-        col6: '计算机系',
-        col7: '13085629187',
-        col8: '205191323',
-        col9: '春季',
-        col10: '就业班',
-        col11: '王德发',
-        col12: '13085629187',
-        col13: '王德发',
-        col14: '1'
-      }, {
-        col1: '3',
-        col2: '张三',
-        col3: '计算机',
-        col4: '四年',
-        col5: '大三',
-        col6: '计算机系',
-        col7: '13085629187',
-        col8: '205191323',
-        col9: '春季',
-        col10: '就业班',
-        col11: '王德发',
-        col12: '13085629187',
-        col13: '王德发',
-        col14: '1'
-      }, {
-        col1: '4',
-        col2: '张三',
-        col3: '计算机',
-        col4: '四年',
-        col5: '大三',
-        col6: '计算机系',
-        col7: '13085629187',
-        col8: '205191323',
-        col9: '春季',
-        col10: '就业班',
-        col11: '王德发',
-        col12: '13085629187',
-        col13: '王德发',
-        col14: '1'
-      }, {
-        col1: '5',
-        col2: '张三',
-        col3: '计算机',
-        col4: '四年',
-        col5: '大三',
-        col6: '计算机系',
-        col7: '13085629187',
-        col8: '205191323',
-        col9: '春季',
-        col10: '就业班',
-        col11: '王德发',
-        col12: '13085629187',
-        col13: '王德发',
-        col14: '1'
-      }]
+      tableData: []
     }
   },
   mounted () {
     // 初始化时请求数据
     this.getData()
+    this.getDeptTreeList()
   },
   methods: {
     addSearchCondition () {
@@ -175,7 +142,6 @@ export default {
       // 处理修改逻辑
     },
     handleSearch () {
-      console.log(this.searchConditions)
       // 处理搜索逻辑
     },
     handleImport () {
@@ -200,6 +166,41 @@ export default {
       // 根据当前页码和每页显示条数发送请求获取数据
 
       // 更新表格数据和总条数
+    },
+    getDeptsByPid (data, node, item) {
+      // console.log(data)
+      this.$http({
+        url: this.$http.adornUrl(`/generator/sysdept/getSubDeptsByPid/${data.id}`),
+        method: 'get',
+        params: this.$http.adornParams({
+          'page': this.pageIndex,
+          'limit': this.pageSize,
+          'key': this.dataForm.key
+        })
+      }).then(({data}) => {
+        if (data && data.code === 0) {
+          this.dataList = data.page.list
+          this.totalPage = data.page.totalCount
+        } else {
+          this.dataList = []
+          this.totalPage = 0
+        }
+        this.dataListLoading = false
+      })
+    },
+    filterNode (value, data, node) {
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
+    },
+    getDeptTreeList () {
+      this.$http({
+        url: this.$http.adornUrl('/generator/sysdept/getDeptTreeList'),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 0) {
+          this.treeList = data.data
+        }
+      })
     }
   }
 }

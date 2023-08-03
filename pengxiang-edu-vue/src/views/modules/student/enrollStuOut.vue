@@ -33,24 +33,22 @@ export default {
   data () {
     return {
       outVisible: false,
-      pageSize: null,
       pageIndex: null,
+      pageSize: null,
       stuName: null,
-      idNumber: null,
-      headTeacher: null,
+      enrollTeacher: null,
       deptId: null
     }
   },
   methods: {
     // 3.定义一个init函数，通过设置detailVisible值为true来让弹窗弹出，这个函数会在父组件的方法中被调用
-    init (i, j, k, l, m, d) {
-      this.outVisible = true
+    init (i, j, k, l, d) {
       this.pageSize = i,
-        this.pageIndex = j,
-        this.stuName = k,
-        this.idNumber = l,
-        this.headTeacher = m,
-        this.deptId = d
+      this.pageIndex = j,
+      this.stuName = k,
+      this.enrollTeacher = l,
+      this.deptId = d,
+      this.outVisible = true
     },
     exportData (isAll) {
       this.$confirm(`确定进行导出`, '提示', {
@@ -59,7 +57,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('stu/baseInfo/export'),
+          url: this.$http.adornUrl('stu/temp/export'),
           method: 'get',
           params: this.$http.adornParams(
             {
@@ -67,8 +65,7 @@ export default {
               'limit': this.pageSize,
               'deptId': this.deptId,
               'stuName': this.stuName,
-              'idNumber': this.idNumber,
-              'headTeacher': this.headTeacher,
+              'enrollTeacher': this.enrollTeacher,
               'isAll': isAll
             }
         ),
@@ -80,7 +77,7 @@ export default {
           const url = window.URL.createObjectURL(blob)
           const link = document.createElement('a')
           link.href = url
-          link.setAttribute('download', isAll === true ? '所有学生信息.xlsx' : '当前页学生信息.xlsx')
+          link.setAttribute('download', isAll === true ? '所有考生信息.xlsx' : '当前页考生信息.xlsx')
           document.body.appendChild(link)
           link.click()
           window.URL.revokeObjectURL(url)
@@ -91,7 +88,6 @@ export default {
 }
 </script>
 <style>
-
 .bcolor2 {
   color: black;
   display: flex;
@@ -107,5 +103,4 @@ export default {
 .bcolor2:focus {
   color: brown;
 }
-
 </style>

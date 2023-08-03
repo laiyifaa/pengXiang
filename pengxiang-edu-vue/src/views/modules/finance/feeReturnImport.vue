@@ -20,7 +20,7 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <div class="grid-content bg-purple" style="text-align: center;border-right: 2px dashed rgb(113, 111, 111);">
-            素材格式<br>支持JPG/PNG/GIF
+            素材格式<br>支持excel
           </div>
         </el-col>
         <el-col :span="12">
@@ -30,9 +30,10 @@
     </div>
   </el-dialog>
 </template>
+
 <script>
 export default {
-  name: 'studentImport',
+  name: 'enrollStuImport',
   data () {
     return {
       detailVisible: false,
@@ -65,16 +66,17 @@ export default {
         const formData = new FormData()
         formData.append('file', this.selectedFile)
         this.$http({
-          url: this.$http.adornUrl('stu/baseInfo/upload'),
+          url: this.$http.adornUrl('generator/feereturn/upload'),
           method: 'post',
           headers: {
             'Content-Type': 'multipart/form-data' // 设置正确的 Content-Type
           },
           data: formData
         }).then(({data}) => {
+          this.$message.success('导入中，请耐心等待！')
           if (data && data.code === 0) {
             this.$message({
-              message: '操作成功,请刷新列表',
+              message: '操作成功，请刷新列表',
               type: 'success',
               duration: 4500,
               onClose: () => {
@@ -89,7 +91,7 @@ export default {
     },
     downloadTemplate () {
       this.$http({
-        url: this.$http.adornUrl('file/download/excel/stu.xlsx'),
+        url: this.$http.adornUrl('file/download/excel/fee_return.xlsx'),
         method: 'get',
         responseType: 'blob'
       }).then(response => {
@@ -99,9 +101,10 @@ export default {
         const url = window.URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
-        link.setAttribute('download', '学生基本信息模版.xlsx')
+        link.setAttribute('download', '退费信息导入模版.xlsx')
         document.body.appendChild(link)
         link.click()
+        this.$message.success("导出中，请耐心等待下载！")
         window.URL.revokeObjectURL(url)
       })
     }

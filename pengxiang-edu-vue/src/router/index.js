@@ -20,14 +20,14 @@ const globalRoutes = [
   { path: '/404', component: _import('common/404'), name: '404', meta: { title: '404未找到' } },
   { path: '/login', component: _import('common/login'), name: 'login', meta: { title: '登录' } },
   // eslint-disable-next-line standard/object-curly-even-spacing
-  { path: '/student-workDetail', component: _import('modules/student/workDetail'), name: 'workDetail', meta: { title: '就业详情界面' }},
+  { path: '/student-workDetail', component: _import('modules/student/workDetail'), name: 'workDetail', meta: { title: '实习详情界面' }},
   // eslint-disable-next-line standard/object-curly-even-spacing
-  { path: '/student-workModify', component: _import('modules/student/workModify'), name: 'workModify', meta: { title: '就业修改界面' }},
+  { path: '/student-workModify', component: _import('modules/student/workModify'), props: true, name: 'workModify', meta: { title: '实习修改界面' }},
 //
   // eslint-disable-next-line standard/object-curly-even-spacing
-  { path: '/student-employDetail', component: _import('modules/student/employDetail'), name: 'employDetail', meta: { title: '实习详情界面' }},
+  { path: '/student-employDetail/:schoolNumber', component: _import('modules/student/employDetail'), name: 'employDetail', meta: { title: '就业详情界面' }},
   // eslint-disable-next-line standard/object-curly-even-spacing
-  { path: '/student-employModify', component: _import('modules/student/employModify'), name: 'employModify', meta: { title: '实习详情界面' }},
+  { path: '/student-employModify', component: _import('modules/student/employModify'), name: 'employModify', meta: { title: '就业修改界面' }},
 //
   // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/finance-remoneyEdit', component: _import('modules/finance/remoneyEdit'), name: 'remoneyEdit', meta: { title: '退费编辑' }},
@@ -45,6 +45,7 @@ const globalRoutes = [
   { path: '/student-stuStatusDetail', component: _import('modules/student/stuStatusDetail'), name: 'stuStatusDetail', meta: { title: '学籍详情' }},
   // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/student-enrollStuListDetail', component: _import('modules/student/enrollStuListDetail'), name: 'enrollStuListDetail', meta: { title: '招生详情' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/student-enrollStuEdit', component: _import('modules/student/enrollStuEdit'), name: 'enrollStuEdit', meta: { title: '招生编辑' }},
   // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/finance-tuitionExpenseInfo', component: _import('modules/finance/tuitionExpenseInfo'), name: 'tuitionExpenseInfo', meta: { title: '学杂费详情' }},
@@ -53,11 +54,17 @@ const globalRoutes = [
   // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/student-studentDetail', component: _import('modules/student/studentDetail'), name: 'studentDetail', meta: { title: '学生详情' }},
   // eslint-disable-next-line standard/object-curly-even-spacing
+  { path: '/student-studentEdit', component: _import('modules/student/studentEdit'), name: 'studentEdit', meta: { title: '学生编辑' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/edu-certificateDetail', component: _import('modules/edu/certificateDetail'), name: 'certificateDetail', meta: { title: '考证详情' }},
   // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/edu-certificateEdit', component: _import('modules/edu/certificateEdit'), name: 'certificateEdit', meta: { title: '考证编辑' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/student-studentImport', component: _import('modules/student/studentImport'), name: 'studentImport', meta: { title: '学生列表导入' }},
+  { path: '/student-employImport', component: _import('modules/student/employImport'), name: 'employImport', meta: { title: '学生就业列表导入' }},
+  { path: '/student-enrollStuImport', component: _import('modules/student/enrollStuImport'), name: 'enrollStuImport', meta: { title: '考生列表导入' }},
   { path: '/student-studentOut', component: _import('modules/student/studentOut'), name: 'studentOut', meta: { title: '学生列表导出' }},
+  { path: '/student-enrollStuOut', component: _import('modules/student/enrollStuOut'), name: 'enrollStuOut', meta: { title: '考生列表导出' }},
 
 ]
 

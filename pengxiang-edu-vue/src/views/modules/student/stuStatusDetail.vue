@@ -1,24 +1,49 @@
 <template>
   <div>
-    <e-desc margin='0 12px' label-width='120px' title="学籍状态详情">
-      <e-desc-item label="姓名">{{info.name}}</e-desc-item>
-      <e-desc-item label="年龄">{{ info.age }}岁</e-desc-item>
-      <e-desc-item label="性别">{{ info.sex }}</e-desc-item>
-      <e-desc-item label="现就读学校" >{{ info.school }}</e-desc-item>
-      <e-desc-item label="现学籍学校">{{ info.school }}</e-desc-item>
-      <e-desc-item label="专业">{{ info.major }}</e-desc-item>
-      <e-desc-item label="系部">机电系</e-desc-item>
-      <e-desc-item label="班型">就业班</e-desc-item>
-      <e-desc-item label="班主任" >{{ info.hobby }}</e-desc-item>
-      <e-desc-item label="班主任电话" >{{ 13085629187 }}</e-desc-item>
-      <e-desc-item label="身份证号码">{{ info.phone }}</e-desc-item>
-      <e-desc-item label="学号">{{ info.wx}}</e-desc-item>
-      <e-desc-item label="当前状态">在校</e-desc-item>
-      <e-desc-item label="学籍状态">在籍在册</e-desc-item>
-      <e-desc-item label="学籍变更时间">2023.07.01</e-desc-item>
-      <e-desc-item label="结束日期">2023.07.03</e-desc-item>
-      <e-desc-item label="学籍变更原因">请假</e-desc-item>
+    <e-desc margin='0 12px' label-width='120px' title="学生基本信息">
+      <e-desc-item label="姓名">{{baseInfo.stuName}}</e-desc-item>
+      <e-desc-item label="身份证号码">{{ baseInfo.idNumber }}</e-desc-item>
+      <e-desc-item label="学号">{{ baseInfo.schoolNumber }}</e-desc-item>
+      <e-desc-item label="出生年月">{{ baseInfo.birthday }}</e-desc-item>
+      <e-desc-item label="性别">{{ baseInfo.gender}}</e-desc-item>
+      <e-desc-item label="现就读学校" >{{ baseInfo.studyIn }}</e-desc-item>
+      <e-desc-item label="现学籍学校">{{ baseInfo.statusSchool }}</e-desc-item>
+      <e-desc-item label="院校">{{ baseInfo.academyName }}</e-desc-item>
+      <e-desc-item label="年级">{{ baseInfo.gradeName }}</e-desc-item>
+      <e-desc-item label="专业">{{ baseInfo.majorName }}</e-desc-item>
+      <e-desc-item label="班级">{{ baseInfo.className }}</e-desc-item>
+      <e-desc-item label="班型">{{ baseInfo.classType === 1?'就业':'升学'}}</e-desc-item>
+      <e-desc-item label="班主任" >{{ baseInfo.headTeacher }}</e-desc-item>
+      <e-desc-item label="班主任电话" >{{ baseInfo.headTeacherPhone }}</e-desc-item>
+
+      <e-desc-item label="当前状态">{{ getCurrentStatusText(baseInfo.currentStatus) }}</e-desc-item>
+      <e-desc-item label="学籍状态">{{ getSchoolStatusText(baseInfo.schoolRollStatus) }}</e-desc-item>
+
     </e-desc>
+
+    <el-collapse  v-model="activeCollapse" >
+      <el-collapse-item name="1" >
+        <template slot="title">
+          <span style="text-align: center; font-weight: bold; font-size: 16px;">学籍变更记录</span>
+        </template>
+        <el-tabs type="border-card" key>
+          <el-tab-pane v-for="(item, index) in changeList" :key="index" :label="`${item.updateTime}变更`">
+            <e-desc margin='0 12px' label-width='140px' column="3" >
+              <e-desc-item label="变更前的当前状态">{{ getCurrentStatusText(item.oldCurrentStatus) }}</e-desc-item>
+              <e-desc-item label="变更后的当前状态">{{ getCurrentStatusText(item.newCurrentStatus) }}</e-desc-item>
+              <e-desc-item label="变更前的学籍状态">{{ getSchoolStatusText(item.oldSchoolRollStatus) }}</e-desc-item>
+              <e-desc-item label="变更后的学籍状态">{{ getSchoolStatusText(item.newSchoolRollStatus) }}</e-desc-item>
+              <e-desc-item label="学籍变更时间">{{ item.updateTime }}</e-desc-item>
+              <e-desc-item label="离校日期">{{ item.levelDate }}</e-desc-item>
+              <e-desc-item label="结束日期">{{ item.endDate }}</e-desc-item>
+              <e-desc-item label="学籍变更原因">{{ item.changeDetail }}</e-desc-item>
+            </e-desc>
+          </el-tab-pane>
+        </el-tabs>
+
+      </el-collapse-item>
+    </el-collapse>
+
     <div class="button-container">
       <button class="custom-button" @click="returnBack">返回</button>
     </div>
@@ -30,7 +55,6 @@
 <script>
 import EDesc from '../other/EDesc'
 import EDescItem from '../other/EDescItem'
-const cityOptions = ['学生详情', '贫困情况', '缴费信息', '评定信息', '就业信息', '实习信息']
 export default {
   components: {
     EDesc, EDescItem
@@ -38,50 +62,71 @@ export default {
   data () {
     return {
       formLabelWidth: '50px',
-      info: {
-        name: 'Jerry',
-        age: 26,
-        sex: '男',
-        school: '廊坊学校',
-        major: '铁路专业',
-        address: '四川省成都市',
-        hobby: '朱博伦',
-        phone: 33030419980953011,
-        wx: '202230603042',
-        qq: 332983810
-      },
-      checkAll: false,
-      checkedCities: ['上海', '北京'],
-      cities: cityOptions,
-      isIndeterminate: true,
-      activeNames: ['1'],
-      f_activeNames: ['1'],
-      f_workMessage: ['1'],
-      f_tryWork: ['1'],
-      money: ['1']
+      baseInfo: null,
+      activeCollapse: ['1'],
+      changeList: []
     }
   },
+  created () {
+    this.baseInfo = this.$route.params.stuBaseInfoEntity
+  },
+  mounted () {
+    this.getData()
+  },
   methods: {
+    getCurrentStatusText (status) {
+      switch (status) {
+        case 0:
+          return '在校'
+        case 1:
+          return '实习'
+        case 2:
+          return '就业'
+        case 3:
+          return '请假'
+        case 4:
+          return '休学'
+        case 5:
+          return '退学'
+        case 6:
+          return '毕业'
+        default:
+          return ''
+      }
+    },
+    getSchoolStatusText (status) {
+      switch (status) {
+        case 0:
+          return '在册在籍'
+        case 1:
+          return '在册不在籍'
+        case 2:
+          return '在籍退学'
+        case 3:
+          return '非在册非在籍'
+        case 4:
+          return '提前入学'
+        default:
+          return ''
+      }
+    },
+    getData () {
+      this.$http({
+        url: this.$http.adornUrl('stu/change/info'),
+        method: 'get',
+        params: this.$http.adornParams({
+          'stuId': this.baseInfo.stuId
+        })
+      }).then(({data}) => {
+        if (data && data.code === 0) {
+          this.changeList = data.changeList
+        } else {
+          this.$message.error(data.method)
+        }
+      })
+    },
     returnBack () {
       this.$router.go(-1)
-    },
-    open () {
-      this.$confirm('是否导出已选择的模块信息', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-        center: true
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '导出成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消导出'
-        })
-      })
     }
   }
 }

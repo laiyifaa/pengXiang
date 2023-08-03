@@ -3,17 +3,12 @@
     :title="!dataForm.deptId ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-<!--    <el-form-item label="标志位：0-寝室，1-院系专业" prop="typeFlag">-->
-<!--      <el-input v-model="dataForm.typeFlag" placeholder="标志位：0-寝室，1-院系专业"></el-input>-->
-<!--    </el-form-item>-->
+    <el-form :model="dataForm"  ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
     <el-form-item label="上级部门" prop="pid">
-<!--      <el-input v-model="dataForm.pid" placeholder="上级部门"></el-input>-->
         <el-popover
           ref="deptListPopover"
           placement="bottom-start"
-          trigger="click"
-        >
+          trigger="click">
           <el-tree
             :data="treeList"
             node-key="id"
@@ -26,18 +21,9 @@
         </el-popover>
       <el-input v-model="parentDeptName" v-popover:deptListPopover :readonly="true" placeholder="选择上级部门" class="menu-list__input"></el-input>
     </el-form-item>
-<!--    <el-form-item label="子部门数目" prop="subCount">-->
-<!--      <el-input v-model="dataForm.subCount" placeholder="子部门数目"></el-input>-->
-<!--    </el-form-item>-->
     <el-form-item label="名称" prop="name">
       <el-input v-model="dataForm.name" placeholder="名称"></el-input>
     </el-form-item>
-<!--    <el-form-item label="院系专业详细信息" prop="description">-->
-<!--      <el-input v-model="dataForm.description" placeholder="院系专业详细信息"></el-input>-->
-<!--    </el-form-item>-->
-<!--    <el-form-item label="排序" prop="deptSort">-->
-<!--      <el-input v-model="dataForm.deptSort" placeholder="排序"></el-input>-->
-<!--    </el-form-item>-->
     <el-form-item label="部门类型" prop="status">
       <el-select v-model="dataForm.deptType" placeholder="请选择">
         <el-option
@@ -48,21 +34,6 @@
         </el-option>
       </el-select>
     </el-form-item>
-<!--    <el-form-item label="状态" prop="enabled">-->
-<!--      <el-input v-model="dataForm.enabled" placeholder="状态"></el-input>-->
-<!--    </el-form-item>-->
-<!--    <el-form-item label="创建者" prop="createBy">-->
-<!--      <el-input v-model="dataForm.createBy" placeholder="创建者"></el-input>-->
-<!--    </el-form-item>-->
-<!--    <el-form-item label="更新者" prop="updateBy">-->
-<!--      <el-input v-model="dataForm.updateBy" placeholder="更新者"></el-input>-->
-<!--    </el-form-item>-->
-<!--    <el-form-item label="创建日期" prop="createTime">-->
-<!--      <el-input v-model="dataForm.createTime" placeholder="创建日期"></el-input>-->
-<!--    </el-form-item>-->
-<!--    <el-form-item label="更新时间" prop="updateTime">-->
-<!--      <el-input v-model="dataForm.updateTime" placeholder="更新时间"></el-input>-->
-<!--    </el-form-item>-->
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -84,11 +55,11 @@
         }, {
           value: 2,
           label: '年级'
-        },{
+        }, {
           value: 3,
           label: '班级'
         }],
-        deptTypeArray: ['院校/学校','专业/系部','年级','班级'],
+        deptTypeArray: ['院校/学校', '专业/系部', '年级', '班级'],
         treeList: [],
         visible: false,
         parentDeptName: '',
@@ -156,7 +127,6 @@
         })
       },
       deptListTreeCurrentChangeHandle (data, node) {
-        console.log(data)
         this.dataForm.pid = data.id
         this.parentDeptName = data.label
       },
@@ -200,6 +170,14 @@
       },
       // 表单提交
       dataFormSubmit () {
+        if (this.dataForm.pid === null || this.dataForm.pid <= 0) {
+          this.$message.error('上级部门不能为空')
+          return
+        }
+        if (this.dataForm.name === null || this.dataForm.name === '') {
+          this.$message.error('部门名称不能为空')
+          return
+        }
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
@@ -222,6 +200,7 @@
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
+                this.getDeptTreeList()
                 this.$message({
                   message: '操作成功',
                   type: 'success',

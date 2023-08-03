@@ -30,9 +30,10 @@
     </div>
   </el-dialog>
 </template>
+
 <script>
 export default {
-  name: 'studentImport',
+  name: 'enrollStuImport',
   data () {
     return {
       detailVisible: false,
@@ -65,7 +66,7 @@ export default {
         const formData = new FormData()
         formData.append('file', this.selectedFile)
         this.$http({
-          url: this.$http.adornUrl('stu/baseInfo/upload'),
+          url: this.$http.adornUrl('stu/temp/upload'),
           method: 'post',
           headers: {
             'Content-Type': 'multipart/form-data' // 设置正确的 Content-Type
@@ -74,7 +75,7 @@ export default {
         }).then(({data}) => {
           if (data && data.code === 0) {
             this.$message({
-              message: '操作成功,请刷新列表',
+              message: '操作成功，请刷新列表',
               type: 'success',
               duration: 4500,
               onClose: () => {
@@ -89,7 +90,7 @@ export default {
     },
     downloadTemplate () {
       this.$http({
-        url: this.$http.adornUrl('file/download/excel/stu.xlsx'),
+        url: this.$http.adornUrl('file/download/excel/stu_temp.xlsx'),
         method: 'get',
         responseType: 'blob'
       }).then(response => {
@@ -99,7 +100,7 @@ export default {
         const url = window.URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
-        link.setAttribute('download', '学生基本信息模版.xlsx')
+        link.setAttribute('download', '招生信息模版.xlsx')
         document.body.appendChild(link)
         link.click()
         window.URL.revokeObjectURL(url)

@@ -1,61 +1,35 @@
 <template>
   <div>
-    <!-- <el-row style="margin-top: 20px;">
-      <el-col :span="4" style="text-align:left;margin-left: 20px">
-        <el-button type="success" @click="handleImport">导入</el-button>
-        <el-button type="success" @click="handleExport">导出</el-button>
+    <el-row  :gutter="20">
+
+      <el-col :span="3">
+        <el-input
+          placeholder="输入关键字进行过滤"
+          style="padding-top: 20px;width:90%"
+          v-model="filterText">
+        </el-input>
+        <el-tree
+          class="filter-tree"
+          style="padding-top: 20px;"
+          highlight-current
+          :data="treeList"
+          node-key="id"
+          :default-expanded-keys="[]"
+          :default-checked-keys="[]"
+          :props="defaultProps"
+          :filter-node-method="filterNode"
+          ref="tree"
+          @node-click="(data, node, item)=>getDeptsByPid(data, node, item)"
+        >
+          <span slot-scope="{ node }" class="custom-tree-node">
+            <span v-if="!filterText">{{ node.label }}</span>
+            <span v-if="filterText" v-html="node.label.replace(new RegExp(filterText,'g'),`<font style='color:lightseagreen'>${filterText}</font>`)" />
+        </span>
+
+
+        </el-tree>
       </el-col>
-      <el-col :span="20" >
-        <div style="position: absolute;right: 30px;top:30px ;">
-          <el-button type="primary" icon="el-icon-plus" style="width: 80px; padding-left: 1px;" @click="addSearchCondition" v-show="searchCount<3">查询条件</el-button>
-          <div v-for="(condition, index) in searchConditions" :key="index" style=" margin-left: 10px;">
-            <el-select style="width: 110px;" v-model="condition.option" placeholder="查询条件">
-              <el-option label="姓名" value="姓名"></el-option>
-              <el-option label="身份证号" value="身份证号"></el-option>
-              <el-option label="年级" value="年级"></el-option>
-              <el-option label="入学日期" value="入学日期"></el-option>
-              <el-option label="专业" value="专业"></el-option>
-              <el-option label="班型" value="班型"></el-option>
-              <el-option label="学制" value="学制"></el-option>
-            </el-select>
-            <el-input v-model="condition.value" placeholder="请输入" style="width: 200px;"></el-input>
-            <el-button type="danger" icon="el-icon-delete" @click="removeSearchCondition(index)">删除</el-button>
-          </div>
-          <el-button type="primary" icon="el-icon-search" @click="handleSearch" style=" margin-left: 4px;">搜索</el-button>
-        </div>
-      </el-col>
-    </el-row> -->
-
-
-<!--    &lt;!&ndash; 按钮 &ndash;&gt;-->
-<!--    <el-row style="padding: 20px;" >-->
-<!--  <el-button type="primary">刷新</el-button>-->
-
-<!--  <el-button type="info">信息导入</el-button>-->
-<!--  <el-button type="warning">信息导出</el-button>-->
-<!--  <el-button  type="primary" icon="el-icon-plus"  @click="addRow()">新 增</el-button>-->
-<!--</el-row>-->
-<!--<HR style="border: 3 double #987cb9" width=95% color=#987cb9 size="3"></HR>-->
-
-<!--&lt;!&ndash; 搜索框 &ndash;&gt;-->
-<!--<el-select-->
-<!--    v-model="value"-->
-<!--    multiple-->
-<!--    filterable-->
-<!--    remote-->
-<!--    reserve-keyword-->
-<!--    placeholder="请输入关键词"-->
-<!--    :remote-method="remoteMethod"-->
-<!--    :loading="loading"-->
-<!--    style="position: absolute ;top: 20px;right:200px;">-->
-<!--    <el-option-->
-<!--      v-for="item in options"-->
-<!--      :key="item.value"-->
-<!--      :label="item.label"-->
-<!--      :value="item.value">-->
-<!--    </el-option>-->
-<!--  </el-select>-->
-
+      <el-col :span="21">
     <el-row style="margin-top: 20px;">
       <el-col :span="3" style="text-align:left;margin-left: 20px">
         <el-button type="success" @click="handleImport">导入</el-button>
@@ -68,7 +42,7 @@
             <el-select style="width: 110px;" v-model="condition.option" placeholder="查询条件">
               <el-option label="姓名" value="姓名"></el-option>
               <el-option label="年级" value="年级"></el-option>
-<!--              <el-option label="系部" value="系部"></el-option>-->
+              <el-option label="退费学年" value="系部"></el-option>
               <el-option label="专业" value="专业"></el-option>
               <el-option label="退费账号" value="退费账号"></el-option>
             </el-select>
@@ -88,37 +62,34 @@
 
 
 
-    <el-table-column prop="col1" label="序号" width="50" align="center"></el-table-column>
-    <el-table-column prop="col2" label="姓名" width="50" align="center"></el-table-column>
-    <!-- <el-table-column prop="col3" label="身份证号"></el-table-column> -->
-    <el-table-column prop="col4" label="年级" width="50" align="center"></el-table-column>
-    <el-table-column prop="col5" label="招生季" width="80" align="center"></el-table-column>
-    <el-table-column prop="col6" label="入学日期" width="100" align="center"></el-table-column>
-    <el-table-column prop="col7" label="专业" align="center"></el-table-column>
-    <!-- <el-table-column prop="col8" label="班型"></el-table-column>
-    <el-table-column prop="col9" label="学制"></el-table-column> -->
+    <el-table-column prop="feeReturnEntity.id" label="序号" width="50" align="center"></el-table-column>
+    <el-table-column prop="stuBaseInfoEntity.stuName" label="姓名" width="80" align="center"></el-table-column>
 
-    <el-table-column prop="col10" label="退费时间" width="100" align="center"></el-table-column>
-    <el-table-column prop="col11" label="退费学年" align="center"></el-table-column>
-    <el-table-column prop="col12" label="退费金额" width="100" align="center"></el-table-column>
+    <el-table-column prop="grade" label="年级" width="60" align="center"></el-table-column>
+    <el-table-column prop="stuBaseInfoEntity.admissionSeason" label="招生季" width="80" align="center"></el-table-column>
+    <el-table-column prop="stuBaseInfoEntity.admissionDate" label="入学日期" width="100" align="center"></el-table-column>
+    <el-table-column prop="major" label="专业" width="90" align="center"></el-table-column>
 
-    <el-table-column prop="col23" label="退费账户" width="100" align="center"></el-table-column>
-    <el-table-column prop="col24" label="退费账号" align="center"></el-table-column>
-    <el-table-column prop="col25" label="退费开户行" align="center"></el-table-column>
-    <el-table-column prop="col26" label="退费合计" width="100" align="center"></el-table-column>
+    <el-table-column prop="realTime" label="退费时间" width="100" align="center"></el-table-column>
+    <el-table-column prop="feeReturnEntity.returnSchoolYear" label="退费学年" align="center"></el-table-column>
+    <el-table-column prop="feeReturnEntity.returnFeeNum" label="退费金额" width="100" align="center"></el-table-column>
+
+    <el-table-column prop="feeReturnEntity.account" label="退费账户" width="100" align="center"></el-table-column>
+    <el-table-column prop="feeReturnEntity.accountNumber" label="退费账号" align="center"></el-table-column>
+    <el-table-column prop="feeReturnEntity.depositBank" label="退费开户行" align="center"></el-table-column>
+    <el-table-column prop="col26" label="退费合计" width="100" align="center"></el-table-column>//什么是合计，没有这个字段
 
     <el-table-column label="操作" width="140px" align="center">
       <template slot-scope="scope">
         <!-- 详情按钮 -->
-        <router-link :to="{name:'remoneyDetail'}">
           <el-button
             type="text"
-            @click="handleDelete(scope.$index, scope.row)">详情</el-button>
-        </router-link>
+            @click="handleDetail(scope)">详情</el-button>
+
 
         <!-- 编辑按钮 -->
 
-        <el-button type="text" @click="handleEdit">修改</el-button>
+        <el-button type="text" @click="handleEdit(scope)">修改</el-button>
 
 
       </template>
@@ -134,8 +105,9 @@
                    :total="total" style="text-align:right;margin-right: 60px">
 
     </el-pagination>
-    <!-- 分页 -->
-<!--<remoney-edit v-if="showEdit" ref="edit"></remoney-edit>-->
+      </el-col>
+    </el-row>
+
     </div>
 </template>
 
@@ -146,9 +118,24 @@ export default {
   components: {RemoneyEdit},
   mounted () {
     // 初始化时请求数据
-    this.getData()
+    this.getDataList()
+    this.getDeptTreeList()
   },
   methods: {
+    filterNode (value, data, node) {
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
+    },
+    getDeptTreeList () {
+      this.$http({
+        url: this.$http.adornUrl('/generator/sysdept/getDeptTreeList'),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 0) {
+          this.treeList = data.data
+        }
+      })
+    },
     addSearchCondition () {
       this.searchConditions.push({
         option: '',
@@ -161,14 +148,26 @@ export default {
       this.searchConditions.splice(index, 1)
       this.searchCount--
     },
-    handleDetail (row) {
-      // 处理详情逻辑
+    handleDetail (scope) {
+      // 获取所点击行的学号属性
+      this.selectedStudentNumber = scope.row.schoolNumber
+      this.$router.push({
+        name: 'remoneyDetail',
+        params: {
+          schoolNumber: this.selectedStudentNumber
+        }
+      })
     },
-    handleEdit (row) {
-      this.$router.push('finance-remoneyEdit')
+    handleEdit (scope) {
+      this.selectedStudentNumber = scope.row.schoolNumber
+      this.$router.push({
+        name: 'remoneyEdit',
+        params: {
+          schoolNumber: this.selectedStudentNumber
+        }
+      })
     },
     handleSearch () {
-      console.log(this.searchConditions)
       // 处理搜索逻辑
     },
     handleImport () {
@@ -190,13 +189,66 @@ export default {
     },
     // 请求数据方法
     getData () {
-      // 根据当前页码和每页显示条数发送请求获取数据
-
-      // 更新表格数据和总条数
+      this.$http({
+        url: this.$http.adornUrl('/generator/feereturn/getList'),
+        method: 'get'
+      }).then(response => {
+        this.tableData = response.data.list
+      })
+        .catch(error => {
+          console.error(error)
+        })
     }
+  },
+  getDeptTreeList () {
+    this.$http({
+      url: this.$http.adornUrl('/generator/sysdept/getDeptTreeList'),
+      method: 'get'
+    }).then(({data}) => {
+      if (data && data.code === 0) {
+        this.treeList = data.data
+      }
+    })
+  },
+  // 获取数据列表
+  getDataList () {
+    this.dataListLoading = true
+    this.$http({
+      url: this.$http.adornUrl('/generator/feeschoolsundry/list'),
+      method: 'get',
+      params: this.$http.adornParams({
+        'query': {
+          'page': this.pageIndex,
+          'limit': this.pageSize
+        },
+        'key': this.dataForm.key,
+        'year': this.year,
+        'depId': this.depId
+      })
+    }).then(({data}) => {
+      if (data.code === 500) {
+        this.$message.error(data.msg)
+      }
+      if (data && data.code === 0) {
+        this.dataList = data.page.list
+        this.totalPage = data.page.totalCount
+      } else {
+        this.dataList = []
+        this.totalPage = 0
+      }
+      this.dataListLoading = false
+    })
+    this.getDeptTreeList()
   },
   data () {
     return {
+      treeList: [],
+      filterText: '',
+
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
       searchCount: 1,
       searchConditions: [{
         option: '',
@@ -208,143 +260,7 @@ export default {
       searchText: '',
       showEdit: false,
       showDetail: false,
-      tableData: [{
-        col1: '1',
-        col2: '张三',
-        col3: '362425200002062231',
-        col4: '大一',
-        col5: '春季',
-        col6: '2023-9',
-        col7: '计算机科学与技术',
-        col8: '进阶班',
-        col9: '四年制',
-        col10: '2023.2.2',
-        col11: '2022上半学年',
-        col12: '2900',
-        col13: '200',
-        col14: '200',
-        col15: '200',
-        col16: '200',
-        col17: '200',
-        col18: '200',
-        col19: '200',
-        col20: '200',
-        col21: '200',
-        col22: '200',
-        col23: '张三',
-        col24: '37248329403939',
-        col25: '中国农业银行银行',
-        col26: '3800'
-
-      }, {
-        col1: '2',
-        col2: '王聪',
-        col3: '362425200002062231',
-        col4: '大一',
-        col5: '春季',
-        col6: '2023-9',
-        col7: '计算机科学与技术',
-        col8: '进阶班',
-        col9: '四年制',
-        col10: '2023.2.2',
-        col11: '2022上半学年',
-        col12: '2900',
-        col13: '200',
-        col14: '200',
-        col15: '200',
-        col16: '200',
-        col17: '200',
-        col18: '200',
-        col19: '200',
-        col20: '200',
-        col21: '200',
-        col22: '200',
-        col23: '张三',
-        col24: '37248329403939',
-        col25: '中国农业银行银行',
-        col26: '3800'
-      }, {
-        col1: '3',
-        col2: '李颖',
-        col3: '362425200002062231',
-        col4: '大一',
-        col5: '春季',
-        col6: '2023-9',
-        col7: '计算机科学与技术',
-        col8: '进阶班',
-        col9: '四年制',
-        col10: '2023.2.2',
-        col11: '2022上半学年',
-        col12: '2900',
-        col13: '200',
-        col14: '200',
-        col15: '200',
-        col16: '200',
-        col17: '200',
-        col18: '200',
-        col19: '200',
-        col20: '200',
-        col21: '200',
-        col22: '200',
-        col23: '张三',
-        col24: '37248329403939',
-        col25: '中国农业银行银行',
-        col26: '3800'
-      }, {
-        col1: '4',
-        col2: '李亮',
-        col3: '362425200002062231',
-        col4: '大一',
-        col5: '春季',
-        col6: '2023-9',
-        col7: '计算机科学与技术',
-        col8: '进阶班',
-        col9: '四年制',
-        col10: '2023.2.2',
-        col11: '2022上半学年',
-        col12: '2900',
-        col13: '200',
-        col14: '200',
-        col15: '200',
-        col16: '200',
-        col17: '200',
-        col18: '200',
-        col19: '200',
-        col20: '200',
-        col21: '200',
-        col22: '200',
-        col23: '张三',
-        col24: '37248329403939',
-        col25: '中国农业银行银行',
-        col26: '3800'
-      }, {
-        col1: '5',
-        col2: '赵兵',
-        col3: '362425200002062231',
-        col4: '大一',
-        col5: '春季',
-        col6: '2023-9',
-        col7: '计算机科学与技术',
-        col8: '进阶班',
-        col9: '四年制',
-        col10: '2023.2.2',
-        col11: '2022上半学年',
-        col12: '2900',
-        col13: '200',
-        col14: '200',
-        col15: '200',
-        col16: '200',
-        col17: '200',
-        col18: '200',
-        col19: '200',
-        col20: '200',
-        col21: '200',
-        col22: '200',
-        col23: '张三',
-        col24: '37248329403939',
-        col25: '中国农业银行银行',
-        col26: '3800'
-      }]
+      tableData: []
     }
   }
 }
