@@ -35,19 +35,23 @@ export default {
       outVisible: false,
       pageIndex: null,
       pageSize: null,
-      stuName: null,
+      classType: null,
       enrollTeacher: null,
+      admissionSeason: null,
+      status: null,
       deptId: null
     }
   },
   methods: {
     // 3.定义一个init函数，通过设置detailVisible值为true来让弹窗弹出，这个函数会在父组件的方法中被调用
-    init (i, j, k, l, d) {
-      this.pageSize = i,
-      this.pageIndex = j,
-      this.stuName = k,
-      this.enrollTeacher = l,
-      this.deptId = d,
+    init (i, j, k, l, m, n, d) {
+      this.pageSize = i
+      this.pageIndex = j
+      this.classType = k
+      this.enrollTeacher = l
+      this.admissionSeason = m
+      this.status = n
+      this.deptId = d
       this.outVisible = true
     },
     exportData (isAll) {
@@ -64,8 +68,10 @@ export default {
               'page': this.pageIndex,
               'limit': this.pageSize,
               'deptId': this.deptId,
-              'stuName': this.stuName,
+              'classTypeName': this.classType,
               'enrollTeacher': this.enrollTeacher,
+              'admissionSeason': this.admissionSeason,
+              'statusName': this.status,
               'isAll': isAll
             }
         ),

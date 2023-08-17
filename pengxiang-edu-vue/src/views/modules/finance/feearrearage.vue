@@ -30,11 +30,15 @@
             <div v-for="(condition, index) in searchConditions" :key="index" style=" margin-left: 10px;">
               <el-select style="width: 110px;" v-model="condition.option" placeholder="查询条件">
                 <el-option label="姓名" value="stu_name"></el-option>
-                <el-option label="学号" value="school_number"></el-option>
-                <el-option label="性别" value="gender"></el-option>
-                <el-option label="班主任" value="head_teacher"></el-option>
-                <el-option label="籍贯" value="native_place"></el-option>
-                <el-option label="政治面貌" value="political_status"></el-option>
+                <el-option label="身份证号" value="id_number"></el-option>
+                <el-option label="招生季" value="admission_season"></el-option>
+                <el-option label="户口类型" value="residence_type"></el-option>
+<!--                <el-option label="姓名" value="stu_name"></el-option>-->
+<!--                <el-option label="学号" value="school_number"></el-option>-->
+<!--                <el-option label="性别" value="gender"></el-option>-->
+<!--                <el-option label="班主任" value="head_teacher"></el-option>-->
+<!--                <el-option label="籍贯" value="native_place"></el-option>-->
+<!--                <el-option label="政治面貌" value="political_status"></el-option>-->
                 <el-option label="欠费学年" value="year"></el-option>
 
               </el-select>
@@ -107,13 +111,23 @@
         </el-table-column>
       <el-table-column
         prop="year"
-        label="欠费年份"
+        label="欠费学年"
         width="80" align="center">
       </el-table-column>
       <el-table-column
         prop="feeNum"
         label="该年欠费合计"
         width="140" align="center">
+      </el-table-column>
+      <el-table-column
+        fixed="right"
+        header-align="center"
+        align="center"
+        width="80"
+        label="缴清操作">
+        <template slot-scope="scope" >
+          <el-button  type="text" size="small" @click="okMoneyHandle(scope.row.id)" >点击缴清</el-button>
+        </template>
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -188,8 +202,37 @@
       this.getDeptTreeList()
     },
     methods: {
+      okMoneyHandle (id) {
+        var ids = id ? [id] : this.dataListSelections.map(item => {
+          return item.id
+        })
+        this.$confirm(`确定进行[${id ? '缴清' : '批量缴清'}]操作?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/generator/feearrearage/okMoneyHandle'),
+            method: 'post',
+            data: this.$http.adornData(ids, false)
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.getDataList()
+                }
+              })
+            } else {
+              this.$message.error(data.msg)
+            }
+          })
+        })
+      },
       handleExport2 () {
-        this.$confirm(`确定进行'批量导出'操作?（目前条件下所有）`, '提示', {
+        this.$confirm(`确定进行'批量导出'操作?（当前页）`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

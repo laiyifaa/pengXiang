@@ -43,8 +43,8 @@
     <el-form-item label="减免金额" prop="derateMoney">
       <el-input v-model="dataForm.derateMoney" placeholder="减免金额"></el-input>
     </el-form-item>
-    <el-form-item label="减免类型 1：贫困生 0：非贫困" prop="derateType">
-      <el-input v-model="dataForm.derateType" placeholder="减免类型 1：贫困生 0：非贫困"></el-input>
+    <el-form-item label="减免类型" prop="derateType">
+      <el-input v-model="dataForm.derateType" placeholder="减免类型"></el-input>
     </el-form-item>
     <el-form-item label="减免备注" prop="derateDetail">
       <el-input v-model="dataForm.derateDetail" placeholder="减免备注"></el-input>
@@ -165,10 +165,10 @@
             { required: true, message: '不能为空', trigger: 'blur' }
           ],
           paySchoolDate: [
-            { required: true, message: '缴费日期不能为空', trigger: 'blur' }
+            { required: false, message: '缴费日期不能为空', trigger: 'blur' }
           ],
           paySchoolYear: [
-            { required: true, message: '缴费学年不能为空', trigger: 'blur' }
+            { required: false, message: '缴费学年不能为空', trigger: 'blur' }
           ],
           trainFee: [
             { required: true, message: '实缴培训费不能为空', trigger: 'blur' }
@@ -204,28 +204,28 @@
             { required: true, message: '减免金额不能为空', trigger: 'blur' }
           ],
           derateType: [
-            { required: true, message: '减免类型 1：贫困生 0：非贫困不能为空', trigger: 'blur' }
+            { required: false, message: '减免类型不能为空', trigger: 'blur' }
           ],
           derateDetail: [
-            { required: true, message: '减免备注不能为空', trigger: 'blur' }
+            { required: false, message: '减免备注不能为空', trigger: 'blur' }
           ],
           returnFeeTime: [
-            { required: true, message: '返费时间不能为空', trigger: 'blur' }
+            { required: false, message: '返费时间不能为空', trigger: 'blur' }
           ],
           needReturnFeeNum: [
-            { required: true, message: '应返费总额不能为空', trigger: 'blur' }
+            { required: false, message: '应返费总额不能为空', trigger: 'blur' }
           ],
           factReturnFeeNum: [
-            { required: true, message: '返费金额不能为空', trigger: 'blur' }
+            { required: false, message: '返费金额不能为空', trigger: 'blur' }
           ],
           account: [
-            { required: true, message: '返费账户不能为空', trigger: 'blur' }
+            { required: false, message: '返费账户不能为空', trigger: 'blur' }
           ],
           accountNumber: [
-            { required: true, message: '返费账号不能为空', trigger: 'blur' }
+            { required: false, message: '返费账号不能为空', trigger: 'blur' }
           ],
           depositBank: [
-            { required: true, message: '返费开户行不能为空', trigger: 'blur' }
+            { required: false, message: '返费开户行不能为空', trigger: 'blur' }
           ],
           payTrainFee: [
             { required: true, message: '应缴培训费不能为空', trigger: 'blur' }
@@ -258,10 +258,10 @@
             { required: true, message: '应缴体检费不能为空', trigger: 'blur' }
           ],
           isArrearage: [
-            { required: true, message: '是否欠费 1：是 0：否不能为空', trigger: 'blur' }
+            { required: false, message: '是否欠费 1：是 0：否不能为空', trigger: 'blur' }
           ],
           createTime: [
-            { required: true, message: '创建(缴费)时间不能为空', trigger: 'blur' }
+            { required: false, message: '创建(缴费)时间不能为空', trigger: 'blur' }
           ],
           updateTime: [
             { required: true, message: '更新时间不能为空', trigger: 'blur' }

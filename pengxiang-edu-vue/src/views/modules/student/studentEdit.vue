@@ -45,7 +45,7 @@
           <el-option label="群众" value="群众" key="群众"></el-option>
         </el-select>
       </e-desc-item>
-      <e-desc-item label="籍贯">
+      <e-desc-item label="籍贯" icon="*">
         <el-input
           v-model="baseInfo.nativePlace"
           clearable>
@@ -63,7 +63,7 @@
           clearable>
         </el-input>
       </e-desc-item>
-      <e-desc-item label="户口性质">
+      <e-desc-item label="户口性质" icon="*">
         <el-select v-model="baseInfo.residenceType" placeholder="请选择户口性质"  style="width: 100%">
           <el-option label="农业户口" :value='1' :key='1'></el-option>
           <el-option label="非农户口" :value='0' :key='0'></el-option>
@@ -83,7 +83,7 @@
           <el-option label="高中以上" value='高中以上' key='高中以上'></el-option>
         </el-select>
       </e-desc-item>
-      <e-desc-item label="毕业学校">
+      <e-desc-item label="毕业学校" icon="*">
         <el-input
           v-model="baseInfo.schoolBefore"
           clearable>
@@ -97,7 +97,7 @@
           <span style="text-align: center; font-weight: bold; font-size: 16px;">学生学籍信息</span>
         </template>
         <e-desc margin='0 12px' label-width='150px' column="4" >
-          <e-desc-item label="学号" icon="*">
+          <e-desc-item label="学号" >
             <el-input
               v-model="baseInfo.schoolNumber"
               clearable>
@@ -158,7 +158,7 @@
               <el-option label="五年" value="五年" key="五年"></el-option>
             </el-select>
           </e-desc-item>
-          <e-desc-item label="当前状态" icon="*">
+          <e-desc-item label="当前状态" >
           <el-select v-model="baseInfo.currentStatus " placeholder="请选择当前状态" disabled>
             <el-option label="在校" :value="0" :key="0"></el-option>
             <el-option label="实习" :value="1" :key="1"></el-option>
@@ -169,7 +169,7 @@
             <el-option label="毕业" :value="6" :key="6"></el-option>
           </el-select>
         </e-desc-item>
-          <e-desc-item label="学籍状态" icon="*">
+          <e-desc-item label="学籍状态" >
             <el-select v-model="baseInfo.schoolRollStatus " placeholder="请选择学籍状态" disabled>
               <el-option label="在册在籍" :value="0" :key="0"></el-option>
               <el-option label="在册不在籍" :value="1" :key="1"></el-option>
@@ -179,7 +179,7 @@
             </el-select>
           </e-desc-item>
 
-          <e-desc-item label="班主任" icon="*">
+          <e-desc-item label="班主任" >
             <el-input
               v-model="baseInfo.headTeacher"
               clearable>
@@ -204,7 +204,7 @@
               clearable>
             </el-input>
           </e-desc-item>
-          <e-desc-item label="招生季">
+          <e-desc-item label="招生季" icon="*">
             <el-select v-model="baseInfo.admissionSeason " placeholder="请选择招生季">
               <el-option label="春季" value="春季" key="春季"></el-option>
               <el-option label="秋季" value="秋季" key="秋季"></el-option>
@@ -625,23 +625,50 @@ export default {
           this.$message.error('证件号码为空')
           return
         }
-        if (this.baseInfo.schoolNumber === null || this.baseInfo.schoolNumber === '') {
-          this.$message.error('学号为空')
+        if (this.baseInfo.nativePlace === null || this.baseInfo.nativePlace === '') {
+          this.$message.error('籍贯为空')
+          return
+        }
+        // if (this.baseInfo.schoolNumber === null || this.baseInfo.schoolNumber === '') {
+        //   this.$message.error('学号为空')
+        //   return
+        // }
+        if (this.baseInfo.residenceType === null || this.baseInfo.residenceType === '') {
+          this.$message.error('户口性质为空')
+          return
+        }
+        if (this.baseInfo.schoolBefore === null || this.baseInfo.schoolBefore === '') {
+          this.$message.error('毕业院校为空')
+          return
+        }
+        if (this.baseInfo.academyName === null || this.baseInfo.academyName === '') {
+          this.$message.error('院校为空')
+          return
+        }
+        if (this.baseInfo.gradeName === null || this.baseInfo.gradeName === '') {
+          this.$message.error('年级为空')
+          return
+        }
+        if (this.baseInfo.majorName === null || this.baseInfo.majorName === '') {
+          this.$message.error('专业为空')
+          return
+        }
+        if (this.baseInfo.classType === null || this.baseInfo.classType === '') {
+          this.$message.error('班型为空')
           return
         }
         if (this.baseInfo.schoolingLength === null || this.baseInfo.schoolingLength === '') {
           this.$message.error('学制为空')
           return
         }
-
-        if (this.baseInfo.classType === null || this.baseInfo.classType === '') {
-          this.$message.error('班型为空')
+        if (this.baseInfo.admissionSeason === null || this.baseInfo.admissionSeason === '') {
+          this.$message.error('招生季为空')
           return
         }
-        if (this.baseInfo.headTeacher === null || this.baseInfo.headTeacher === '') {
-          this.$message.error('班主任为空')
-          return
-        }
+        // if (this.baseInfo.headTeacher === null || this.baseInfo.headTeacher === '') {
+        //   this.$message.error('班主任为空')
+        //   return
+        // }
         // 验证纯数字
   /*      let regNumber = /^[0-9]*$/ */
         // 验证身份证

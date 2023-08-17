@@ -14,7 +14,7 @@
     <e-desc-item label="联系电话">{{ Info.phone }}</e-desc-item>
     <e-desc-item label="系部">{{ Info.deptName }}</e-desc-item>
     <e-desc-item label="专业">{{ Info.majorName }}</e-desc-item>
-    <e-desc-item label="班型">{{ Info.classType }}</e-desc-item>
+    <e-desc-item label="班型">{{ Info.classType === 1?'就业':'升学' }}</e-desc-item>
     <e-desc-item label="班级">{{ Info.className }}</e-desc-item>
     <e-desc-item label="班主任">{{ Info.headTeacher }}</e-desc-item>
     <e-desc-item label="班主任电话">{{ Info.headTeacherPhone }}</e-desc-item>
@@ -37,7 +37,7 @@
         <e-desc-item label="转正薪酬"><el-input v-model="Info.formalIncome" @change="handleInputChange"/></e-desc-item>
         <e-desc-item label="岗位负责人"><el-input v-model="Info.postLeader" @change="handleInputChange"/></e-desc-item>
         <e-desc-item label="修改提交">
-            <el-button  type="primary" @click="submitInfoForm">操作</el-button>
+            <el-button  type="primary" @click="submitInfoForm">修改</el-button>
         </e-desc-item>
       </e-desc>
     </el-collapse-item>
@@ -114,8 +114,6 @@
     <e-desc margin='0 12px' label-width='140px' column="2">
       <e-desc-item label="回访日期" icon="*">
         <el-date-picker
-
-
           v-model="item.visitDate"
           value-format="yyyy-MM-dd"
           placeholder="选择日期"

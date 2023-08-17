@@ -32,7 +32,7 @@
               <div style="margin-bottom: 20px">
                 <e-desc-item label="减免类型">  {{ FeeInfo.derateType }}</e-desc-item>
                 <e-desc-item label="减免备注">  {{ FeeInfo.derateDetail }}</e-desc-item>
-                <e-desc-item label="减免金额" color="#"> {{ FeeInfo.paySchoolYear }} </e-desc-item>
+                <e-desc-item label="减免金额" color="#"> {{ FeeInfo.derateMoney }} </e-desc-item>
                 <e-desc-item label="减免备注" color="#"> {{ FeeInfo.paySchoolYear }} </e-desc-item>
                 <e-desc-item label="返费时间" color="#"> {{ FeeInfo.returnFeeTime }} </e-desc-item>
                 <e-desc-item label="应返费金额" color="#"> {{ FeeInfo.needReturnFeeNum }} </e-desc-item>

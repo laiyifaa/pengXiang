@@ -49,9 +49,16 @@
               </el-table-column>
               <el-option label="姓名" value="stuName"></el-option>
               <el-option label="身份证号" value="idNumber"></el-option>
+              <el-option label="性别" value="gender"></el-option>
+              <el-option label="户口性质" value="residenceTypeName"></el-option>
+              <el-option label="学号" value="schoolNumber"></el-option>
+              <el-option label="班型" value="classType"></el-option>
+              <el-option label="当前状态" value="currentStatus"></el-option>
+              <el-option label="学籍状态" value="schoolRollStatus"></el-option>
+              <el-option label="培养层次" value="developLevel"></el-option>
 <!--              <el-option label="政治面貌" value="political"></el-option>-->
               <el-option label="班主任" value="headTeacher"></el-option>
-<!--              <el-option label="户口性质" value="account"></el-option>-->
+              <el-option label="现学籍学校" value="statusSchool"></el-option>
             </el-select>
             <el-input v-model="condition.value" placeholder="请输入" style="width: 150px;" clearable></el-input>
             <i class="el-icon-circle-close" type="danger" icon="el-icon-circle-close" @click="removeSearchCondition(index)" style="margin: 5px"></i>
@@ -215,15 +222,41 @@ export default {
       this.outVisiable = true
       var stuNameOption = null
       var idNumberOption = null
+      var genderOption = null
+      var residenceTypeNameOption = null
+      var schoolNumberOption = null
+      var classTypeOption = null
+      var currentStatusOption = null
+      var schoolRollStatusOption = null
+      var developLevelOption = null
       var headTeacherOption = null
+      var statusSchoolOption = null
       if (this.searchConditions != null && this.searchConditions.length >= 0) {
         stuNameOption = this.searchConditions.filter(condition => condition.option === 'stuName')
         idNumberOption = this.searchConditions.filter(condition => condition.option === 'idNumber')
+        genderOption = this.searchConditions.filter(condition => condition.option === 'gender')
+        residenceTypeNameOption = this.searchConditions.filter(condition => condition.option === 'residenceTypeName')
+        schoolNumberOption = this.searchConditions.filter(condition => condition.option === 'schoolNumber')
+        classTypeOption = this.searchConditions.filter(condition => condition.option === 'classType')
+        currentStatusOption = this.searchConditions.filter(condition => condition.option === 'currentStatus')
+        schoolRollStatusOption = this.searchConditions.filter(condition => condition.option === 'schoolRollStatus')
+        developLevelOption = this.searchConditions.filter(condition => condition.option === 'developLevel')
         headTeacherOption = this.searchConditions.filter(condition => condition.option === 'headTeacher')
+        statusSchoolOption = this.searchConditions.filter(condition => condition.option === 'statusSchool')
       }
       this.$nextTick(() => {
         this.$refs.outDialog.init(this.pageSize, this.currentPage, stuNameOption.length === 0 ? null : stuNameOption[0].value,
-          idNumberOption.length === 0 ? null : idNumberOption[0].value, headTeacherOption.length === 0 ? null : headTeacherOption[0].value, this.deptId)
+          idNumberOption.length === 0 ? null : idNumberOption[0].value,
+          headTeacherOption.length === 0 ? null : headTeacherOption[0].value,
+          this.deptId,
+          genderOption.length === 0 ? null : genderOption[0].value,
+          residenceTypeNameOption.length === 0 ? null : residenceTypeNameOption[0].value,
+          schoolNumberOption.length === 0 ? null : schoolNumberOption[0].value,
+          classTypeOption.length === 0 ? null : classTypeOption[0].value,
+          currentStatusOption.length === 0 ? null : currentStatusOption[0].value,
+          schoolRollStatusOption.length === 0 ? null : schoolRollStatusOption[0].value,
+          developLevelOption.length === 0 ? null : developLevelOption[0].value,
+          statusSchoolOption.length === 0 ? null : statusSchoolOption[0].value)
       })
     },
     handleSizeChange (size) {
@@ -243,11 +276,27 @@ export default {
       this.dataListLoading = true
       var stuNameOption = null
       var idNumberOption = null
+      var genderOption = null
+      var residenceTypeNameOption = null
+      var schoolNumberOption = null
+      var classTypeOption = null
+      var currentStatusOption = null
+      var schoolRollStatusOption = null
+      var developLevelOption = null
       var headTeacherOption = null
+      var statusSchoolOption = null
       if (this.searchConditions != null && this.searchConditions.length >= 0) {
         stuNameOption = this.searchConditions.filter(condition => condition.option === 'stuName')
         idNumberOption = this.searchConditions.filter(condition => condition.option === 'idNumber')
+        genderOption = this.searchConditions.filter(condition => condition.option === 'gender')
+        residenceTypeNameOption = this.searchConditions.filter(condition => condition.option === 'residenceTypeName')
+        schoolNumberOption = this.searchConditions.filter(condition => condition.option === 'schoolNumber')
+        classTypeOption = this.searchConditions.filter(condition => condition.option === 'classType')
+        currentStatusOption = this.searchConditions.filter(condition => condition.option === 'currentStatus')
+        schoolRollStatusOption = this.searchConditions.filter(condition => condition.option === 'schoolRollStatus')
+        developLevelOption = this.searchConditions.filter(condition => condition.option === 'developLevel')
         headTeacherOption = this.searchConditions.filter(condition => condition.option === 'headTeacher')
+        statusSchoolOption = this.searchConditions.filter(condition => condition.option === 'statusSchool')
       }
       this.$http({
         url: this.$http.adornUrl('stu/baseInfo/list'),
@@ -258,7 +307,15 @@ export default {
           'deptId': this.deptId,
           'stuName': stuNameOption.length === 0 ? null : stuNameOption[0].value,
           'idNumber': idNumberOption.length === 0 ? null : idNumberOption[0].value,
-          'headTeacher': headTeacherOption.length === 0 ? null : headTeacherOption[0].value
+          'gender': genderOption.length === 0 ? null : genderOption[0].value,
+          'residenceTypeName': residenceTypeNameOption.length === 0 ? null : residenceTypeNameOption[0].value,
+          'schoolNumber': schoolNumberOption.length === 0 ? null : schoolNumberOption[0].value,
+          'classTypeName': classTypeOption.length === 0 ? null : classTypeOption[0].value,
+          'currentStatusName': currentStatusOption.length === 0 ? null : currentStatusOption[0].value,
+          'schoolRollStatusName': schoolRollStatusOption.length === 0 ? null : schoolRollStatusOption[0].value,
+          'developLevel': developLevelOption.length === 0 ? null : developLevelOption[0].value,
+          'headTeacher': headTeacherOption.length === 0 ? null : headTeacherOption[0].value,
+          'statusSchool': statusSchoolOption.length === 0 ? null : statusSchoolOption[0].value
         })
       }).then(({data}) => {
         if (data.code === 500) {
@@ -272,8 +329,11 @@ export default {
               case 0:
                 array[index].classType = '升学'
                 break
-              default:
+              case 1:
                 array[index].classType = '就业'
+                break
+              default:
+                array[index].classType = ''
             }
           })
         } else {

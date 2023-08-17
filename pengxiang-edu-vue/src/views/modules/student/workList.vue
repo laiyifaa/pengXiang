@@ -2,17 +2,38 @@
 <div>
   <el-row style="margin-top: 20px;">
     <el-col :span="3" style="text-align:left;margin-left: 200px">
+      <el-button type="success" @click="handleImport">导入</el-button>
       <el-button type="success" @click="Export">导出</el-button>
+
     </el-col>
     <el-col :span="14" style="text-align:center;" >
       <div style="display: flex; align-items: center;">
         <el-button type="primary" icon="el-icon-plus" style="width: 80px; padding-left: 1px;" @click="addSearchCondition" v-show="searchCount<2">查询条件</el-button>
         <div v-for="(condition, index) in searchConditions" :key="index" style=" margin-left: 5px; display: flex; align-items: center; ">
-          <el-select style="width: 92px;" v-model="condition.option" placeholder="条件">
+          <el-select style="width: 120px; margin-right: 5px" v-model="condition.option" placeholder="条件">
             <el-option label="姓名" value="name"></el-option>
             <el-option label="学号" value="schoolNumber"></el-option>
+            <el-option label="实习类别" value="practiceType"></el-option>
+            <el-option label="实习单位" value="practiceOrg"></el-option>
+            <el-option label="带队老师" value="postLeader"></el-option>
+            <el-option label="离校时间" value="leaveDate"></el-option>
           </el-select>
-          <el-input v-model="condition.value" placeholder="请输入" style="width: 150px;margin-left: 5px" clearable></el-input>
+          <template v-if="condition.option === 'leaveDate'">
+            <el-date-picker
+              v-model="condition.value"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期"
+              @change="handleInputChange2"  ></el-date-picker>
+          </template>
+          <template v-else-if="condition.option === 'practiceType'">
+            <el-select style="width: 220px;" v-model="condition.value">
+              <el-option label="认识实习" value="1" ></el-option>
+              <el-option label="岗位实习" value="2" ></el-option>
+            </el-select>
+          </template>
+          <template v-else>
+            <el-input v-model="condition.value" placeholder="请输入" style="width: 215px; margin-left: 5px;" clearable></el-input>
+          </template>
           <el-button type="danger" style=" margin-left: 5px;" icon="el-icon-delete" @click="removeSearchCondition(index) ">删除</el-button>
         </div>
         <el-button type="primary" icon="el-icon-search" @click="handleSearch" style=" margin-left: 2px;">搜索</el-button>
@@ -27,21 +48,18 @@
       :default-expanded-keys="[]"
       :default-checked-keys="[]"
       :props="defaultProps"
-      @node-click="(data, node, item)=>getDeptsByPid(data, node, item)"
+      @node-click="(node)=>getDeptsByPid(node)"
     >
     </el-tree>
   </el-col>
   <el-col :span="21">
 <el-table :data="tableData"  border style="width: 100%;; margin-top: 20px;" :key="dataChange">
-
   <el-table-column prop="name" width="170" label="姓名" align="center"></el-table-column>
   <el-table-column prop="phone" width="170" label="联系电话" align="center"></el-table-column>
   <el-table-column prop="schoolName" width="200" label="学校" align="center"></el-table-column>
   <el-table-column prop="gradeName" width="170" label="年级" align="center"></el-table-column>
   <el-table-column prop="majorName" width="170" label="专业" align="center"></el-table-column>
   <el-table-column prop="className" width="170" label="班级" align="center"></el-table-column>
-
-
   <el-table-column prop="times" label="实习次数" width="170" align="center"></el-table-column>
   <el-table-column label="操作" align="center">
     <template slot-scope="scope">
@@ -69,16 +87,22 @@
     <el-button @click="showDialog = false">取消</el-button>
   </span>
   </el-dialog>
-
+  <work-import v-if="Visiable" ref="dialog"> </work-import>
 </div>
 </template>
 
 <script>
-export default {
-  name: 'workList',
+import WorkImport from "./workImport";
 
+export default {
+
+  name: 'workList',
+  components: {
+    WorkImport
+  },
   data () {
     return {
+      Visiable: false,
       showDialog:false,
       dataChange:false,
       treeList: [],
@@ -104,6 +128,13 @@ export default {
     this.getDeptTreeList()
   },
   methods: {
+    handleImport (data) {
+      // 处理导入逻辑
+      this.Visiable = true
+      this.$nextTick(() => {
+        this.$refs.dialog.init(data)
+      })
+    },
     addSearchCondition () {
       this.searchConditions.push({
         option: '',
@@ -111,12 +142,12 @@ export default {
       })
       this.searchCount++
     },
-    // 删除条件搜索栏目
     removeSearchCondition (index) {
       this.searchConditions.splice(index, 1)
       this.searchCount--
     },
     handleDetail (scope) {
+      console.log(this.tableData)
       this.selectedStudentNumber = scope.row.schoolNumber
       this.$router.push({
           name: 'workDetail',
@@ -146,10 +177,8 @@ export default {
       if(this.$refs.treeRef.getCurrentNode()!=null){
         params.id = this.$refs.treeRef.getCurrentNode().id;
       }
-
       params.pageNum=this.currentPage
       params.pageSize=this.pageSize
-
       this.$http({
         url: this.$http.adornUrl('/stuWork/search'),
         method: 'get',
@@ -169,8 +198,6 @@ export default {
       })
     },
     handleExport(option) {
-
-
       this.$confirm('确定要导出吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -243,25 +270,36 @@ export default {
 
       })
 
-
-
     },
     Export () {
-
         this.showDialog=true
-
     },
     handleSizeChange (size) {
       this.pageSize = size
-      // 重新请求数据
-      this.getData()
+      if(this.searchConditions[0].value!=''){
+        this.handleSearch()
+      }
+      else if(this.$refs.treeRef.getCurrentNode()!=null){
+        this.reGetDeptsByPid(this.$refs.treeRef.getCurrentNode())
+      }
+      else {
+        this.getData()
+      }
     },
     // 处理当前页码变化事件
     handleCurrentChange (page) {
       this.currentPage = page
       // 重新请求数据
-      this.getData()
-    },
+     if(this.searchConditions[0].value!=''){
+       this.handleSearch()
+     }
+     else if(this.$refs.treeRef.getCurrentNode()!=null){
+       this.reGetDeptsByPid(this.$refs.treeRef.getCurrentNode())
+     }
+     else {
+       this.getData()
+     }
+   },
     // 请求数据方法
     getData () {
       this.$http({
@@ -279,23 +317,36 @@ export default {
           this.$message.error(error)
         })
     },
-    getDeptsByPid (data, node, item) {
-
+    getDeptsByPid (node) {
+      this.currentPage = 1;
       let param={
-        id: node.key,
+        id: node.id,
         pageNum: this.currentPage,
         pageSize: this.pageSize
-
       }
       this.$http({
         url:this.$http.adornUrl('stuWork/treeSearch'),
         method:'get',
         params: param
       }).then(response=>{
-
         this.tableData = response.data.workDtos === null ? [] : response.data.workDtos.list;
         this.total = response.data.workDtos === null ? 0 :response.data.workDtos.total
-
+        this.dataChange=!this.dataChange
+      })
+    },
+   reGetDeptsByPid (node) {
+      let param={
+        id: node.id,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      }
+      this.$http({
+        url:this.$http.adornUrl('stuWork/treeSearch'),
+        method:'get',
+        params: param
+      }).then(response=>{
+        this.tableData = response.data.workDtos === null ? [] : response.data.workDtos.list;
+        this.total = response.data.workDtos === null ? 0 :response.data.workDtos.total
         this.dataChange=!this.dataChange
       })
     },

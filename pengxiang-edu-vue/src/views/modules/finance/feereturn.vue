@@ -34,12 +34,17 @@
           <div v-for="(condition, index) in searchConditions" :key="index" style=" margin-left: 10px;">
             <el-select style="width: 110px;" v-model="condition.option" placeholder="查询条件">
               <el-option label="姓名" value="stu_name"></el-option>
-              <el-option label="学号" value="school_number"></el-option>
-              <el-option label="性别" value="gender"></el-option>
-              <el-option label="班主任" value="head_teacher"></el-option>
-              <el-option label="籍贯" value="native_place"></el-option>
-              <el-option label="政治面貌" value="political_status"></el-option>
-              <el-option label="学生联系电话" value="phone"></el-option>
+              <el-option label="身份证号" value="id_number"></el-option>
+              <el-option label="招生季" value="admission_season"></el-option>
+              <el-option label="户口类型" value="residence_type"></el-option>
+<!--              <el-option label="退费时间" value="returnMoneyTime"></el-option>-->
+              <el-option label="退费学年" value="returnSchoolYear"></el-option>
+<!--              <el-option label="学号" value="school_number"></el-option>-->
+<!--              <el-option label="性别" value="gender"></el-option>-->
+<!--              <el-option label="班主任" value="head_teacher"></el-option>-->
+<!--              <el-option label="籍贯" value="native_place"></el-option>-->
+<!--              <el-option label="政治面貌" value="political_status"></el-option>-->
+<!--              <el-option label="学生联系电话" value="phone"></el-option>-->
 
             </el-select>
             <el-input v-model="condition.value" placeholder="请输入" style="width: 200px;" clearable></el-input>
@@ -48,6 +53,22 @@
           <el-button type="primary" icon="el-icon-search" @click="handleSearch" style=" margin-left: 4px;">搜索</el-button>
         </div>
       </el-col>
+      <el-col :span="20" style="margin-top: 20px">
+        退费时间段选择(默认关)：
+        <el-date-picker v-model="start" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
+                        @change="dateChange" style="width: 140px;height: 25px">
+        </el-date-picker>
+        -
+        <el-date-picker v-model="end" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
+                        @change="dateChange" style="width: 140px;height: 25px">
+        </el-date-picker>
+        <el-switch
+          v-model="value"
+          active-color="#13ce66"
+          inactive-color="#ff4949">
+        </el-switch>
+      </el-col>
+
     </el-row>
     <!--        <el-button  type="primary" @click="addOrUpdateHandle()">新增</el-button>-->
     <!--        <el-button  type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
@@ -92,7 +113,7 @@
           <el-table-column
             prop="headTeacherPhone"
             label="班主任电话"
-            width="80" align="center">
+            width="110" align="center">
           </el-table-column>
           <el-table-column
             prop="returnMoneyTime"
@@ -160,6 +181,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import AddOrUpdate from './feereturn-add-or-update'
 import OUTMany from './returnfeeOut'
 import Add from './feereturn-add'
@@ -168,6 +190,9 @@ import FeeReturnImport from './feeReturnImport'
 export default {
   data () {
     return {
+      value: false,
+      start: moment().subtract(1, 'year').format('YYYY-MM-DD'),
+      end: moment().format('YYYY-MM-DD'),
       importVisiable: false,
       outVisiable: false,
       deptId: '',
@@ -208,6 +233,10 @@ export default {
     this.getDeptTreeList()
   },
   methods: {
+    dateChange () {
+      this.start = start;
+      this.end = end;
+    },
     handleEdit () {
       this.$router.push('finance-tuitionExpenseEdit')
       // 处理修改逻辑
@@ -259,7 +288,10 @@ export default {
       this.$http.post(this.$http.adornUrl('/generator/feereturn/search'), {
         'page': this.pageIndex,
         'limit': this.pageSize,
-        searchConditions: this.searchConditions
+        searchConditions: this.searchConditions,
+        start: this.start,
+        end: this.end,
+        timeIf: this.value
       }).then(({data}) => {
         if (data && data.code === 0) {
           this.dataList = data.page.list

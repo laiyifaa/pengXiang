@@ -13,7 +13,7 @@
       <e-desc-item label="联系电话">{{ Info.phone }}</e-desc-item>
       <e-desc-item label="系部">{{ Info.deptName }}</e-desc-item>
       <e-desc-item label="专业">{{ Info.majorName }}</e-desc-item>
-      <e-desc-item label="班型">{{ Info.classType }}</e-desc-item>
+      <e-desc-item label="班型">{{ Info.classType === 1?'就业':'升学' }}</e-desc-item>
       <e-desc-item label="班级">{{ Info.className }}</e-desc-item>
       <e-desc-item label="班主任">{{ Info.headTeacher }}</e-desc-item>
       <e-desc-item label="班主任电话">{{ Info.headTeacherPhone }}</e-desc-item>
@@ -39,9 +39,9 @@
               <e-desc-item label="实习报酬"><el-input v-model="item.practiceIncome" ></el-input></e-desc-item>
               <e-desc-item  label="实习岗位"><el-input v-model="item.practicePost" ></el-input></e-desc-item>
               <e-desc-item label="实习类别" >
-                <el-select v-model="item.practiceType" >
-                  <el-option label="认识实习" :value='1' :key='1'></el-option>
-                  <el-option label="岗位实习" :value='2' :key='2'></el-option>
+                <el-select v-model="item.practiceType">
+                  <el-option label="认识实习" value="1" :key="1"></el-option>
+                  <el-option label="岗位实习" value="2" :key="2"></el-option>
                 </el-select>
               </e-desc-item>
               <e-desc-item label="预计实习结束日期">
@@ -61,14 +61,14 @@
               </e-desc-item>
               <e-desc-item label="是否对岗位满意" >
                 <el-select v-model="item.isSatisfied" @change="handleInputChange2">
-                  <el-option label="是" :value='1' :key='1'></el-option>
-                  <el-option label="否" :value='0' :key='0'></el-option>
+                  <el-option label="是" value="1" :key="1"></el-option>
+                  <el-option label="否" value="0" :key="0"></el-option>
                 </el-select>
               </e-desc-item>
               <e-desc-item label="带队教师"><el-input width="100px" v-model="item.postLeader" ></el-input></e-desc-item>
               <e-desc-item  label="带队教师电话"><el-input v-model="item.postLeaderPhone" ></el-input></e-desc-item>
               <e-desc-item label="修改提交">
-                <el-button  type="primary" @click="submitPracticeForm(item)">操作</el-button>
+                <el-button  type="primary" @click="submitPracticeForm(item)">修改</el-button>
               </e-desc-item>
             </e-desc>
           </el-tab-pane>
@@ -192,6 +192,7 @@ export default {
       this.schoolNumberIsNull=false
     }
 
+
   },
   methods: {
     submitForm () {
@@ -250,6 +251,7 @@ export default {
       }
     },
     submitPracticeForm (item) {
+      console.log(this.workInfo)
       if (item.practiceOrg != '' && item.leaveDate != '' ) {
         this.$confirm('确认提交吗？', '提示', {
           confirmButtonText: '确定',

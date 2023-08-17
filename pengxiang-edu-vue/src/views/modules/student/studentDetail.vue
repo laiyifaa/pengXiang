@@ -105,7 +105,7 @@
           <span style="text-align: center; font-weight: bold; font-size: 16px;">缴费信息</span>
         </template>
         <el-tabs type="border-card">
-          <el-tab-pane v-for="(item, index) in info.feeList" :key="index" :label="`${item.paySchoolYear}年缴费信息`">
+          <el-tab-pane v-for="(item, index) in info.feeList" :key="index" :label="`第${item.paySchoolYear}次缴费信息`">
             <e-desc margin='0 12px' label-width='150px' column="4" >
               <e-desc-item label="缴费学年"> {{item.paySchoolYear}} </e-desc-item>
               <e-desc-item label="缴费学年"> {{item.paySchoolDate}} </e-desc-item>
@@ -203,6 +203,118 @@
         </el-tabs>
       </el-collapse-item>
     </el-collapse>
+
+    <el-collapse v-model="f_remoney" @change="handleChange" >
+      <el-collapse-item name="1">
+        <template slot="title">
+          <span style="text-align: center; font-weight: bold; font-size: 16px;">退费信息</span>
+        </template>
+        <el-tabs type="border-card" >
+          <el-tab-pane v-for="(item, index) in info.feeReturnList" :key="index" :label="`${item.returnSchoolYear }退费信息`">
+        <e-desc margin='0 12px' label-width='150px'  column="4">
+          <e-desc-item label="退费时间">{{item.returnMoneyTime}}</e-desc-item>
+          <e-desc-item label="退费学年">{{ item.returnSchoolYear}}</e-desc-item>
+          <e-desc-item label="退费金额">{{ item.returnFeeNum}}</e-desc-item>
+          <e-desc-item label="退培训费">{{ item.trainFee}}</e-desc-item>
+          <e-desc-item label="退服装费">{{ item.clothesFee}}</e-desc-item>
+          <e-desc-item label="退教材费">{{ item.bookFee}}</e-desc-item>
+          <e-desc-item label="退住宿费">{{ item.hotelFee}}</e-desc-item>
+          <e-desc-item label="退被褥费">{{ item.bedFee}}</e-desc-item>
+          <e-desc-item label="退保险费">{{ item.insuranceFee}}</e-desc-item>
+          <e-desc-item label="退公物押金">{{ item.publicFee}}</e-desc-item>
+          <e-desc-item label="退证书费">{{ item.certificateFee}}</e-desc-item>
+          <e-desc-item label="退国防教育费">{{ item.defenseEduFee}}</e-desc-item>
+          <e-desc-item label="退体检费">{{ item.bodyExamFee}}</e-desc-item>
+          <e-desc-item label="退费账户">{{ item.account}}</e-desc-item>
+          <e-desc-item label="退费账号">{{ item.accountNumber}}</e-desc-item>
+          <e-desc-item label="退费开户行">{{ item.depositBank}}</e-desc-item>
+          <e-desc-item label="应收合计">{{ item.returnFeeNum}}</e-desc-item>
+        </e-desc>
+          </el-tab-pane>
+        </el-tabs>
+      </el-collapse-item>
+    </el-collapse>
+
+
+    <el-collapse v-model="f_qmoney" @change="handleChange" >
+      <el-collapse-item name="1">
+        <template slot="title">
+          <span style="text-align: center; font-weight: bold; font-size: 16px;">欠费信息</span>
+        </template>
+        <el-tabs type="border-card" >
+          <el-tab-pane v-for="(item, index) in info.feeArrearageList" :key="index" :label="`第${index+1 }次退费信息`">
+            <e-desc margin='0 12px' label-width='120px' label="tab  1" name="tab1">
+
+
+              <e-desc-item label="欠费学年度">{{ item.year }}</e-desc-item>
+              <e-desc-item label="欠培训费">{{ item.trainFee }}</e-desc-item>
+              <e-desc-item label="欠服装费">{{ item.clothesFee }}</e-desc-item>
+              <e-desc-item label="欠教材费">{{ item.bookFee }}</e-desc-item>
+              <e-desc-item label="欠住宿费">{{ item.hotelFee }}</e-desc-item>
+              <e-desc-item label="欠被褥费">{{ item.bedFee }}</e-desc-item>
+              <e-desc-item label="欠保险费">{{ item.insuranceFee }}</e-desc-item>
+              <e-desc-item label="欠公物押金费">{{ item.publicFee }}</e-desc-item>
+              <e-desc-item label="欠证书费">{{ item.certificateFee }}</e-desc-item>
+              <e-desc-item label="欠国防教育费">{{ item.defenseEduFee }}</e-desc-item>
+              <e-desc-item label="欠体检费">{{ item.bodyExamFee }}</e-desc-item>
+              <e-desc-item label="欠费合计">{{ item.feeNum }}</e-desc-item>
+            </e-desc>
+          </el-tab-pane>
+
+
+        </el-tabs>
+      </el-collapse-item>
+    </el-collapse>
+
+
+    <el-collapse v-model="f_necessary" @change="handleChange" >
+      <el-collapse-item name="1">
+        <template slot="title">
+          <span style="text-align: center; font-weight: bold; font-size: 16px;">必考证书信息</span>
+        </template>
+        <el-tabs type="border-card" >
+          <el-tabs type="border-card" key>
+            <el-tab-pane v-for="(item, index) in info.certificateDetail.necessaryList" :key="index" :label="`证书${index+1}`">
+              <e-desc margin='0 12px' label-width='140px' column="2" >
+                <e-desc-item label="证书名称" >{{ item.certificateName}}</e-desc-item>
+                <e-desc-item label="考证时间" >{{item.examTime}}</e-desc-item>
+                <e-desc-item label="考证状态">{{ item.status === 1 ? '已考': item.status === 0 ? '未考':'无' }}</e-desc-item>
+                <e-desc-item  label="发证日期">{{ item.issueTime }}</e-desc-item>
+                <e-desc-item label="错补证信息">{{ item.information === 2 ? '2未补发' :item.information === 1?'1已补发':'无'}}</e-desc-item>
+                <e-desc-item label="备注">{{ item.remarks}}</e-desc-item>
+              </e-desc>
+            </el-tab-pane>
+          </el-tabs>
+        </el-tabs>
+      </el-collapse-item>
+    </el-collapse>
+
+
+    <el-collapse v-model="f_option" @change="handleChange" >
+      <el-collapse-item name="1">
+        <template slot="title">
+          <span style="text-align: center; font-weight: bold; font-size: 16px;">选考证书信息</span>
+        </template>
+        <el-tabs type="border-card" >
+          <el-tabs type="border-card" key>
+            <el-tab-pane v-for="(item, index) in info.certificateDetail.optionList" :key="index" :label="`证书${index+1}`">
+              <e-desc margin='0 12px' label-width='140px' column="2" >
+                <e-desc-item label="证书名称" >{{ item.certificateName}}</e-desc-item>
+                <e-desc-item label="考证时间" >{{item.examTime}}</e-desc-item>
+                <e-desc-item label="考证状态">{{ item.status === 1 ? '已考': item.status === 0 ? '未考':'无' }}</e-desc-item>
+                <e-desc-item  label="发证日期">{{ item.issueTime }}</e-desc-item>
+                <e-desc-item label="错补证信息">{{ item.information === 2 ? '2未补发' :item.information === 1?'1已补发':'无'}}</e-desc-item>
+                <e-desc-item label="备注">{{ item.remarks}}</e-desc-item>
+              </e-desc>
+            </el-tab-pane>
+          </el-tabs>
+        </el-tabs>
+      </el-collapse-item>
+    </el-collapse>
+
+
+
+
     <div>
       <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
       <div style="margin: 15px 0;"></div>
@@ -220,7 +332,7 @@
 import EDesc from '../other/EDesc'
 import EDescItem from '../other/EDescItem'
 
-const cityOptions = ['学生详情', '贫困情况', '缴费信息', '评定信息', '就业信息', '实习信息']
+const cityOptions = ['学生详情', '贫困情况', '缴费信息', '评定信息', '就业信息', '实习信息', '退费信息', '欠费信息', '证书信息']
 export default {
   components: {
     EDesc, EDescItem
@@ -245,7 +357,13 @@ export default {
 
         },
         visitList: [],
-        practiceList: []
+        practiceList: [],
+        certificateDetail: {
+          necessaryList: [],
+          optionList: []
+        },
+        feeArrearageList: [],
+        feeReturnList: []
       },
       checkAll: false,
       checkedCities: ['上海', '北京'],
@@ -257,7 +375,12 @@ export default {
       f_tryWork: ['1'],
       money: ['1'],
       stuStatus: ['1'],
-      room: ['1']
+      room: ['1'],
+      f_remoney: ['1'],
+      f_qmoney: ['1'],
+      f_necessary: ['1'],
+      f_option: ['1']
+
     }
   },
   methods: {

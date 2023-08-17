@@ -20,7 +20,7 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <div class="grid-content bg-purple" style="text-align: center;border-right: 2px dashed rgb(113, 111, 111);">
-            素材格式<br>支持excel
+            素材格式<br>支持JPG/PNG/GIF
           </div>
         </el-col>
         <el-col :span="12">
@@ -30,10 +30,9 @@
     </div>
   </el-dialog>
 </template>
-
 <script>
 export default {
-  name: 'enrollStuImport',
+  name: 'workImport',
   data () {
     return {
       detailVisible: false,
@@ -59,79 +58,38 @@ export default {
     init () {
       this.detailVisible = true
     },
-    uploadData() {
+    uploadData () {
       if (this.selectedFile === null) {
-        this.$message.error('请拖拽文件文件后再上传！');
+        this.$message.error('请拖拽文件文件后再上传！')
       } else {
-        let uploadConfirmed = false; // Flag to keep track of user confirmation
-        this.$confirm('确定要上传文件吗？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          // User clicked "OK" in the confirmation dialog, proceed with file upload
-          uploadConfirmed = true; // Set the flag to true
-          const formData = new FormData();
-          formData.append('file', this.selectedFile);
-          this.$http({
-            url: this.$http.adornUrl('generator/feeschoolsundry/upload'),
-            method: 'post',
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            data: formData
-          }).then(({ data }) => {
-            if (uploadConfirmed && data && data.code === 0) {
-              this.$message({
-                message: '操作成功，请刷新列表',
-                type: 'success',
-                duration: 4500,
-                onClose: () => {
-                  this.getData();
-                }
-              });
-            } else if (uploadConfirmed && data) {
-              this.$message.error(data.msg);
-            }
-          });
-        }).catch(() => {
-          // User clicked "Cancel" in the confirmation dialog
-          uploadConfirmed = false; // Set the flag to false
-        });
+        const formData = new FormData()
+        formData.append('file', this.selectedFile)
+        this.$http({
+          url: this.$http.adornUrl('stuWork/upload'),
+          method: 'post',
+          headers: {
+            'Content-Type': 'multipart/form-data' // 设置正确的 Content-Type
+          },
+          data: formData
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.$message({
+              message: '操作成功,请刷新列表',
+              type: 'success',
+              duration: 4500,
+              onClose: () => {
+                this.getData()
+              }
+            })
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
       }
     },
-    // uploadData () {
-    //   if (this.selectedFile === null) {
-    //     this.$message.error('请拖拽文件文件后再上传！')
-    //   } else {
-    //     const formData = new FormData()
-    //     formData.append('file', this.selectedFile)
-    //     this.$http({
-    //       url: this.$http.adornUrl('generator/feeschoolsundry/upload'),
-    //       method: 'post',
-    //       headers: {
-    //         'Content-Type': 'multipart/form-data' // 设置正确的 Content-Type
-    //       },
-    //       data: formData
-    //     }).then(({data}) => {
-    //       if (data && data.code === 0) {
-    //         this.$message({
-    //           message: '操作成功，请刷新列表',
-    //           type: 'success',
-    //           duration: 4500,
-    //           onClose: () => {
-    //             this.getData()
-    //           }
-    //         })
-    //       } else {
-    //         this.$message.error(data.msg)
-    //       }
-    //     })
-    //   }
-    // },
     downloadTemplate () {
       this.$http({
-        url: this.$http.adornUrl('file/download/excel/stu_fee.xlsx'),
+        url: this.$http.adornUrl('file/download/excel/stuPractice.xlsx'),
         method: 'get',
         responseType: 'blob'
       }).then(response => {
@@ -141,10 +99,9 @@ export default {
         const url = window.URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
-        link.setAttribute('download', '缴费信息导入模版.xlsx')
+        link.setAttribute('download', '学生实习记录模版.xlsx')
         document.body.appendChild(link)
         link.click()
-        this.$message.success("导出中，请耐心等待下载！")
         window.URL.revokeObjectURL(url)
       })
     }

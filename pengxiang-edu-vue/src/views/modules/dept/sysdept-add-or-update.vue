@@ -49,16 +49,17 @@
     },
     data () {
       return {
-        typeOptions: [{
-          value: 1,
-          label: '专业/系部'
-        }, {
-          value: 2,
-          label: '年级'
-        }, {
-          value: 3,
-          label: '班级'
-        }],
+        typeOptions: [
+          {
+            value: 2,
+            label: '年级'
+          }, {
+            value: 1,
+            label: '专业'
+          }, {
+            value: 3,
+            label: '班级'
+          }],
         deptTypeArray: ['院校/学校', '专业/系部', '年级', '班级'],
         treeList: [],
         visible: false,
@@ -156,7 +157,7 @@
                 this.dataForm.pid = data.sysDept.pid
                 this.dataForm.name = data.sysDept.name
                 this.dataForm.description = data.sysDept.description
-                this.dataForm.deptType = this.deptTypeArray[data.sysDept.deptType]
+                this.dataForm.deptType = data.sysDept.deptType
                 this.dataForm.enabled = data.sysDept.enabled
                 this.dataForm.createBy = data.sysDept.createBy
                 this.dataForm.updateBy = data.sysDept.updateBy

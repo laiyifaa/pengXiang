@@ -50,10 +50,10 @@
                 type="selection"
                 width="55">
               </el-table-column>
-              <el-option label="学生姓名" value="stuName" ></el-option>
+              <el-option label="班型" value="classType"></el-option>
               <el-option label="招生老师" value="enrollTeacher"></el-option>
-              <el-option label="招生老师部门" value="admissionsDepartment"></el-option>
-              <el-option label="招生老师电话" value="enrollTeacherPhone"></el-option>
+              <el-option label="招生季" value="admissionSeason"></el-option>
+              <el-option label="考生状态" value="status"></el-option>
             </el-select>
             <el-input v-model="condition.value" placeholder="请输入" style="width: 150px;" clearable></el-input>
             <i class="el-icon-circle-close" type="danger" icon="el-icon-circle-close"
@@ -263,14 +263,23 @@ export default {
     handleExport () {
       // 处理导出逻辑
       this.outVisiable = true
-      var stuNameOption = null
+      var classTypeOption = null
       var enrollTeacherOption = null
+      var admissionSeasonOption = null
+      var statusOption = null
       if (this.searchConditions != null && this.searchConditions.length >= 0) {
-        stuNameOption = this.searchConditions.filter(condition => condition.option === 'stuName')
+        classTypeOption = this.searchConditions.filter(condition => condition.option === 'classType')
         enrollTeacherOption = this.searchConditions.filter(condition => condition.option === 'enrollTeacher')
+        admissionSeasonOption = this.searchConditions.filter(condition => condition.option === 'admissionSeason')
+        statusOption = this.searchConditions.filter(condition => condition.option === 'status')
       }
       this.$nextTick(() => {
-        this.$refs.outDialog.init(this.pageSize, this.pageIndex, stuNameOption.length === 0 ? null : stuNameOption[0].value, enrollTeacherOption.length === 0 ? null : enrollTeacherOption[0].value, this.deptId)
+        this.$refs.outDialog.init(this.pageSize, this.pageIndex,
+          classTypeOption.length === 0 ? null : classTypeOption[0].value,
+          enrollTeacherOption.length === 0 ? null : enrollTeacherOption[0].value,
+          admissionSeasonOption.length === 0 ? null : admissionSeasonOption[0].value,
+          statusOption.length === 0 ? null : statusOption[0].value,
+          this.deptId)
       })
     },
     handleSizeChange (size) {
@@ -287,11 +296,15 @@ export default {
     },
     getData: function () {
       this.dataListLoading = true
-      var stuNameOption = null
+      var classTypeOption = null
       var enrollTeacherOption = null
+      var admissionSeasonOption = null
+      var statusOption = null
       if (this.searchConditions != null && this.searchConditions.length >= 0) {
-        stuNameOption = this.searchConditions.filter(condition => condition.option === 'stuName')
+        classTypeOption = this.searchConditions.filter(condition => condition.option === 'classType')
         enrollTeacherOption = this.searchConditions.filter(condition => condition.option === 'enrollTeacher')
+        admissionSeasonOption = this.searchConditions.filter(condition => condition.option === 'admissionSeason')
+        statusOption = this.searchConditions.filter(condition => condition.option === 'status')
       }
       this.$http({
         url: this.$http.adornUrl('stu/temp/list'),
@@ -300,8 +313,10 @@ export default {
           'page': this.pageIndex,
           'limit': this.pageSize,
           'deptId': this.deptId,
-          'stuName': stuNameOption.length === 0 ? null : stuNameOption[0].value,
-          'enrollTeacher': enrollTeacherOption.length === 0 ? null : enrollTeacherOption[0].value
+          'classTypeName': classTypeOption.length === 0 ? null : classTypeOption[0].value,
+          'enrollTeacher': enrollTeacherOption.length === 0 ? null : enrollTeacherOption[0].value,
+          'admissionSeason': admissionSeasonOption.length === 0 ? null : admissionSeasonOption[0].value,
+          'statusName': statusOption.length === 0 ? null : statusOption[0].value
         })
       }).then(({data}) => {
         if (data.code === 500) {

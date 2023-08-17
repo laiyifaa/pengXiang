@@ -41,7 +41,7 @@
           clearable>
         </el-input>
       </e-desc-item>
-      <e-desc-item label="籍贯">
+      <e-desc-item label="籍贯" icon="*">
         <el-input
           v-model="info.nativePlace"
           clearable>
@@ -77,13 +77,13 @@
           <el-option  v-for="item in eduBeforeList" :label="item.label" :value='item.value' :key = 'item.value' ></el-option>
         </el-select>
       </e-desc-item>
-      <e-desc-item label="毕业学校">
+      <e-desc-item label="毕业学校" icon="*">
         <el-input
           v-model="info.schoolBefore"
           clearable>
         </el-input>
       </e-desc-item>
-      <e-desc-item label="户口性质">
+      <e-desc-item label="户口性质" icon="*">
         <el-select v-model="info.residenceType" placeholder="请选择户口性质"  style="width: 100%">
           <el-option label="农业户口" :value='1' :key='1'></el-option>
           <el-option label="非农户口" :value='0' :key='0'></el-option>
@@ -93,14 +93,14 @@
     </e-desc>
     <HR style="border: 3 double #987cb9" width=95% color=#987cb9 size="3"></HR>
     <e-desc margin='0 12px' label-width='100px' title="学生基本信息">
-      <e-desc-item label="招生季">
+      <e-desc-item label="招生季" icon="*">
 
         <el-select v-model="info.admissionSeason " placeholder="请选择招生季" style="width: 100%">
           <el-option label="春季" value="春季" key="春季"></el-option>
           <el-option label="秋季" value="秋季" key="秋季"></el-option>
         </el-select>
       </e-desc-item>
-      <e-desc-item label="考生状态" icon="*">
+      <e-desc-item label="考生状态">
         <el-select v-model="info.status " placeholder="请选择考生状态" style="width: 100%">
           <el-option label="未参加面试" :value="0" :key="0"></el-option>
           <el-option label="通过面试" :value="1" :key="1"></el-option>
@@ -108,7 +108,7 @@
           <el-option label="状态未知" :value="3" :key="3" ></el-option>
         </el-select>
       </e-desc-item>
-      <e-desc-item label="班型">
+      <e-desc-item label="班型" icon="*">
         <el-select v-model="info.classType " placeholder="请选择班型" style="width: 100%">
           <el-option label="就业" :value="1" :key="1"></el-option>
           <el-option label="升学" :value="0" :key="0"></el-option>
@@ -341,8 +341,36 @@ export default {
           this.$message.error('证件号码为空')
           return
         }
-        if (this.info.status === null || this.info.status === '') {
-          this.$message.error('考生状态为空')
+        if (this.info.nativePlace === null || this.info.nativePlace === '') {
+          this.$message.error('籍贯为空')
+          return
+        }
+        if (this.info.schoolBefore === null || this.info.schoolBefore === '') {
+          this.$message.error('毕业院校为空')
+          return
+        }
+        if (this.info.residenceType === null || this.info.residenceType === '') {
+          this.$message.error('户口性质为空')
+          return
+        }
+        // if (this.info.status === null || this.info.status === '') {
+        //   this.$message.error('考生状态为空')
+        //   return
+        // }
+        if (this.info.admissionSeason === null || this.info.admissionSeason === '') {
+          this.$message.error('招生季为空')
+          return
+        }
+        if (this.info.classType === null || this.info.classType === '') {
+          this.$message.error('班型为空')
+          return
+        }
+        if (this.info.academyName === null || this.info.academyName === '') {
+          this.$message.error('院校为空')
+          return
+        }
+        if (this.info.gradeName === null || this.info.gradeName === '') {
+          this.$message.error('年级为空')
           return
         }
         if (this.info.schoolingLength === null || this.info.schoolingLength === '') {

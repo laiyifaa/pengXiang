@@ -34,12 +34,16 @@
           <div v-for="(condition, index) in searchConditions" :key="index" style=" margin-left: 10px;">
             <el-select style="width: 110px;" v-model="condition.option" placeholder="查询条件">
               <el-option label="姓名" value="stu_name"></el-option>
-              <el-option label="学号" value="school_number"></el-option>
-              <el-option label="性别" value="gender"></el-option>
-              <el-option label="班主任" value="head_teacher"></el-option>
-              <el-option label="籍贯" value="native_place"></el-option>
-              <el-option label="政治面貌" value="political_status"></el-option>
+              <el-option label="身份证号" value="id_number"></el-option>
+              <el-option label="招生季" value="admission_season"></el-option>
+              <el-option label="户口类型" value="residence_type"></el-option>
+              <el-option label="是否欠费" value="isArrearage"></el-option>
               <el-option label="缴费学年" value="year"></el-option>
+              <el-option label="减免类型" value="derateType"></el-option>
+<!--              <el-option label="班主任" value="head_teacher"></el-option>-->
+<!--              <el-option label="籍贯" value="native_place"></el-option>-->
+<!--              <el-option label="政治面貌" value="political_status"></el-option>-->
+<!--              <el-option label="缴费学年" value="year"></el-option>-->
 
             </el-select>
             <el-input v-model="condition.value" placeholder="请输入" style="width: 200px;" clearable></el-input>
@@ -125,14 +129,18 @@
             width="80" align="center">
           </el-table-column>
           <el-table-column
+            prop="ifQMoney"
+            label="是否欠费"
+            width="80" align="center">
+          </el-table-column>
+          <el-table-column
             fixed="right"
             header-align="center"
             align="center"
-            width="50"
+            width="80"
             label="欠费操作">
-            <template slot-scope="scope">
-
-              <el-button  type="text" size="small" @click="qMoneyHandle(scope.row.id)" >欠费</el-button>
+            <template slot-scope="scope" >
+              <el-button  type="text" size="small" @click="qMoneyHandle(scope.row.id)" >点击欠费</el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -276,6 +284,7 @@ export default {
         } else {
           this.dataList = []
           this.totalPage = 0
+          this.$message.error(data.msg)
         }
         this.dataListLoading = false
       })

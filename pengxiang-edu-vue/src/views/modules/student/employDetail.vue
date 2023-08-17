@@ -14,7 +14,7 @@
       <e-desc-item label="联系电话">{{ Info.phone }}</e-desc-item>
       <e-desc-item label="系部">{{ Info.deptName }}</e-desc-item>
       <e-desc-item label="专业">{{ Info.majorName }}</e-desc-item>
-      <e-desc-item label="班型">{{ Info.classType }}</e-desc-item>
+      <e-desc-item label="班型">{{ Info.classType === 1?'就业':'升学' }}</e-desc-item>
       <e-desc-item label="班级">{{ Info.className }}</e-desc-item>
       <e-desc-item label="班主任">{{ Info.headTeacher }}</e-desc-item>
       <e-desc-item label="班主任电话">{{ Info.headTeacherPhone }}</e-desc-item>

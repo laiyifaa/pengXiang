@@ -8,12 +8,40 @@
             <el-col :span="14" style="text-align:center;" >
               <div style="display: flex; align-items: center;">
                 <el-button type="primary" icon="el-icon-plus" style="width: 80px; padding-left: 1px;" @click="addSearchCondition" v-show="searchCount<2">查询条件</el-button>
-          <div v-for="(condition, index) in searchConditions" :key="index" style=" margin-left: 5px; display: flex; align-items: center; ">
-            <el-select style="width: 92px;" v-model="condition.option" placeholder="条件">
-              <el-option label="姓名" value="name"></el-option>
-              <el-option label="学号" value="schoolNumber"></el-option>
-            </el-select>
-            <el-input v-model="condition.value" placeholder="请输入" style="width: 150px;margin-left: 5px" clearable></el-input>
+                <div v-for="(condition, index) in searchConditions" :key="index" style="margin-left: 5px; display: flex; align-items: center;">
+                  <el-select style="width: 120px;" v-model="condition.option" placeholder="条件">
+                    <el-option label="姓名" value="name"></el-option>
+                    <el-option label="学号" value="schoolNumber"></el-option>
+                    <el-option label="是否在岗" value="isPost"></el-option>
+                    <el-option label="是否需要二次就业" value="isSecondEmploy"></el-option>
+                    <el-option label="离校日期" value="leaveDate"></el-option>
+                    <el-option label="离校原因" value="leaveReason"></el-option>
+                    <el-option label="就业岗位" value="employPost"></el-option>
+                    <el-option label="岗位负责人" value="postLeader"></el-option>
+                  </el-select>
+                  <template v-if="condition.option === 'leaveDate'">
+                    <el-date-picker
+                      style="width: 215px; margin-left: 5px;"
+                      v-model="condition.value"
+                      value-format="yyyy-MM-dd"
+                      placeholder="选择日期"
+                    ></el-date-picker>
+                  </template>
+                  <template v-else-if="condition.option === 'isPost'">
+                    <el-select style="width: 215px; margin-left: 5px;" v-model="condition.value" >
+                      <el-option label="是" :value='1' ></el-option>
+                      <el-option label="否" :value='0' ></el-option>
+                    </el-select>
+                  </template>
+                  <template v-else-if="condition.option === 'isSecondEmploy'">
+                  <el-select style="width: 215px; margin-left: 5px;" v-model="condition.value" >
+                    <el-option label="是" :value='1' ></el-option>
+                    <el-option label="否" :value='0' ></el-option>
+                  </el-select>
+                </template>
+                  <template v-else>
+                    <el-input v-model="condition.value" placeholder="请输入" style="width: 215px; margin-left: 5px;" clearable></el-input>
+                  </template>
             <el-button type="danger" style=" margin-left: 5px;" icon="el-icon-delete" @click="removeSearchCondition(index) ">删除</el-button>
           </div>
           <el-button type="primary" icon="el-icon-search" @click="handleSearch" style=" margin-left: 2px;">搜索</el-button>
@@ -29,7 +57,7 @@
         :default-expanded-keys="[]"
         :default-checked-keys="[]"
         :props="defaultProps"
-        @node-click="(data, node, item)=>getDeptsByPid(data, node, item)"
+        @node-click="(node,)=>getDeptsByPid(node)"
       >
       </el-tree>
     </el-col>
@@ -76,8 +104,6 @@
 
 
     </el-col>
-
-
     <el-dialog :visible.sync="showDialog" title="提示" width="30%">
       <p size="100px" style="margin-top: 20px; font-weight: bold;text-align: center">请选择导出选项</p>
       <span slot="footer" class="dialog-footer">
@@ -164,14 +190,11 @@ export default {
     handleSearch () {
       const params = {}
       this.searchConditions.forEach(condition => {
-        if (condition.option && condition.value) {
           params[condition.option] = condition.value;
-        }
       })
       if(this.$refs.treeRef.getCurrentNode()!=null){
         params.id = this.$refs.treeRef.getCurrentNode().id;
       }
-
       params.pageNum=this.currentPage
       params.pageSize=this.pageSize
 
@@ -181,6 +204,7 @@ export default {
         method: 'get',
         params: params
      }).then(response =>{
+        console.log(response)
         if (response.data.listDto === null) {
           // 结果为空，弹出警告框
           this.$alert('搜索结果为空', '警告', {
@@ -196,7 +220,6 @@ export default {
      })
     },
     handleExport(option) {
-
       this.$confirm('确定导出吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -273,9 +296,10 @@ export default {
     Export () {
       this.showDialog=true
     },
-    getDeptsByPid (data, node, item) {
+    getDeptsByPid (node) {
+      this.currentPage = 1;
       let param={
-        id: node.key,
+        id: node.id,
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
@@ -286,19 +310,48 @@ export default {
       }).then(response=>{
         this.tableData = response.data.listDto === null ? [] : response.data.listDto.list;
         this.total = response.data.listDto === null ? 0 :response.data.listDto.total
-
+      })
+    },
+    reGetDeptsByPid (node) {
+      let param={
+        id: node.id,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      }
+      this.$http({
+        url:this.$http.adornUrl('/stu/treeSearch'),
+        method:'get',
+        params: param
+      }).then(response=>{
+        this.tableData = response.data.listDto === null ? [] : response.data.listDto.list;
+        this.total = response.data.listDto === null ? 0 :response.data.listDto.total
       })
     },
     handleSizeChange (size) {
       this.pageSize = size
-      // 重新请求数据
-      this.getData()
+      if(this.searchConditions[0].value!=''){
+        this.handleSearch()
+      }
+      else if(this.$refs.treeRef.getCurrentNode()!=null){
+        this.reGetDeptsByPid(this.$refs.treeRef.getCurrentNode())
+      }
+      else {
+        this.getData()
+      }
     },
     // 处理当前页码变化事件
     handleCurrentChange (page) {
       this.currentPage = page
       // 重新请求数据
-      this.getData()
+      if(this.searchConditions[0].value!=''){
+        this.handleSearch()
+      }
+      else if(this.$refs.treeRef.getCurrentNode()!=null){
+        this.reGetDeptsByPid(this.$refs.treeRef.getCurrentNode())
+      }
+      else {
+        this.getData()
+      }
     },
     getData(){
       this.$http({
@@ -312,7 +365,6 @@ export default {
         this.tableData = response.data.listDto.list
         this.total=response.data.listDto.total
       })
-
     },
     getDeptTreeList () {
       this.$http({

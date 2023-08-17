@@ -4,7 +4,7 @@
     <e-desc-item label="学号" >{{ Info.schoolNumber}}</e-desc-item>
     <e-desc-item label="姓名" >{{Info.name}}</e-desc-item>
     <e-desc-item label="身份证号码">{{ Info.idNumber }}</e-desc-item>
-    <e-desc-item  label="年龄">{{ Info.age }}</e-desc-item>
+    <e-desc-item  label="年龄">{{ age }}</e-desc-item>
     <e-desc-item label="性别">{{ Info.gender }}</e-desc-item>
     <e-desc-item label="民族">{{ Info.nation }}</e-desc-item>
     <e-desc-item label="籍贯">{{ Info.nativePlace }}</e-desc-item>
@@ -13,7 +13,7 @@
     <e-desc-item label="联系电话">{{ Info.phone }}</e-desc-item>
     <e-desc-item label="系部">{{ Info.deptName }}</e-desc-item>
     <e-desc-item label="专业">{{ Info.majorName }}</e-desc-item>
-    <e-desc-item label="班型">{{ Info.classType }}</e-desc-item>
+    <e-desc-item label="班型">{{ Info.classType === 1?'就业':'升学' }}</e-desc-item>
     <e-desc-item label="班级">{{ Info.className }}</e-desc-item>
     <e-desc-item label="班主任">{{ Info.headTeacher }}</e-desc-item>
     <e-desc-item label="班主任电话">{{ Info.headTeacherPhone }}</e-desc-item>
@@ -83,6 +83,13 @@ export default {
         })
     }else {
       this.schoolNumberIsNull=false
+    }
+  },
+  computed: {
+    age() {
+      const birthYear = new Date(this.Info.birthday).getFullYear();
+      const currentYear = new Date().getFullYear();
+      return currentYear - birthYear;
     }
   },
   methods: {

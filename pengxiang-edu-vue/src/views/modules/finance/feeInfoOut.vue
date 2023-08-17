@@ -37,7 +37,7 @@
               this.outVisible = true
             },
             handleExportAll () {
-              this.$confirm(`确定进行'批量导出'操作?（目前条件下所有）`, '提示', {
+              this.$confirm(`确定进行'批量导出'操作?（当前页）`, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'

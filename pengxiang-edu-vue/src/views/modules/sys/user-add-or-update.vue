@@ -51,9 +51,9 @@
 <script>
   import { isEmail, isMobile } from '@/utils/validate'
   export default {
-    mounted() {
-      this.getAcademyList();
-    },
+    mounted () {
+      this.getAcademyList()
+  },
     data () {
       var validatePassword = (rule, value, callback) => {
         if (!this.dataForm.id && !/\S/.test(value)) {
@@ -130,7 +130,6 @@
           method: 'get'
         }).then(({data}) => {
           this.academyOptions = data.data
-          this.academyOptions.push({value:-1,label:'所有院校'})
         })
       },
       init (id) {
@@ -161,7 +160,6 @@
                 this.dataForm.roleIdList = data.user.roleIdList
                 this.dataForm.status = data.user.status
                 this.dataForm.academyId = data.user.academyId
-
               }
             })
           }
@@ -202,7 +200,7 @@
             })
           }
         })
-      },
+      }
     }
   }
 </script>

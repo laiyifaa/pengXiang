@@ -38,19 +38,35 @@ export default {
       stuName: null,
       idNumber: null,
       headTeacher: null,
+      gender: null,
+      residenceType: null,
+      schoolNumber: null,
+      classType: null,
+      currentStatus: null,
+      schoolRollStatus: null,
+      developLevel: null,
+      statusSchool: null,
       deptId: null
     }
   },
   methods: {
     // 3.定义一个init函数，通过设置detailVisible值为true来让弹窗弹出，这个函数会在父组件的方法中被调用
-    init (i, j, k, l, m, d) {
+    init (pageSize, pageIndex, stuName, idNumber, headTeacher, d, gender, residenceType, schoolNumber, classType, currentStatus, schoolRollStatus, developLevel, statusSchool) {
       this.outVisible = true
-      this.pageSize = i,
-        this.pageIndex = j,
-        this.stuName = k,
-        this.idNumber = l,
-        this.headTeacher = m,
-        this.deptId = d
+      this.pageSize = pageSize
+      this.pageIndex = pageIndex
+      this.stuName = stuName
+      this.idNumber = idNumber
+      this.headTeacher = headTeacher
+      this.gender = gender
+      this.residenceType = residenceType
+      this.schoolNumber = schoolNumber
+      this.classType = classType
+      this.currentStatus = currentStatus
+      this.schoolRollStatus = schoolRollStatus
+      this.developLevel = developLevel
+      this.statusSchool = statusSchool
+      this.deptId = d
     },
     exportData (isAll) {
       this.$confirm(`确定进行导出`, '提示', {
@@ -71,7 +87,7 @@ export default {
               'headTeacher': this.headTeacher,
               'isAll': isAll
             }
-        ),
+          ),
           responseType: 'blob'
         }).then(response => {
           const blob = new Blob([response.data], {
