@@ -7,10 +7,7 @@ import io.renren.common.utils.PageUtils;
 import io.renren.modules.edu.dto.FeeSchoolSundryDto;
 import io.renren.modules.edu.dto.StuKeyWordDto;
 import io.renren.modules.edu.entity.FeeSchoolSundryEntity;
-import io.renren.modules.edu.vo.FeeSchoolSundryVo;
-import io.renren.modules.edu.vo.FeeSundryExportVo;
-import io.renren.modules.edu.vo.SearchConditionVo;
-import io.renren.modules.edu.vo.StuTempVo;
+import io.renren.modules.edu.vo.*;
 
 import java.util.List;
 import java.util.Map;
@@ -32,8 +29,8 @@ public interface FeeSchoolSundryService extends IService<FeeSchoolSundryEntity> 
 
     Map<String, Object> getStuBaseInfoAndFeeSundry(Long id);
 
-    void importByList(List<FeeSundryExportVo> cachedDataList,AnalysisContext context) ;
+    void importByList(List<FeeSundryImportVo> cachedDataList, AnalysisContext context) ;
 
-    PageUtils selectStuFeeSundryPage(IPage<FeeSchoolSundryVo> page, String year, Long deptId, StuKeyWordDto key);
+    PageUtils selectStuFeeSundryPage(IPage<FeeSchoolSundryVo> page, Integer year, Long deptId, StuKeyWordDto key);
 }
 

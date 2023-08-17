@@ -52,6 +52,7 @@ public class StuChangeServiceImpl extends ServiceImpl<StuChangeDao, StuStatusCha
         if(stuChange.getId() == null || stuChange.getId() <= 0){
             stuChange.setCreateBy(sysUser.getUserId());
             stuChange.setCreateTime(new Date());
+            stuChange.setIsDeleted(false);
             this.baseMapper.addStatusChange(stuChange);
         }else {
             if(null == stuChange.getUpdateTime()){

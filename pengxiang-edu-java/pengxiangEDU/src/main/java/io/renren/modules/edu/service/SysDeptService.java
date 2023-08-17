@@ -30,6 +30,8 @@ public interface SysDeptService extends IService<SysDeptEntity> {
 
   void saveDept(SysDeptEntity sysDept);
 
+  void updateDept(SysDeptEntity sysDept);
+
   IPage<SysDeptVo> selectSysDeptPage(IPage<SysDeptVo> page, String key);
 
   List<ClassVo> getClassListByGradeId(Long gradeId);

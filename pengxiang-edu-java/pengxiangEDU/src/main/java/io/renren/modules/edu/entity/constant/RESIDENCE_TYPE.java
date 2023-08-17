@@ -16,6 +16,13 @@ public enum RESIDENCE_TYPE {
         return value;
     }
 
+    public static boolean isContain(String inputDescription){
+        for(RESIDENCE_TYPE type : RESIDENCE_TYPE.values()){
+            if(!type.getDescription().equalsIgnoreCase(inputDescription))
+                return true;
+        }
+        return false;
+    }
     public String getDescription() {
         return description;
     }

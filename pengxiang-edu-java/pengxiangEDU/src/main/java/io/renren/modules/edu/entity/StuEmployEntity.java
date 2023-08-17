@@ -19,12 +19,9 @@ import java.util.Date;
 @ExcelIgnoreUnannotated
 public class StuEmployEntity {
     private int id;
-
     private Long stuId;
-
     @ExcelProperty("学号")
     private String schoolNumber;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @ExcelProperty(value = "离校日期",converter = DateConverter.class)
@@ -35,7 +32,6 @@ public class StuEmployEntity {
     private String employOrg;
     @ExcelProperty("就业岗位")
     private String employPost;
-
     private String probationPeriod;
     @ExcelProperty("试用期薪酬")
     private String probationIncome;

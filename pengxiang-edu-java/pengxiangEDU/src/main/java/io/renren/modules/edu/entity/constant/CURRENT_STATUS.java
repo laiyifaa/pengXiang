@@ -24,6 +24,15 @@ public enum CURRENT_STATUS {
     public String getDescription() {
         return description;
     }
+
+    public static boolean isContain(String inputDescription){
+        for(CURRENT_STATUS type : CURRENT_STATUS.values()){
+            if(!type.getDescription().equalsIgnoreCase(inputDescription))
+                return true;
+        }
+        return false;
+    }
+
     public static int getValue(String inputDescription) {
         for (CURRENT_STATUS type : CURRENT_STATUS.values()) {
             if (type.getDescription().equalsIgnoreCase(inputDescription)) {

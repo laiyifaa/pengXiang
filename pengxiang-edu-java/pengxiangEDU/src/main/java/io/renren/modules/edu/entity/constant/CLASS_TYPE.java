@@ -19,6 +19,13 @@ public enum CLASS_TYPE {
     public String getDescription() {
         return description;
     }
+    public static boolean isContain(String inputDescription){
+        for(CLASS_TYPE type : CLASS_TYPE.values()){
+            if(!type.getDescription().equalsIgnoreCase(inputDescription))
+                return true;
+        }
+        return false;
+    }
     public static int getValue(String inputDescription) {
         for (CLASS_TYPE type : CLASS_TYPE.values()) {
             if (type.getDescription().equalsIgnoreCase(inputDescription)) {

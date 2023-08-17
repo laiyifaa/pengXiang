@@ -24,10 +24,7 @@ import io.renren.modules.edu.excel.StuBaseInfoListener;
 import io.renren.modules.edu.service.*;
 import io.renren.modules.edu.utils.Query;
 
-import io.renren.modules.edu.vo.FeeSchoolSundryVo;
-import io.renren.modules.edu.vo.FeeSundryExportVo;
-import io.renren.modules.edu.vo.SearchConditionVo;
-import io.renren.modules.edu.vo.qMoneyExportVo;
+import io.renren.modules.edu.vo.*;
 import io.renren.modules.sys.entity.SysUserEntity;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.BeanUtils;
@@ -76,7 +73,7 @@ public class FeeSchoolSundryController {
         try {
             EasyExcel.read(
                     file.getInputStream(),
-                    FeeSundryExportVo.class,
+                    FeeSundryImportVo.class,
                     new FeeSchoolSundryListener(feeSchoolSundryService)).sheet().doRead();
         }catch (IOException e){
             return R.error(e.getMessage());
@@ -138,7 +135,9 @@ public class FeeSchoolSundryController {
         for (FeeSchoolSundryVo dto : collect) {
             FeeSundryExportVo exportVo = new FeeSundryExportVo();
             BeanUtils.copyProperties(dto, exportVo);
-            exportVo.setIsArrearage(dto.getIsArrearage() == 1? "是" : "否");
+            if (dto.getIsArrearage() != null){
+                exportVo.setIsArrearage(dto.getIsArrearage() == 1? "是" : "否");
+            }
             //if (dto.getDerateType() != null)exportVo.setDerate(dto.getDerateType() == 1? "贫困生" : "非贫困");
             if (dto.getPaySchoolDate() != null)exportVo.setPaySchoolDate(dto.getPaySchoolDate());
             if (dto.getReturnFeeTime() != null)exportVo.setReturnFeeTime(dto.getReturnFeeTime().toString());
@@ -175,6 +174,7 @@ public class FeeSchoolSundryController {
         return R.ok().put("page", page);
     }
 
+
     @RequestMapping("/qMoneyHandle")
     public R qMoneyHandle(@RequestBody Long[] ids){
         FeeArrearageEntity feeArrearageEntity = new FeeArrearageEntity();
@@ -208,7 +208,9 @@ public class FeeSchoolSundryController {
             lambdaQueryWrapper.eq(FeeArrearageEntity::getStuId,byId.getStuId());
             FeeArrearageEntity one = feeArrearageService.getOne(lambdaQueryWrapper);
             if (one != null){
+                Long oneId = one.getId();
                 BeanUtils.copyProperties(feeArrearageEntity,one);
+                one.setId(oneId);
                 feeArrearageService.updateById(one);
             }else {
                 feeArrearageService.save(feeArrearageEntity);
@@ -247,7 +249,7 @@ public class FeeSchoolSundryController {
     }
 
     @RequestMapping("/list")
-    public R list(@Nullable String year,
+    public R list(@Nullable Integer year,
                   @Nullable Long deptId,
                   Query query,
                   @Nullable  StuKeyWordDto key

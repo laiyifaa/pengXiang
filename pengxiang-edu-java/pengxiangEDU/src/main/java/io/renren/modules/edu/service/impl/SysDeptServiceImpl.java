@@ -1,5 +1,6 @@
 package io.renren.modules.edu.service.impl;
 
+import io.renren.common.utils.Constant;
 import io.renren.modules.edu.dto.DeptdescriptionDto;
 import io.renren.modules.edu.utils.DeptTypeArray;
 import io.renren.modules.edu.vo.*;
@@ -7,7 +8,7 @@ import io.renren.modules.sys.entity.SysUserEntity;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -58,12 +59,32 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDeptEntity> i
 
   }
 
+  @Override
+  public void updateDept(SysDeptEntity sysDept) {
+    //先查出父部门
+    SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+    sysDept.setUpdateBy(user.getUserId());
+    QueryWrapper<SysDeptEntity> queryWrapper = new QueryWrapper<>();
+    queryWrapper.eq("dept_id", sysDept.getPid());
+    sysDept.setUpdateTime(new Date());
+
+    SysDeptEntity father = baseMapper.selectOne(queryWrapper);
+    sysDept.setDescription(father.getDescription()+sysDept.getName());
+    sysDept.setIsDeleted(false);
+    baseMapper.updateById(sysDept);
+
+  }
+
   public void saveDept(SysDeptEntity sysDept) {
     //先查出父部门
+    SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
     QueryWrapper<SysDeptEntity> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("dept_id", sysDept.getPid());
     SysDeptEntity father = baseMapper.selectOne(queryWrapper);
     sysDept.setDescription(father.getDescription()+sysDept.getName());
+    sysDept.setIsDeleted(false);
+    sysDept.setCreateTime(new Date());
+    sysDept.setCreateBy(user.getUserId());
     List<SysDeptEntity> deptList = new LinkedList<>();
     deptList.add(sysDept);
     baseMapper.batchInsert(deptList );
@@ -125,8 +146,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDeptEntity> i
   public List<AcademySelectVo> getAcademyList() {
     SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
     List<AcademySelectVo> vos= baseMapper.getAcademyList(user.getAcademyId());
-    if(null != user.getAcademyId() && user.getAcademyId() == -1){
-      AcademySelectVo all = new AcademySelectVo();
+    if(user.getUserId() == Constant.SUPER_ADMIN){
+      AcademySelectVo vo = new AcademySelectVo();
+      vo.setLabel("所有院校");
+      vo.setValue(-1);
+      vos.add(vo);
     }
     return vos;
 

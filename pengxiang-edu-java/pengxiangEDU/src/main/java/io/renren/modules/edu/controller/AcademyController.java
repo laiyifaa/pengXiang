@@ -42,7 +42,6 @@ public class AcademyController {
     //@RequiresPermissions("academy:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = academyService.queryPage(params);
-
         return R.ok().put("page", page);
     }
 

@@ -2,6 +2,7 @@ package io.renren.modules.edu.entity;
 
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -11,7 +12,6 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.renren.modules.edu.excel.DateConverter;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -52,15 +52,15 @@ public class EduCertificateEntity extends BaseEntity  implements Serializable {
 	/***
 	 *考证时间
 	 */
-	@ExcelProperty(value = "考证时间",converter = DateConverter.class)
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@ExcelProperty(value = "考证时间")
+	@DateTimeFormat(value = "yyyy-MM-dd")
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date examTime;
 	/**
 	 *发证日期
 	 */
-	@ExcelProperty(value = "发证日期",converter = DateConverter.class)
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@ExcelProperty(value = "发证日期")
+	@DateTimeFormat(value = "yyyy-MM-dd")
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date issueTime;
 

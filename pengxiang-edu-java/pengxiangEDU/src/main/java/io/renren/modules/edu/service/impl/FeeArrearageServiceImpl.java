@@ -7,6 +7,7 @@ import io.renren.common.utils.RedisUtils;
 import io.renren.modules.app.utils.JwtUtils;
 import io.renren.modules.edu.dao.SysDeptDao;
 import io.renren.modules.edu.dto.DeptdescriptionDto;
+import io.renren.modules.edu.dto.ReturnFeeDto;
 import io.renren.modules.edu.dto.qMoneyAndInfoListDto;
 import io.renren.modules.edu.entity.StuBaseInfoEntity;
 import io.renren.modules.edu.entity.SysDeptEntity;
@@ -71,6 +72,7 @@ public class FeeArrearageServiceImpl extends ServiceImpl<FeeArrearageDao, FeeArr
             map.put(deptdescriptionDto.getClassId(),deptdescriptionDto.getClassName());
         }
 
+        List<qMoneyAndInfoListDto> qMoneyAndInfoListDtosNoDelete = new ArrayList<>();
         for (qMoneyAndInfoListDto qMoneyAndInfoListDto :qMoneyAndInfoListDtos){
 
             qMoneyAndInfoListDto.setMajorName(map.get(qMoneyAndInfoListDto.getMajorId()));
@@ -78,14 +80,33 @@ public class FeeArrearageServiceImpl extends ServiceImpl<FeeArrearageDao, FeeArr
             qMoneyAndInfoListDto.setGradeName(map.get(qMoneyAndInfoListDto.getGradeId()));
 
             qMoneyAndInfoListDto.setClassName(map.get(qMoneyAndInfoListDto.getClassId()));
+
+            if (!qMoneyAndInfoListDto.getIsDeleted()){
+                qMoneyAndInfoListDtosNoDelete.add(qMoneyAndInfoListDto);
+            }
         }
-        IPage<qMoneyAndInfoListDto> page1 = new Page<>();
-        BeanUtils.copyProperties(page,page1);
-        page1.setRecords(qMoneyAndInfoListDtos);
+
+        int pageSize = (int)page.getSize();  // 每页显示的数据条数
+        int pageNum = (int)page.getCurrent();    // 要显示的页码
+        int startIndex = (pageNum - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, qMoneyAndInfoListDtosNoDelete.size());
+
+        List<qMoneyAndInfoListDto> recordsOnPage = qMoneyAndInfoListDtosNoDelete.subList(startIndex, endIndex);
+        PageUtils pageUtils = new PageUtils(page);
+        pageUtils.setList(recordsOnPage);
+        pageUtils.setPageSize(pageSize);
+        pageUtils.setTotalCount(qMoneyAndInfoListDtosNoDelete.size());
+        pageUtils.setTotalPage((int) Math.ceil((double) qMoneyAndInfoListDtosNoDelete.size() / pageSize));
+        pageUtils.setCurrPage(pageNum);
+
+
+//        IPage<qMoneyAndInfoListDto> page1 = new Page<>();
+//        BeanUtils.copyProperties(page,page1);
+//        page1.setRecords(qMoneyAndInfoListDtosNoDelete);
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
 
-        redis.set("qMoneyList"+user.getUserId(),JSON.toJSON(qMoneyAndInfoListDtos).toString());
-        return new PageUtils(page1);
+        redis.set("qMoneyList"+user.getUserId(),JSON.toJSON(qMoneyAndInfoListDtosNoDelete).toString());
+        return pageUtils;
     }
 
     @Override
@@ -107,6 +128,18 @@ public class FeeArrearageServiceImpl extends ServiceImpl<FeeArrearageDao, FeeArr
         for (pageVo pageVo : searchConditionVo.getSearchConditions()){
             if (pageVo.getOption().equals("year")){
                 yearValue = pageVo.getValue();
+                continue;
+            }
+            if (pageVo.getOption().equals("residence_type")){
+                int a = 2;
+                if (pageVo.getValue().equals("农业户口")){
+                    a = 1;
+                }else if (pageVo.getValue().equals("非农户口")){
+                    a = 0;
+                }else {
+                    throw new RuntimeException("户口类型格式错误，请填农业户口/非农户口");
+                }
+                queryWrapper.eq(pageVo.getOption(),a);
                 continue;
             }
             queryWrapper.like(pageVo.getOption(),pageVo.getValue());

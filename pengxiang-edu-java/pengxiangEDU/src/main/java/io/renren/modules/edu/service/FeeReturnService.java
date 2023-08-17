@@ -28,7 +28,7 @@ public interface FeeReturnService  extends IService<FeeReturnEntity>{
 
      Integer saveFeeReturnSundry(ReturnFeeDto dto);
 
-     void importByList(List<FeeReturnExportVo> cachedDataList, AnalysisContext context) ;
+     void importByList(List<returnFeeImportVo> cachedDataList, AnalysisContext context) ;
      PageUtils queryPageInConditions(SearchConditionVo searchConditionVo);
 }
 

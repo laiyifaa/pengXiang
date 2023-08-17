@@ -6,6 +6,8 @@ import java.util.*;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import io.renren.modules.edu.entity.StuTempEntity;
+import io.renren.modules.edu.entity.constant.CLASS_TYPE;
+import io.renren.modules.edu.entity.constant.STUTEMP_STATUS;
 import io.renren.modules.edu.excel.EmptyDataException;
 import io.renren.modules.edu.excel.StuTempInfoListener;
 import io.renren.modules.edu.service.StuTempService;
@@ -48,7 +50,11 @@ public class StuTempController {
         }catch (EmptyDataException ee){
             return R.error(ee.getMessage());
         }catch (IOException e){
+            e.printStackTrace();
             return R.error(e.getMessage());
+        }catch (RuntimeException re){
+            re.printStackTrace();
+            return R.error(re.getMessage());
         }
         return R.ok();
     }
@@ -59,12 +65,21 @@ public class StuTempController {
                        @Nullable Query query,
                        @Nullable @RequestParam("deptId")Long deptId,
                        @Nullable  StuTempEntity record,
-                       @Nullable @RequestParam("isAll") Boolean isAll){
+                       @Nullable @RequestParam("isAll") Boolean isAll,
+                       @Nullable @RequestParam("classTypeName") String classTypeName,
+                       @Nullable @RequestParam("statusName") String statusName){
         try {
+            if(null != classTypeName && CLASS_TYPE.isContain(classTypeName)){
+                record.setClassType(CLASS_TYPE.getValue(classTypeName));
+            }
             List<StuTempVo> list = null;
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
             response.setCharacterEncoding("utf-8");
             String fileName = "stuTempExport";
+
+            if(null != statusName && STUTEMP_STATUS.isContain(statusName)){
+                record.setStatus(STUTEMP_STATUS.getValue(statusName));
+            }
             response.setHeader("Content-disposition","attachment;filename=" + fileName +".xlsx");
             if(isAll){
                 list = stuTempService.queryExport(null,null,null);
@@ -89,11 +104,19 @@ public class StuTempController {
     //@RequiresPermissions("generator:stutemp:list")
     public R list(Query query,
                   @Nullable @RequestParam("deptId")Long deptId,
-                  @Nullable  StuTempEntity record){
+                  @Nullable  StuTempEntity record,
+                  @Nullable @RequestParam("classTypeName") String classTypeName,
+                  @Nullable @RequestParam("statusName") String statusName){
         SysUserEntity sysUser = (SysUserEntity)SecurityUtils.getSubject().getPrincipal();
         if(null == deptId || deptId < 0){
             Long academyId = sysUser.getAcademyId();
             deptId = academyId == -1?null:academyId;
+        }
+        if(null != classTypeName && CLASS_TYPE.isContain(classTypeName)){
+            record.setClassType(CLASS_TYPE.getValue(classTypeName));
+        }
+        if(null != statusName && STUTEMP_STATUS.isContain(statusName)){
+            record.setStatus(STUTEMP_STATUS.getValue(statusName));
         }
         PageUtils page = stuTempService.queryPage(query, record,deptId);
         return R.ok().put("page", page);

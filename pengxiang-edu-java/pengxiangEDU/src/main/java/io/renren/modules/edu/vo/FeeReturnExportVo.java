@@ -4,8 +4,10 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.renren.modules.edu.excel.DateConverter;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -45,7 +47,9 @@ public class FeeReturnExportVo {
     /**
      * 退费时间
      */
-    @ExcelProperty(value = "退费时间",converter = DateConverter.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @ExcelProperty(value = "退费时间", converter = DateConverter.class)
     private Date returnMoneyTime;
 
     /**

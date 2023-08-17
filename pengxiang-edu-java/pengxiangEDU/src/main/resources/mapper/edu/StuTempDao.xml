@@ -74,8 +74,14 @@
                 <if test="null != record.enrollTeacher">
                     AND temp.enroll_teacher like concat('%',#{record.enrollTeacher},'%')
                 </if>
-                <if test="null != record.enrollTeacherPhone">
-                    AND temp.enroll_teacher_phone like concat('%',#{record.enrollTeacherPhone},'%')
+                <if test="null != record.classType">
+                    AND temp.class_type = #{record.classType}
+                </if>
+                <if test="null != record.status">
+                    AND temp.status = #{record.status}
+                </if>
+                <if test="null != record.admissionSeason">
+                    AND temp.admission_season like   concat('%',#{record.admissionSeason},'%')
                 </if>
             </if>
         </where>

@@ -83,7 +83,7 @@
                 id_number AS idNumber
         FROM stu_base_info
         <where>
-            1 = 1 AND   is_deleted = 0
+            1 = 1
             <if test="null != keyType and null != keyList and !keyList.isEmpty()">
                 <if test="keyType == 1">
                     AND id_number IN
@@ -420,9 +420,33 @@
         <if test="null != key.idNumber">
             AND bi.id_number like concat('%',#{key.idNumber},'%')
         </if>
-        <if test="null != key.headTeacher">
-            AND bi.head_teacher like concat('%',#{key.headTeacher},'%')
+        <if test="null != key.gender">
+            AND bi.gender like concat('%',#{key.gender},'%')
         </if>
+        <if test="null != key.residenceType">
+              AND bi.residence_type = #{key.residenceType}
+        </if>
+          <if test="null != key.schoolNumber">
+              AND bi.school_number like concat('%',#{key.schoolNumber},'%')
+          </if>
+          <if test="null != key.classType">
+              AND bi.class_type = #{key.classType}
+          </if>
+          <if test="null != key.currentStatus">
+              AND bi.current_status = #{key.currentStatus}
+          </if>
+          <if test="null != key.schoolRollStatus">
+              AND bi.school_roll_status  = #{key.schoolRollStatus}
+          </if>
+          <if test="null != key.developLevel">
+              AND bi.develop_level    like concat('%', #{key.developLevel},'%')
+          </if>
+          <if test="null != key.headTeacher">
+              AND bi.head_teacher    like concat('%',#{key.headTeacher},'%')
+          </if>
+          <if test="null != key.statusSchool">
+              AND bi.status_school  like concat('%',#{key.statusSchool},'%')
+          </if>
       </if>
       <if test="null != academyId and academyId != -1">
         and bi.academy_id = #{academyId}

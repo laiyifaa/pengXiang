@@ -72,7 +72,7 @@ public class FeeReturnController {
         try {
             EasyExcel.read(
                     file.getInputStream(),
-                    FeeReturnExportVo.class,
+                    returnFeeImportVo.class,
                     new FeeReturnListener(feeReturnService)).sheet().doRead();
         }catch (IOException e){
             return R.error(e.getMessage());

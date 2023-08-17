@@ -13,6 +13,8 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.renren.common.utils.RedisUtils;
 import io.renren.modules.edu.dto.qMoneyAndInfoListDto;
+import io.renren.modules.edu.entity.FeeSchoolSundryEntity;
+import io.renren.modules.edu.service.FeeSchoolSundryService;
 import io.renren.modules.edu.utils.Query;
 import io.renren.modules.edu.vo.SearchConditionVo;
 import io.renren.modules.edu.vo.qMoneyExportVo;
@@ -46,6 +48,8 @@ public class FeeArrearageController {
     private FeeArrearageService feeArrearageService;
     @Autowired
     RedisUtils redis;
+    @Autowired
+    FeeSchoolSundryService feeSchoolSundryService;
     /**
      * 列表
      */
@@ -56,7 +60,21 @@ public class FeeArrearageController {
         return R.ok().put("page", page);
     }
 
-
+    @RequestMapping("/okMoneyHandle")
+    public R okMoneyHandle(@RequestBody Long[] ids){
+        for (Long id : ids) {
+            FeeArrearageEntity byId = feeArrearageService.getById(id);
+            byId.setIsDeleted(true);
+            Long stuId = byId.getStuId();
+            LambdaQueryWrapper<FeeSchoolSundryEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(FeeSchoolSundryEntity::getStuId,stuId);
+            FeeSchoolSundryEntity byId1 = feeSchoolSundryService.getOne(lambdaQueryWrapper);
+            byId1.setIsArrearage(0);
+            feeSchoolSundryService.updateById(byId1);
+            feeArrearageService.updateById(byId);
+        }
+        return R.ok();
+    }
     /**
      * 搜索
      */

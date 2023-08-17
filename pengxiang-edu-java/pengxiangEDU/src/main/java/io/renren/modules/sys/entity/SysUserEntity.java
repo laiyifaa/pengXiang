@@ -77,6 +77,13 @@ public class SysUserEntity implements Serializable {
 	@TableField(exist=false)
 	private List<Long> roleIdList;
 
+
+	/**
+	 * 部门ID列表
+	 */
+	@TableField(exist=false)
+	private List<Long> deptList;
+
 	/**
 	 * 创建者ID
 	 */

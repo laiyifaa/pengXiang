@@ -21,6 +21,7 @@ import java.util.List;
 public interface FeeSchoolSundryDao extends BaseMapper<FeeSchoolSundryEntity> {
 
     List<FeeSchoolSundryVo> selectFeeSundryVo(IPage<FeeSchoolSundryVo> page, @Param("academyId") Long academyId, @Param("year") Integer year, @Param("deptId") Long deptId, @Param("key") StuKeyWordDto key);
+    List<FeeSchoolSundryVo> selectFeeSundryVo2( @Param("academyId") Long academyId, @Param("year") Integer year, @Param("deptId") Long deptId, @Param("key") StuKeyWordDto key);
 
     List<Long> getIdList();
 }

@@ -1,8 +1,10 @@
 package io.renren.modules.edu.service.impl;
 
+import io.renren.common.utils.Constant;
 import io.renren.modules.edu.dao.SysDeptDao;
 import io.renren.modules.edu.entity.SysDeptEntity;
-import javassist.tools.web.BadHttpRequest;
+import io.renren.modules.sys.entity.SysUserEntity;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -18,7 +20,6 @@ import io.renren.common.utils.Query;
 import io.renren.modules.edu.dao.AcademyDao;
 import io.renren.modules.edu.entity.AcademyEntity;
 import io.renren.modules.edu.service.AcademyService;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.annotation.Resource;
 
@@ -31,9 +32,16 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyDao, AcademyEntity> i
 
   @Override
   public PageUtils queryPage(Map<String, Object> params) {
+    QueryWrapper<AcademyEntity> wrapper = new QueryWrapper<>();
+    SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+    wrapper.eq("is_deleted",0);
+    if(user.getUserId() != Constant.SUPER_ADMIN){
+      SysDeptEntity deptEntity = deptDao.selectById(user.getAcademyId());
+      wrapper.eq("academy_info",deptEntity.getName());
+    }
     IPage<AcademyEntity> page = this.page(
       new Query<AcademyEntity>().getPage(params),
-      new QueryWrapper<AcademyEntity>().eq("is_deleted",0)
+            wrapper
     );
 
     return new PageUtils(page);

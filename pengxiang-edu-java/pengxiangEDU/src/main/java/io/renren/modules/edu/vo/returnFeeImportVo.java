@@ -1,7 +1,9 @@
 package io.renren.modules.edu.vo;
 
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.renren.modules.edu.excel.DateConverter;
 import lombok.Data;
@@ -17,7 +19,12 @@ import java.util.Date;
  * @date 2023/7/28 14:23
  */
 @Data
-public class returnFeeExportVo {
+@ExcelIgnoreUnannotated
+public class returnFeeImportVo {
+
+    @TableId
+    private Long id;
+    private Long stuId;
     @ExcelProperty("院校名称")
     @TableField(exist = false)
     private String academyName;
@@ -90,7 +97,7 @@ public class returnFeeExportVo {
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ExcelProperty(value = "退费时间", converter = DateConverter.class)
+    @ExcelProperty(value = "退费时间")
     private Date returnMoneyTime;
 
     /**

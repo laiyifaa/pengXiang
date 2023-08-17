@@ -22,7 +22,7 @@ public interface StuTempService extends IService<StuTempEntity> {
 
     List<StuTempVo> queryExport(Query query,StuTempEntity record,Long deptId);
 
-    void importByList(List<StuTempVo> cachedDataList) ;
+    void importByList(List<StuTempVo> cachedDataList) throws RuntimeException ;
 
     void deleteByIds(Long[] ids);
 

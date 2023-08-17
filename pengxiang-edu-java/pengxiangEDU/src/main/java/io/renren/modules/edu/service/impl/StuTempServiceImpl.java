@@ -1,6 +1,7 @@
 package io.renren.modules.edu.service.impl;
 
 import com.alibaba.excel.util.StringUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.renren.common.utils.PageUtils;
@@ -56,25 +57,32 @@ public class StuTempServiceImpl extends ServiceImpl<StuTempDao, StuTempEntity> i
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void importByList(List<StuTempVo> cachedDataList) {
+    public void importByList(List<StuTempVo> cachedDataList) throws RuntimeException {
         if(null == cachedDataList || cachedDataList.isEmpty())
             return ;
         List<DeptdescriptionDto> descList = sysDeptDao.listStuTempDesc(null);
         Map<String, DeptdescriptionDto> deptDescMap = descList.stream().collect(Collectors.toMap(DeptdescriptionDto::getDescription, Function.identity()));
         //来自excel的身份证列表
-        List<String> cacheIdNumberList = new ArrayList<>(cachedDataList.size());
-        for(StuTempVo entity : cachedDataList){
-            cacheIdNumberList.add(entity.getIdNumber());
+        Set<String> cacheIdNumberSet = new LinkedHashSet<>(cachedDataList.size());
+        for( int i = 0;i<cachedDataList.size();++i){
+            StuTempVo entity = cachedDataList.get(i);
+            if(cacheIdNumberSet.contains(entity.getIdNumber())){
+                throw new RuntimeException("第"+(i+2)+"行学生身份证与之前重复");
+            }
+            cacheIdNumberSet.add(entity.getIdNumber());
         }
+        List<String> cacheIdNumberList = new ArrayList<>(cacheIdNumberSet);
         //查询数据库 是否有这些 身份证(关键词)
         List<StuKeyWordDto> oldStudentList = this.baseMapper.listAllKey(cacheIdNumberList, 1);
         Map<String,StuKeyWordDto> oldStudentMap = oldStudentList.stream().collect(Collectors.toMap(StuKeyWordDto::getIdNumber,Function.identity()));
-
         List<StuTempEntity> updateStudentList = new LinkedList<>();
         List<StuTempEntity> addStudentList = new LinkedList<>();
         SysUserEntity userEntity = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
         for(StuTempVo entity : cachedDataList){
-            setTempDeptInfo(entity,deptDescMap);
+            Boolean aBoolean = setTempDeptInfo(entity,deptDescMap);
+            if(!aBoolean){
+                throw new RuntimeException("院校、专业、年级填写有误");
+            }
 /*            StuTempEntity temp = new StuTempEntity();
             BeanUtils.copyProperties(entity,temp);*/
             if(oldStudentMap.containsKey(entity.getIdNumber())){
@@ -84,11 +92,14 @@ public class StuTempServiceImpl extends ServiceImpl<StuTempDao, StuTempEntity> i
                 entity.setId(dbKey.getId());
                 entity.setUpdateTime(new Date());
                 entity.setUpdateBy(userEntity.getUserId());
+                entity.setIsDeleted(true);
+                entity.setIsDeleted(false);
                 updateStudentList.add(entity);
             }else {
                 entity.setIsDeleted(false);
                 entity.setCreateTime(new Date());
                 entity.setCreateBy(userEntity.getUserId());
+                entity.setIsDeleted(false);
                 addStudentList.add(entity);
             }
         }
@@ -131,7 +142,11 @@ public class StuTempServiceImpl extends ServiceImpl<StuTempDao, StuTempEntity> i
         Boolean aBoolean = setTempDeptInfo(temp, deptDescMap);
         if(!aBoolean)
             throw new Exception("院校、专业、年级填写有误");
-        if(null == id || id <= 0){
+        StuTempEntity dbStuTemp = this.baseMapper.selectOne(new QueryWrapper<StuTempEntity>().eq("id_number", temp.getIdNumber()));
+        if(null != dbStuTemp){
+            temp.setIsDeleted(false);
+            this.baseMapper.updateById(temp);
+        }else if(null == id || id <= 0){
             temp.setCreateTime(new Date());
             temp.setCreateBy(user.getUserId());
  /*           StuTempEntity insertEntity = new StuTempVo();
@@ -140,8 +155,6 @@ public class StuTempServiceImpl extends ServiceImpl<StuTempDao, StuTempEntity> i
             List<StuTempEntity> list = new LinkedList<>();
             list.add(temp);
             this.baseMapper.batchInsert(list);
-        }else {
-            this.baseMapper.updateById(temp);
         }
     }
 
@@ -153,6 +166,7 @@ public class StuTempServiceImpl extends ServiceImpl<StuTempDao, StuTempEntity> i
         /**
          * 查询考生 并去除已经通过的考生
          */
+        SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
         List<StuTempEntity> stuTempList = this.baseMapper.selectBatchIds(Arrays.asList(ids));
         stuTempList.removeIf(temp -> temp.getStatus() == STUTEMP_STATUS.PASS.getValue());
 
@@ -165,6 +179,9 @@ public class StuTempServiceImpl extends ServiceImpl<StuTempDao, StuTempEntity> i
             BeanUtils.copyProperties(stuTempEntity,baseInfo);
             baseInfo.setSchoolRollStatus(SCHOOL_ROLL_STATUS.getValue(null));
             baseInfo.setCurrentStatus(CURRENT_STATUS.getValue(null));
+            baseInfo.setIsDeleted(false);
+            baseInfo.setCreateTime(new Date());
+            baseInfo.setCreateBy(user.getUserId());
             baseInfoList.add(baseInfo);
         }
         if(null != stuTempList && !stuTempList.isEmpty()){
@@ -177,7 +194,10 @@ public class StuTempServiceImpl extends ServiceImpl<StuTempDao, StuTempEntity> i
                 BeanUtils.copyProperties(baseInfo,feeInfo);
                 feeInfo.setIsArrearage(0);
                 feeInfo.setIsDeleted(false);
+                feeInfo.setCreateBy(user.getUserId());
+                feeInfo.setCreateTime(new Date());
                 feeList.add(feeInfo);
+
             }
             feeSchoolSundryService.saveBatch(feeList);
         }

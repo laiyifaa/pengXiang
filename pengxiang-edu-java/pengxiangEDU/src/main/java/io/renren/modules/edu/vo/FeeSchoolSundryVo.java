@@ -398,4 +398,5 @@ public class FeeSchoolSundryVo extends FeeSchoolSundryEntity {
      * 是否欠费 1：是 0：否
      */
     private Integer isArrearage;
+
 }

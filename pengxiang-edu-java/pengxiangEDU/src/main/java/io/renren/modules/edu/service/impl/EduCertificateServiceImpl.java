@@ -32,17 +32,6 @@ public class EduCertificateServiceImpl extends ServiceImpl<EduCertificateDao, Ed
     @Resource
     private StuBaseInfoDao stuBaseInfoDao;
 
-    /*@Override
-    public PageUtils queryPage(Map<String, Object> params) {
-        IPage<EduCertificateEntity> page = this.page(
-                new Query<EduCertificateEntity>().getPage(params),
-                new QueryWrapper<EduCertificateEntity>()
-        );
-
-        return new PageUtils(page);
-    }*/
-
-
     @Override
     public List<CertificateVo> queryExport(Query query, EduCertificateEntity key, Long deptId) {
  /*       SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
@@ -83,6 +72,11 @@ public class EduCertificateServiceImpl extends ServiceImpl<EduCertificateDao, Ed
         if(baseInfoList == null || baseInfoList.size() != 1 )
             return null;
         detailVo.setBaseInfo(baseInfoList.get(0));
+        setCertificateList(stuId,detailVo);
+        return detailVo;
+    }
+    @Override
+    public void setCertificateList(Long stuId,CertificateDetailVo detailVo){
         List<EduCertificateEntity> certificateList = this.baseMapper.selectList(new QueryWrapper<EduCertificateEntity>()
                 .eq("is_deleted", 0)
                 .eq("stu_id", stuId));
@@ -98,9 +92,7 @@ public class EduCertificateServiceImpl extends ServiceImpl<EduCertificateDao, Ed
         }
         detailVo.setNecessaryList(necessaryList);
         detailVo.setOptionList(optionList);
-        return detailVo;
     }
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveCertificateInfo(EduCertificateEntity temp) throws Exception {

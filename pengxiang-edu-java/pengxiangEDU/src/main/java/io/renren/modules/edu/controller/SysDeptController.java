@@ -6,10 +6,12 @@ import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import io.renren.common.utils.Constant;
 import io.renren.modules.edu.utils.Methods;
 import io.renren.modules.edu.utils.Query;
 import io.renren.modules.edu.vo.*;
 import io.renren.modules.sys.entity.SysUserEntity;
+import io.renren.modules.sys.service.SysUserDeptService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -34,7 +36,8 @@ import io.renren.common.utils.R;
 public class SysDeptController {
     @Autowired
     private SysDeptService sysDeptService;
-
+    @Autowired
+    private SysUserDeptService sysUserDeptService;
     /**
      * 列表
      */
@@ -90,7 +93,7 @@ public class SysDeptController {
     @RequestMapping("/update")
 //  //@RequiresPermissions("sysdept:update")
     public R update(@RequestBody SysDeptEntity sysDept) {
-        sysDeptService.updateById(sysDept);
+        sysDeptService.updateDept(sysDept);
 
         return R.ok();
     }
@@ -110,6 +113,10 @@ public class SysDeptController {
     public R getDeptTreeList() {
         List<SysDeptEntity> deptList = sysDeptService.getDeptTreeList();
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+ /*       if(user.getUserId() != Constant.SUPER_ADMIN){
+            HashSet<Long> deptSet = new HashSet<>(sysUserDeptService.queryDeptIdList(user.getUserId()));
+
+        }*/
         List<DeptTreeListVo> treeListVos = getVoListByPid(user.getAcademyId(), deptList);
 /*        //如果不是超级管理员，最后查一次院校部门，作为根节点
         if (user.getAcademyId() != -1) {
@@ -197,15 +204,7 @@ public class SysDeptController {
     }
 
     private List<DeptTreeListVo> getVoListByPid(Long pid, List<SysDeptEntity> deptList) {
-/*       List<DeptTreeListVo> voList = deptList.stream().filter(item -> item.getPid() == pid).map(item -> {
-            DeptTreeListVo treeListVo = new DeptTreeListVo();
-            treeListVo.setId(item.getDeptId());
-            treeListVo.setLabel(item.getName());
-            treeListVo.setChildren(getVoListByPid(item.getDeptId(), deptList));
-            return treeListVo;
-        }).collect(Collectors.toList());*/
         List<DeptTreeListVo> voList = new LinkedList<>();
-        DeptTreeListVo curDept = null;
         Map<Long,DeptTreeListVo> deptVoMap = new HashMap<>(deptList.size());
         for(SysDeptEntity deptEntity : deptList){
             DeptTreeListVo vo = new DeptTreeListVo();

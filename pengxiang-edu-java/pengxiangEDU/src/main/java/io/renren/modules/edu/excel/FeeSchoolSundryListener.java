@@ -9,6 +9,7 @@ import io.renren.modules.edu.entity.StuBaseInfoEntity;
 import io.renren.modules.edu.service.FeeSchoolSundryService;
 import io.renren.modules.edu.service.StuBaseInfoService;
 import io.renren.modules.edu.vo.FeeSundryExportVo;
+import io.renren.modules.edu.vo.FeeSundryImportVo;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -20,12 +21,12 @@ import java.util.List;
  */
 // 有个很重要的点 DemoDataListener 不能被spring管理，要每次读取excel都要new,然后里面用到spring可以构造方法传进去
 @Slf4j
-public class FeeSchoolSundryListener implements ReadListener<FeeSundryExportVo> {
+public class FeeSchoolSundryListener implements ReadListener<FeeSundryImportVo> {
     /**
      * 每隔5条存储数据库，实际使用中可以100条，然后清理list ，方便内存回收
      */
     private static final int BATCH_COUNT = 1024;
-    private List<FeeSundryExportVo> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+    private List<FeeSundryImportVo> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
 
     private FeeSchoolSundryService feeSchoolSundryService;
 
@@ -43,7 +44,7 @@ public class FeeSchoolSundryListener implements ReadListener<FeeSundryExportVo> 
      * @param context
      */
     @Override
-    public void invoke(FeeSundryExportVo data, AnalysisContext context) {
+    public void invoke(FeeSundryImportVo data, AnalysisContext context) {
         /*log.info("解析到一条数据:{}", JSON.toJSONString(data));*/
         check(data,context);
         cachedDataList.add(data);
@@ -75,7 +76,7 @@ public class FeeSchoolSundryListener implements ReadListener<FeeSundryExportVo> 
         feeSchoolSundryService.importByList(cachedDataList,context);
 
     }
-    private void check(FeeSundryExportVo data, AnalysisContext context){
+    private void check(FeeSundryImportVo data, AnalysisContext context){
         if(StringUtils.isEmpty(data.getIdNumber())){
             throw new EmptyDataException("证件号字段为空，第 " + (context.readRowHolder().getRowIndex() + 1) + " 行数据异常！");
         }

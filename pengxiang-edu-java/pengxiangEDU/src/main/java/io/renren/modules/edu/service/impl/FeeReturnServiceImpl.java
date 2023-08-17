@@ -100,13 +100,34 @@ public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEnt
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
         Long academyId = user.getAcademyId();
         List<ReturnFeeDto> records = feeReturnDao.selectReturnFeeDto(page, academyId, deptId);
+        List<ReturnFeeDto> allRecords = feeReturnDao.selectReturnFeeDto2(academyId, deptId);
 
 
-        page.setRecords(records);
+        // 手动进行分页
+        int pageSize = (int)page.getSize();  // 每页显示的数据条数
+        int pageNum = (int)page.getCurrent();    // 要显示的页码
+        int startIndex = (pageNum - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, allRecords.size());
+
+        List<ReturnFeeDto> recordsOnPage = allRecords.subList(startIndex, endIndex);
+
+
+
+// 创建分页信息对象
         PageUtils pageUtils = new PageUtils(page);
+        pageUtils.setList(recordsOnPage);
+        pageUtils.setPageSize(pageSize);
+        pageUtils.setTotalCount(allRecords.size());
+        pageUtils.setTotalPage((int) Math.ceil((double) allRecords.size() / pageSize));
+        pageUtils.setCurrPage(pageNum);
+
+
+
+//        page.setRecords(records2);
+//        PageUtils pageUtils = new PageUtils(page);
         SysUserEntity user2 = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
 
-        redis.set("returnFeeList"+user2.getUserId(), JSON.toJSON(records).toString());
+        redis.set("returnFeeList"+user2.getUserId(), JSON.toJSON(allRecords).toString());
         return pageUtils;
 
     }
@@ -150,13 +171,13 @@ public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEnt
     }
 
     @Override
-    public void importByList(List<FeeReturnExportVo> cachedDataList, AnalysisContext context) {
+    public void importByList(List<returnFeeImportVo> cachedDataList, AnalysisContext context) {
         if(null == cachedDataList || cachedDataList.isEmpty())
             return ;
         //来自excel的身份证列表
         List<String> cacheIdNumberList = new ArrayList<>(cachedDataList.size());
         List<Long> cacheStuIdList = new ArrayList<>(cachedDataList.size());
-        for(FeeReturnExportVo entity : cachedDataList){
+        for(returnFeeImportVo entity : cachedDataList){
             LambdaQueryWrapper<StuBaseInfoEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
 
             lambdaQueryWrapper.eq(StuBaseInfoEntity::getIdNumber,entity.getIdNumber());
@@ -175,7 +196,7 @@ public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEnt
 
 
         SysUserEntity userEntity = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
-        for(FeeReturnExportVo entity : cachedDataList){
+        for(returnFeeImportVo entity : cachedDataList){
 /*            StuTempEntity temp = new StuTempEntity();
             BeanUtils.copyProperties(entity,temp);*/
             if(cacheIdNumberList.contains(entity.getIdNumber())){
@@ -209,6 +230,9 @@ public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEnt
     }
     @Override
     public PageUtils queryPageInConditions(SearchConditionVo searchConditionVo) {
+        if (!searchConditionVo.getStart().before(searchConditionVo.getEnd())){
+            throw new RuntimeException("时间段选择错误，起始时间大于结束时间");
+        }
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
         String jsonStr = null; // 从 Redis 中获取 JSON 字符串
         jsonStr = redis.get("returnFeeList"+user.getUserId());
@@ -219,10 +243,32 @@ public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEnt
         IPage<ReturnFeeDto> page = this.page(
                 new Query<ReturnFeeDto>().getPage(params)
         );
+        LambdaQueryWrapper<FeeReturnEntity> lambdaQueryWrapper = new LambdaQueryWrapper();
         QueryWrapper<StuBaseInfoEntity> queryWrapper = new QueryWrapper();
         for (io.renren.modules.edu.vo.pageVo pageVo : searchConditionVo.getSearchConditions()){
+            if (pageVo.getOption().equals("returnSchoolYear")){
+                lambdaQueryWrapper.eq(FeeReturnEntity::getReturnSchoolYear,pageVo.getValue());
+                continue;
+            }
+            if (pageVo.getOption().equals("residence_type")){
+                int a = 2;
+                if (pageVo.getValue().equals("农业户口")){
+                    a = 1;
+                }else if (pageVo.getValue().equals("非农户口")){
+                    a = 0;
+                }else {
+                    throw new RuntimeException("户口类型格式错误，请填农业户口/非农户口");
+                }
+                queryWrapper.eq(pageVo.getOption(),a);
+                continue;
+            }
             queryWrapper.like(pageVo.getOption(),pageVo.getValue());
         }
+
+        if (searchConditionVo.getTimeIf()){
+            lambdaQueryWrapper.between(FeeReturnEntity::getReturnMoneyTime,searchConditionVo.getStart(),searchConditionVo.getEnd());
+        }
+        List<FeeReturnEntity> list = feeReturnDao.selectList(lambdaQueryWrapper);
         List<StuBaseInfoEntity> records = stuBaseInfoService.getBaseMapper().selectList(queryWrapper);
 
         List stuIdList = new ArrayList();
@@ -230,12 +276,17 @@ public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEnt
 
             stuIdList.add(record.getStuId());
         }
+        List feestuIdList = new ArrayList();
+        for (FeeReturnEntity record : list) {
+
+            feestuIdList.add(record.getStuId());
+        }
         collect = collect.stream().filter(item -> stuIdList.contains(item.getStuId())).collect(Collectors.toList());
+        collect = collect.stream().filter(item -> feestuIdList.contains(item.getStuId())).collect(Collectors.toList());
 
         page.setRecords(collect);
         return new PageUtils(page);
     }
-
     @Override
     public int update(FeeReturnEntity feeReturn) {
         return  feeReturnDao.updateById(feeReturn);

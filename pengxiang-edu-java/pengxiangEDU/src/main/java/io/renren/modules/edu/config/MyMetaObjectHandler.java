@@ -14,7 +14,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
   public void insertFill(MetaObject metaObject) {
     this.setFieldValByName("createTime",new Date(),metaObject);
     this.setFieldValByName("updateTime",new Date(),metaObject);
-    this.setFieldValByName("isDeleted",false,metaObject);
+    this.setFieldValByName("isDeleted",Boolean.FALSE,metaObject);
     SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
     this.setFieldValByName("createBy",user.getUserId(),metaObject);
     this.setFieldValByName("updateBy",user.getUserId(),metaObject);

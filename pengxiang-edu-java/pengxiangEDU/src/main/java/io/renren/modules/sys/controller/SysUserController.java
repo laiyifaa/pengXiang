@@ -12,16 +12,17 @@ import io.renren.common.annotation.SysLog;
 import io.renren.common.utils.Constant;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
+import io.renren.common.utils.RedisUtils;
 import io.renren.common.validator.Assert;
 import io.renren.common.validator.ValidatorUtils;
 import io.renren.common.validator.group.AddGroup;
 import io.renren.common.validator.group.UpdateGroup;
 import io.renren.modules.sys.entity.SysUserEntity;
 import io.renren.modules.sys.form.PasswordForm;
+import io.renren.modules.sys.service.SysUserDeptService;
 import io.renren.modules.sys.service.SysUserRoleService;
 import io.renren.modules.sys.service.SysUserService;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,11 @@ public class SysUserController extends AbstractController {
 	@Autowired
 	private SysUserRoleService sysUserRoleService;
 
+	@Autowired
+	private SysUserDeptService sysUserDeptService;
+
+	@Autowired
+	private RedisUtils redis;
 
 	/**
 	 * 所有用户列表
@@ -98,8 +104,10 @@ public class SysUserController extends AbstractController {
 
 		//获取用户所属的角色列表
 		List<Long> roleIdList = sysUserRoleService.queryRoleIdList(userId);
+		List<Long> deptIdList = sysUserDeptService.queryDeptIdList(userId);
 		user.setRoleIdList(roleIdList);
-
+		user.setDeptList(deptIdList);
+		setDeptListToRedis(user);
 		return R.ok().put("user", user);
 	}
 
@@ -151,5 +159,11 @@ public class SysUserController extends AbstractController {
 		sysUserService.deleteBatch(userIds);
 
 		return R.ok();
+	}
+
+	private void setDeptListToRedis(SysUserEntity user){
+		if(user.getUserId() == Constant.SUPER_ADMIN)
+			return;
+
 	}
 }

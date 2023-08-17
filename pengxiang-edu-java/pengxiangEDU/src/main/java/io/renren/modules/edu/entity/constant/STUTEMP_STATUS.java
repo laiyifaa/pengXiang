@@ -21,6 +21,13 @@ public enum STUTEMP_STATUS {
   public String getDescription() {
     return description;
   }
+  public static  boolean isContain(String inputDescription){
+    for(STUTEMP_STATUS type : STUTEMP_STATUS.values()){
+      if(type.getDescription().equalsIgnoreCase(inputDescription))
+        return true;
+    }
+    return false;
+  }
   public static int getValue(String inputDescription) {
     for (STUTEMP_STATUS type : STUTEMP_STATUS.values()) {
       if (type.getDescription().equalsIgnoreCase(inputDescription)) {

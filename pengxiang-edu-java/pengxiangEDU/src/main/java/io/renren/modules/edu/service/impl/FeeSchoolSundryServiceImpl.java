@@ -6,20 +6,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.renren.common.utils.RedisUtils;
 import io.renren.modules.edu.dao.StuBaseInfoDao;
-import io.renren.modules.edu.dto.DeptdescriptionDto;
-import io.renren.modules.edu.dto.FeeSchoolSundryDto;
-import io.renren.modules.edu.dto.StuKeyWordDto;
-import io.renren.modules.edu.dto.qMoneyAndInfoListDto;
+import io.renren.modules.edu.dto.*;
 import io.renren.modules.edu.entity.*;
 import io.renren.modules.edu.excel.EmptyDataException;
 import io.renren.modules.edu.service.AcademyService;
 import io.renren.modules.edu.service.StuBaseInfoService;
-import io.renren.modules.edu.vo.FeeSchoolSundryVo;
-import io.renren.modules.edu.vo.FeeSundryExportVo;
-import io.renren.modules.edu.vo.SearchConditionVo;
+import io.renren.modules.edu.vo.*;
 //import io.renren.modules.edu.vo.StuBaseInfoVo;
 //import io.renren.modules.edu.vo.pageVo;
-import io.renren.modules.edu.vo.StuTempVo;
 import io.renren.modules.sys.entity.SysUserEntity;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.BeanUtils;
@@ -147,17 +141,46 @@ public class FeeSchoolSundryServiceImpl extends ServiceImpl<FeeSchoolSundryDao, 
         IPage<FeeSchoolSundryVo> page = this.page(
                 new Query<FeeSchoolSundryVo>().getPage(params)
         );
-        String yearValue = "";
+        LambdaQueryWrapper<FeeSchoolSundryEntity> lambdaQueryWrapper = new LambdaQueryWrapper();
         QueryWrapper<StuBaseInfoEntity> queryWrapper = new QueryWrapper();
         for (io.renren.modules.edu.vo.pageVo pageVo : searchConditionVo.getSearchConditions()){
             if (pageVo.getOption().equals("year")){
-                yearValue = pageVo.getValue();
+                lambdaQueryWrapper.eq(FeeSchoolSundryEntity::getPaySchoolYear,pageVo.getValue());
                 continue;
             }
+            if (pageVo.getOption().equals("derateType")){
+                lambdaQueryWrapper.eq(FeeSchoolSundryEntity::getDerateType,pageVo.getValue());
+                continue;
+            }
+            if (pageVo.getOption().equals("isArrearage")){
+                int a = 2;
+                if (pageVo.getValue().equals("是")){
+                    a = 1;
+                }else if (pageVo.getValue().equals("否")){
+                    a = 0;
+                }else {
+                    throw new RuntimeException("是否欠费格式错误，请填是/否");
+
+                }
+                lambdaQueryWrapper.eq(FeeSchoolSundryEntity::getIsArrearage,a);
+                continue;
+            }
+            if (pageVo.getOption().equals("residence_type")){
+                int a = 2;
+                if (pageVo.getValue().equals("农业户口")){
+                    a = 1;
+                }else if (pageVo.getValue().equals("非农户口")){
+                    a = 0;
+                }else {
+                    throw new RuntimeException("户口类型格式错误，请填农业户口/非农户口");
+                }
+                queryWrapper.eq(pageVo.getOption(),a);
+                continue;
+            }
+
             queryWrapper.like(pageVo.getOption(),pageVo.getValue());
         }
-        LambdaQueryWrapper<FeeSchoolSundryEntity> lambdaQueryWrapper = new LambdaQueryWrapper();
-        lambdaQueryWrapper.eq(FeeSchoolSundryEntity::getPaySchoolYear,yearValue);
+
         List<FeeSchoolSundryEntity> list = feeSchoolSundryDao.selectList(lambdaQueryWrapper);
         List<StuBaseInfoEntity> records = stuBaseInfoService.getBaseMapper().selectList(queryWrapper);
 
@@ -166,20 +189,14 @@ public class FeeSchoolSundryServiceImpl extends ServiceImpl<FeeSchoolSundryDao, 
 
             stuIdList.add(record.getStuId());
         }
-        List stuIdListInYear = new ArrayList();
+        List feestuIdList = new ArrayList();
         for (FeeSchoolSundryEntity record : list) {
 
-            stuIdListInYear.add(record.getId());
+            feestuIdList.add(record.getStuId());
         }
         collect = collect.stream().filter(item -> stuIdList.contains(item.getStuId())).collect(Collectors.toList());
-        if (stuIdListInYear.size() != 0){
-            collect = collect.stream().filter(item -> stuIdListInYear.contains(item.getId())).collect(Collectors.toList());
-        }else if (yearValue == ""){
-            page.setRecords(collect);
-            return new PageUtils(page);
-        }else {
-            collect = null;
-        }
+        collect = collect.stream().filter(item -> feestuIdList.contains(item.getStuId())).collect(Collectors.toList());
+
         page.setRecords(collect);
         return new PageUtils(page);
     }
@@ -220,13 +237,13 @@ public class FeeSchoolSundryServiceImpl extends ServiceImpl<FeeSchoolSundryDao, 
     }
 
     @Override
-    public void importByList(List<FeeSundryExportVo> cachedDataList, AnalysisContext context) {
+    public void importByList(List<FeeSundryImportVo> cachedDataList, AnalysisContext context) {
         if(null == cachedDataList || cachedDataList.isEmpty())
             return ;
         //来自excel的身份证列表
         List<String> cacheIdNumberList = new ArrayList<>(cachedDataList.size());
         List<Long> cacheStuIdList = new ArrayList<>(cachedDataList.size());
-        for(FeeSundryExportVo entity : cachedDataList){
+        for(FeeSundryImportVo entity : cachedDataList){
             LambdaQueryWrapper<StuBaseInfoEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
 
             lambdaQueryWrapper.eq(StuBaseInfoEntity::getIdNumber,entity.getIdNumber());
@@ -245,7 +262,7 @@ public class FeeSchoolSundryServiceImpl extends ServiceImpl<FeeSchoolSundryDao, 
 
 
         SysUserEntity userEntity = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
-        for(FeeSundryExportVo entity : cachedDataList){
+        for(FeeSundryImportVo entity : cachedDataList){
 /*            StuTempEntity temp = new StuTempEntity();
             BeanUtils.copyProperties(entity,temp);*/
             if(cacheIdNumberList.contains(entity.getIdNumber())){
@@ -263,6 +280,7 @@ public class FeeSchoolSundryServiceImpl extends ServiceImpl<FeeSchoolSundryDao, 
                     StuBaseInfoEntity feeSchoolSundryEntity = stuBaseInfoDao.selectOne(queryWrapper2);
                     FeeSchoolSundryEntity feeSchoolSundryEntity1 = new FeeSchoolSundryEntity();
                     BeanUtils.copyProperties(entity,feeSchoolSundryEntity1);
+                    feeSchoolSundryEntity1.setIsArrearage(0);
                     feeSchoolSundryService.save(feeSchoolSundryEntity1);
                 }
             }
@@ -271,32 +289,59 @@ public class FeeSchoolSundryServiceImpl extends ServiceImpl<FeeSchoolSundryDao, 
 
     }
 
+
     @Override
-    public PageUtils selectStuFeeSundryPage(IPage<FeeSchoolSundryVo> page, String year, Long deptId, StuKeyWordDto key) {
+    public PageUtils selectStuFeeSundryPage(IPage<FeeSchoolSundryVo> page, Integer year, Long deptId, StuKeyWordDto key) {
 
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
         Long academyId = user.getAcademyId();
-        if (year.equals("") || year == null){
-            List<FeeSchoolSundryVo> records = baseMapper.selectFeeSundryVo(page, academyId, null, deptId, key);
-            page.setRecords(records);
-            for (FeeSchoolSundryVo record : records) {
-                if (record.getIsArrearage() == null)continue;
-                if (record.getIsArrearage()==1){
-                    record.setIfQMoney("已欠费");
-                }
-                if (record.getIsArrearage()==0){
-                    record.setIfQMoney("未欠费");
-                }
-            }
-            SysUserEntity user3 = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+//        if (year.equals("") || year == null){
+//            List<FeeSchoolSundryVo> records = baseMapper.selectFeeSundryVo(page, academyId, null, deptId, key);
+//            List<FeeSchoolSundryVo> allRecords = baseMapper.selectFeeSundryVo2( academyId, null, deptId, key);
+//
+//            for (FeeSchoolSundryVo record : allRecords) {
+//                if (record.getIsArrearage() == null){
+//                    record.setIfQMoney("未记录");
+//                    continue;}
+//                if (record.getIsArrearage()==1){
+//                    record.setIfQMoney("已欠费");
+//                }
+//                if (record.getIsArrearage()==0){
+//                    record.setIfQMoney("未欠费");
+//                }
+//            }
+//
+//            // 手动进行分页
+//            int pageSize = (int)page.getSize();  // 每页显示的数据条数
+//            int pageNum = (int)page.getCurrent();    // 要显示的页码
+//            int startIndex = (pageNum - 1) * pageSize;
+//            int endIndex = Math.min(startIndex + pageSize, allRecords.size());
+//
+//            List<FeeSchoolSundryVo> recordsOnPage = allRecords.subList(startIndex, endIndex);
+//
+//
+//
+//// 创建分页信息对象
+//            PageUtils pageUtils = new PageUtils(page);
+//            pageUtils.setList(recordsOnPage);
+//            pageUtils.setPageSize(pageSize);
+//            pageUtils.setTotalCount(allRecords.size());
+//            pageUtils.setTotalPage((int) Math.ceil((double) allRecords.size() / pageSize));
+//            pageUtils.setCurrPage(pageNum);
+//
+//
+//
+//            SysUserEntity user3 = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+//
+//            redis.set("feeList"+user3.getUserId(),JSON.toJSON(allRecords).toString());
+//            return pageUtils;
+//        }
+        List<FeeSchoolSundryVo> allRecords = baseMapper.selectFeeSundryVo2( academyId, year, deptId, key);
 
-            redis.set("feeList"+user3.getUserId(),JSON.toJSON(records).toString());
-            PageUtils pageUtils = new PageUtils(page);
-            return pageUtils;
-        }
-        List<FeeSchoolSundryVo> records = baseMapper.selectFeeSundryVo(page, academyId, Integer.parseInt(year), deptId, key);
-
-        for (FeeSchoolSundryVo record : records) {
+        for (FeeSchoolSundryVo record : allRecords) {
+            if (record.getIsArrearage() == null){
+                record.setIfQMoney("未记录");
+                continue;}
             if (record.getIsArrearage()==1){
                 record.setIfQMoney("已欠费");
             }
@@ -305,13 +350,30 @@ public class FeeSchoolSundryServiceImpl extends ServiceImpl<FeeSchoolSundryDao, 
             }
         }
 
-        page.setRecords(records);
+        // 手动进行分页
+        int pageSize = (int)page.getSize();  // 每页显示的数据条数
+        int pageNum = (int)page.getCurrent();    // 要显示的页码
+        int startIndex = (pageNum - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, allRecords.size());
+
+        List<FeeSchoolSundryVo> recordsOnPage = allRecords.subList(startIndex, endIndex);
+
+
+
+// 创建分页信息对象
         PageUtils pageUtils = new PageUtils(page);
-        SysUserEntity user2 = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+        pageUtils.setList(recordsOnPage);
+        pageUtils.setPageSize(pageSize);
+        pageUtils.setTotalCount(allRecords.size());
+        pageUtils.setTotalPage((int) Math.ceil((double) allRecords.size() / pageSize));
+        pageUtils.setCurrPage(pageNum);
 
-        redis.set("feeList"+user2.getUserId(),JSON.toJSON(records).toString());
+
+
+        SysUserEntity user3 = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+
+        redis.set("feeList"+user3.getUserId(),JSON.toJSON(allRecords).toString());
         return pageUtils;
-
     }
 
     private int getSchoolYearInfoByDate(Date date) {

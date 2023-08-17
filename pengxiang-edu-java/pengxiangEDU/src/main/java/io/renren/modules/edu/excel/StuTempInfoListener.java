@@ -51,8 +51,9 @@ public class StuTempInfoListener implements ReadListener<StuTempVo> {
      * @param context
      */
     @Override
-    public void doAfterAllAnalysed(AnalysisContext context) {
+    public void doAfterAllAnalysed(AnalysisContext context)  {
         // 这里也要保存数据，确保最后遗留的数据也存储到数据库
+
         saveData();
         log.info("所有数据解析完成！");
     }
@@ -63,6 +64,8 @@ public class StuTempInfoListener implements ReadListener<StuTempVo> {
     private void saveData() {
         /*log.info("{}条数据，开始存储数据库！", cachedDataList.size());*/
         stuTempService.importByList(cachedDataList);
+
+
 
     }
     private void check(StuTempVo data, AnalysisContext context){

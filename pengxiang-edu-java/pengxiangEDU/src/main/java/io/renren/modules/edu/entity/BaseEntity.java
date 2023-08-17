@@ -38,5 +38,5 @@ public class BaseEntity implements Serializable {
 
   @TableField(fill = FieldFill.INSERT)
   @ExcelIgnore
-  private boolean isDeleted;
+  private Boolean isDeleted;
 }

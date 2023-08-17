@@ -11,6 +11,7 @@ import io.renren.modules.edu.entity.StuEmployEntity;
 import io.renren.modules.edu.entity.StuEmployVistEntity;
 import io.renren.modules.edu.utils.Query;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface EmployService {
@@ -21,7 +22,7 @@ public interface EmployService {
     int addVisitHandle(StuEmployVistEntity stuEmployVistEntity);
 
     public void importByList(List<StuEmployEntity> entities);
-    public  StuEmployByPageDto treeSearch(int id,int pageNum,int pageSize);
-    public StuEmployByPageDto search(SearchDto searchDto,Long academyId);
+    public  StuEmployByPageDto treeSearch(int id,int pageNum,int pageSize,Long academyId);
+    public StuEmployByPageDto search(SearchDto searchDto,Long academyId) throws ParseException;
     public List<StuEmployDto> queryExport(SearchDto searchDto,Long academyId);
 }

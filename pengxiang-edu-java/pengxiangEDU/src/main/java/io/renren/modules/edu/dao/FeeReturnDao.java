@@ -24,6 +24,7 @@ public interface FeeReturnDao extends BaseMapper<FeeReturnEntity> {
 
     List<FeeReturnVo> selectFeeReturnPage(IPage<FeeReturnVo> page, @Param("param") FeeReturnVo feeReturnVo);
     List<ReturnFeeDto> selectReturnFeeDto(IPage<ReturnFeeDto> page, @Param("academyId") Long academyId, @Param("deptId") Long deptId);
+    List<ReturnFeeDto> selectReturnFeeDto2( @Param("academyId") Long academyId, @Param("deptId") Long deptId);
 
     List<Long> getIdList();
 }

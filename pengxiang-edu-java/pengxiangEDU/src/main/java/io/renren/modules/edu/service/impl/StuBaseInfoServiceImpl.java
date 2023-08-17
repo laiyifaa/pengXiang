@@ -9,6 +9,7 @@ import io.renren.modules.edu.entity.*;
 import io.renren.modules.edu.entity.constant.CURRENT_STATUS;
 import io.renren.modules.edu.entity.constant.RESIDENCE_TYPE;
 import io.renren.modules.edu.entity.constant.SCHOOL_ROLL_STATUS;
+import io.renren.modules.edu.service.EduCertificateService;
 import io.renren.modules.edu.utils.Query;
 import io.renren.modules.edu.vo.*;
 import io.renren.modules.sys.entity.SysUserEntity;
@@ -46,6 +47,15 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
     @Resource
     private FeeSchoolSundryDao feeSchoolSundryDao;
 
+    @Resource
+    private FeeArrearageDao feeArrearageDao;
+
+    @Resource
+    private EduCertificateService eduCertificateService;
+
+    @Resource
+    private FeeReturnDao feeReturnDao;
+
     @Override
     public List<StuBaseInfoEntity> queryExport(Query query, StuBaseInfoEntity record, Long deptId) {
         List<StuBaseInfoEntity> exportList = baseMapper.selectStuBaseInfo(null == query ? null :Query.getPage(query), null, record, null, deptId,1);
@@ -64,34 +74,6 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
         return stuBaseInfoEntity;
     }
 
-/*    @Override
-    public void bindClass(StuBaseInfoEntity stuBaseInfo) {
-        if(stuBaseInfo.getEntranceStatus() == 100){
-            stuBaseInfo.setEntranceStatus(200);
-        }
-        this.baseMapper.update(stuBaseInfo,new QueryWrapper<StuBaseInfoEntity>().eq("stu_id",stuBaseInfo.getStuId()));
-    }*/
-
-   /* @Override
-    public void updateClass(StuBaseInfoEntity stuBaseInfo) {
-        StuBaseInfoEntity baseInfoEntity = this.baseMapper.selectById(stuBaseInfo.getStuId());
-        if(baseInfoEntity != null) {
-            if(baseInfoEntity.getEntranceStatus() == 100){
-                baseInfoEntity.setEntranceStatus(200);
-            }
-            baseInfoEntity.setClassId(stuBaseInfo.getClassId());
-            this.baseMapper.updateById(baseInfoEntity);
-        }
-//        this.baseMapper.update(stuBaseInfo,new QueryWrapper<StuBaseInfoEntity>().eq("stu_id",stuBaseInfo.getStuId()));
-    }
-
-    @Override
-    public void unbundlingClass(List<Long> stuIds) {
-        for (Long stuId : stuIds) {
-            this.baseMapper.unbundlingClass(stuId);
-        }
-    }
-*/
     @Override
     public PageUtils selectStuBaseInfo(IPage<StuBaseInfoEntity> page, StuBaseInfoEntity key, Long deptId) {
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
@@ -121,46 +103,82 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
          */
         List<FeeSchoolSundryEntity> feeList = feeSchoolSundryDao.selectList(new QueryWrapper<FeeSchoolSundryEntity>().eq("stu_id", stuId).eq("is_deleted", 0));
         detailVo.setFeeList(feeList);
+        /**
+         * 回访
+         */
         List<StuEmployVistEntity> visitList = stuEmployVistDao.selectList(new QueryWrapper<StuEmployVistEntity>().eq("stu_id",baseInfo.getStuId()).eq("is_deleted",0));
         detailVo.setVisitList(visitList);
+        /**
+         * 就业
+         */
         List<StuEmployEntity> employInfoList  = stuEmployDao.selectList(new QueryWrapper<StuEmployEntity>().eq("stu_id", baseInfo.getStuId()).eq("is_deleted",0));
         if(null != employInfoList && employInfoList.size()>0){
             detailVo.setEmployInfo(employInfoList.get(0));
         }else {
             detailVo.setEmployInfo(new StuEmployEntity());
         }
+        /**
+         * 实习
+         */
         List<StuPracticeEntity> practiceList = stuPracticeDao.selectList(new QueryWrapper<StuPracticeEntity>().eq("stu_id", baseInfo.getStuId()).eq("is_deleted", 0));
         detailVo.setPracticeList(practiceList);
+        /**
+         * 考证
+         */
+        CertificateDetailVo certificateDetailVo = new CertificateDetailVo();
+        certificateDetailVo.setBaseInfo(null);
+        eduCertificateService.setCertificateList(stuId,certificateDetailVo);
+        detailVo.setCertificateDetail(certificateDetailVo);
+        /**
+         * 欠费
+         */
+        List<FeeArrearageEntity> feeArrearageList = feeArrearageDao.getOneQmoneyListDto(stuId);
+        detailVo.setFeeArrearageList(feeArrearageList);
+        /**
+         * 退费
+         */
+        List<FeeReturnEntity> feeReturnList = feeReturnDao.selectList(new QueryWrapper<FeeReturnEntity>().eq("is_deleted", 0));
+        detailVo.setFeeReturnList(feeReturnList);
+
         return detailVo;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void importByList(List<StuBaseInfoEntity> cachedDataList) {
+    public void importByList(List<StuBaseInfoEntity> cachedDataList) throws RuntimeException {
         if(null == cachedDataList || cachedDataList.isEmpty())
             return ;
         //拿全部的dept
         List<DeptdescriptionDto> deptDescList = sysDeptDao.listDesc(null);
         Map<String, DeptdescriptionDto> deptDescMap = deptDescList.stream().collect(Collectors.toMap(DeptdescriptionDto::getDescription, Function.identity()));
         //来自excel的身份证列表
-        List<String> cacheIdNumberList = new ArrayList<>(cachedDataList.size());
-        for(StuBaseInfoEntity entity : cachedDataList){
-            cacheIdNumberList.add(entity.getIdNumber());
+        Set<String> cacheIdNumberSet = new LinkedHashSet<>(cachedDataList.size());
+        for(int i = 0;i<cachedDataList.size();++i){
+            StuBaseInfoEntity entity = cachedDataList.get(i);
+            if(cacheIdNumberSet.contains(entity.getIdNumber())){
+                throw new RuntimeException("第"+(i+2)+"行学生身份证与之前重复");
+            }
+            cacheIdNumberSet.add(entity.getIdNumber());
         }
+        List<String> cacheIdNumberList = new ArrayList<>(cacheIdNumberSet);
         //查询数据库 是否有这些 身份证(关键词)
         List<StuKeyWordDto> oldStudentList = stuBaseInfoDao.listAllKey(cacheIdNumberList, 1);
         Set<String> oldIdNumberSet = oldStudentList.stream().map(StuKeyWordDto::getIdNumber).collect(Collectors.toSet());
         //新身份证则为 要add  老身份证则为update
         List<StuBaseInfoEntity> updateStudentList = new LinkedList<>();
         List<StuBaseInfoEntity> addStudentList = new LinkedList<>();
-        for(StuBaseInfoEntity entity : cachedDataList){
-            setExcelStuBaseInfo(entity,deptDescMap);
-            if(oldIdNumberSet.contains(entity.getIdNumber())){
+          for(StuBaseInfoEntity entity : cachedDataList){
+             Boolean aBoolean = setExcelStuBaseInfo(entity,deptDescMap);
+             if(!aBoolean){
+                 throw new RuntimeException("院校、专业、年级、班级填写有误");
+             }
+              if(oldIdNumberSet.contains(entity.getIdNumber())){
+                entity.setIsDeleted(false);
                 updateStudentList.add(entity);
             }else {
-                addStudentList.add(entity);
+                 addStudentList.add(entity);
             }
-        }
+         }
         if(null != updateStudentList && !updateStudentList.isEmpty()){
             stuBaseInfoDao.updateBatch(updateStudentList);
         }
@@ -179,7 +197,7 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
         String gradeName = entity.getGradeName();
         //拼接
         String desc = academyName + gradeName  + majorName + className ;
-        DeptdescriptionDto descDto = map.get(desc);
+         DeptdescriptionDto descDto = map.get(desc);
         if(null == descDto)
             return false;
         entity.setAcademyId(descDto.getAcademyId());

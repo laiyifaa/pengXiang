@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +71,7 @@ public class EmployController {
         return R.ok();
     }
     @RequestMapping("/search")
-    public R handleSearch(SearchDto searchDto) {
+    public R handleSearch(SearchDto searchDto) throws ParseException {
         SysUserEntity sysUser = (SysUserEntity)SecurityUtils.getSubject().getPrincipal();
         Long academyId = sysUser.getAcademyId();
         academyId =  academyId == -1?null:academyId;
@@ -79,7 +80,12 @@ public class EmployController {
     }
     @RequestMapping("/treeSearch")
     public R handlerTreeSearch(String id,String pageNum,String pageSize){
-        return R.ok().put("listDto",employService.treeSearch(Integer.parseInt(id),Integer.parseInt(pageNum),Integer.parseInt(pageSize)));
+        SysUserEntity sysUser = (SysUserEntity)SecurityUtils.getSubject().getPrincipal();
+        Long academyId = sysUser.getAcademyId();
+        academyId =  academyId == -1?null:academyId;
+
+        return R.ok().put("listDto",employService.treeSearch(Integer.parseInt(id),Integer.parseInt(pageNum),Integer.parseInt(pageSize),academyId));
+
     }
     @GetMapping("/export")
     public void export(HttpServletResponse response,SearchDto searchDto){

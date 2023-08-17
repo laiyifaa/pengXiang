@@ -35,6 +35,7 @@ public interface EduCertificateService extends IService<EduCertificateEntity> {
 
     void saveCertificateInfo(EduCertificateEntity temp) throws Exception;
 
+    void setCertificateList(Long stuId,CertificateDetailVo detailVo);
 
 }
 

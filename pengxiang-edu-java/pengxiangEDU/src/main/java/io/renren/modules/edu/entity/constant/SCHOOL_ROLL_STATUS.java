@@ -18,7 +18,13 @@ public enum SCHOOL_ROLL_STATUS {
     public int getValue() {
         return value;
     }
-
+    public static boolean isContain(String inputDescription){
+        for(SCHOOL_ROLL_STATUS type : SCHOOL_ROLL_STATUS.values()){
+            if(!type.getDescription().equalsIgnoreCase(inputDescription))
+                return true;
+        }
+        return false;
+    }
     public String getDescription() {
         return description;
     }

@@ -30,14 +30,24 @@ public class StuWorkDto {
     private Short practiceType;
     @ExcelProperty("负责人")
     private String postLeader;
-    @ExcelProperty("实习次数")
-    private int times;
-
     private String schoolingLength;
     private String gradeName;
     private String schoolName;
     private String className;
     private String schoolNumber;
     private Date  admissionDate;
+    private String birthday;
+    private String gender;
+    private String nation;
+    private String nativePlace;
+    private String politicalStatus;
+    private String deptName;
+    private String headTeacher;
+    private String  headTeacherPhone;
+    private String email;
+    @ExcelProperty("实习次数")
+    private int times;
+
+
 
 }

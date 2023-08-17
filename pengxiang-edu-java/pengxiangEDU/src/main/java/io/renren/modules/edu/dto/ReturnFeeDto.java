@@ -92,5 +92,5 @@ public class ReturnFeeDto extends StuBaseInfoEntity{
    private String depositBank;
 
 
-   private byte isDeleted;
+/*   private byte isDeleted;*/
 }

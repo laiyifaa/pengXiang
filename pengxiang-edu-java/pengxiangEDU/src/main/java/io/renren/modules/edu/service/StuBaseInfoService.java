@@ -35,7 +35,7 @@ public interface StuBaseInfoService extends IService<StuBaseInfoEntity> {
 
   PageUtils selectStuBaseInfo(IPage<StuBaseInfoEntity> page, StuBaseInfoEntity key,Long deptId);
 
-  void importByList(List<StuBaseInfoEntity> cachedDataList);
+  void importByList(List<StuBaseInfoEntity> cachedDataList) throws RuntimeException;
 
   void deleteByIds(Long[] ids);
 

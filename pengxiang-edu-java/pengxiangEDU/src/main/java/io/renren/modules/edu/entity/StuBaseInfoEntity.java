@@ -2,6 +2,7 @@ package io.renren.modules.edu.entity;
 
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -16,7 +17,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -159,16 +159,18 @@ public class StuBaseInfoEntity extends BaseEntity implements Serializable {
 	/**
 	 * 入学日期
 	 */
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@ExcelProperty(value = "入学日期",converter = DateConverter.class)
+	@ExcelProperty(value = "入学日期")
+	@DateTimeFormat(value = "yyyy-MM-dd")
 	private Date admissionDate;
 	/**
 	 * 注册学籍日期
 	 */
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+
     @JsonFormat(pattern = "yyyy-MM-dd")
-	@ExcelProperty(value = "注册学籍日期",converter = DateConverter.class)
+	@ExcelProperty(value = "注册学籍日期")
+	@DateTimeFormat(value = "yyyy-MM-dd")
 	private Date registerDate;
 
 	/**
@@ -248,16 +250,16 @@ public class StuBaseInfoEntity extends BaseEntity implements Serializable {
 	/**
 	 * 入住日期
 	 */
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(value = "yyyy-MM-dd")
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@ExcelProperty(value = "入住日期",converter = DateConverter.class)
+	@ExcelProperty(value = "入住日期")
 	private Date checkIn;
 	/**
 	 * 离宿日期
 	 */
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(value = "yyyy-MM-dd")
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	@ExcelProperty(value = "离宿日期",converter = DateConverter.class)
+	@ExcelProperty(value = "离宿日期")
 	private Date leaveDate;
 
 	/**
