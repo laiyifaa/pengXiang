@@ -10,7 +10,7 @@
       <div style="display: flex; align-items: center;">
         <el-button type="primary" icon="el-icon-plus" style="width: 80px; padding-left: 1px;" @click="addSearchCondition" v-show="searchCount<2">查询条件</el-button>
         <div v-for="(condition, index) in searchConditions" :key="index" style=" margin-left: 5px; display: flex; align-items: center; ">
-          <el-select style="width: 120px; margin-right: 5px" v-model="condition.option" placeholder="条件">
+          <el-select style="width: 120px; " v-model="condition.option" placeholder="条件">
             <el-option label="姓名" value="name"></el-option>
             <el-option label="学号" value="schoolNumber"></el-option>
             <el-option label="实习类别" value="practiceType"></el-option>
@@ -148,22 +148,22 @@ export default {
     },
     handleDetail (scope) {
       console.log(this.tableData)
-      this.selectedStudentNumber = scope.row.schoolNumber
+      this.selectedIdNumber = scope.row.idNumber
       this.$router.push({
           name: 'workDetail',
           params: {
-            schoolNumber: this.selectedStudentNumber,
-            Info: this.tableData.find(item => item.schoolNumber === this.selectedStudentNumber)
+            idNumber: this.selectedIdNumber,
+            Info: this.tableData.find(item => item.idNumber === this.selectedIdNumber)
           }
         })
     },
     handleEdit (scope) {
-      this.selectedStudentNumber = scope.row.schoolNumber
+      this.selectedIdNumber = scope.row.idNumber
       this.$router.push({
         name: 'workModify',
         params: {
-          schoolNumber: this.selectedStudentNumber,
-          Info: this.tableData.find(item => item.schoolNumber === this.selectedStudentNumber)
+          idNumber: this.selectedIdNumber,
+          Info: this.tableData.find(item => item.idNumber === this.selectedIdNumber)
         }
       })
     },
@@ -316,6 +316,7 @@ export default {
         .catch(error => {
           this.$message.error(error)
         })
+
     },
     getDeptsByPid (node) {
       this.currentPage = 1;

@@ -21,7 +21,7 @@
     <e-desc-item label="电子邮件">{{ Info.email }}</e-desc-item>
   </e-desc>
 
-  <el-collapse v-show="schoolNumberIsNull"  @change="handleChange" v-model="activeCollapse" >
+  <el-collapse v-show="idNumberIsNull"  @change="handleChange" v-model="activeCollapse" >
     <el-collapse-item name="1">
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">就业详情</span>
@@ -43,7 +43,7 @@
     </el-collapse-item>
   </el-collapse>
 
-  <el-collapse v-show="schoolNumberIsNull" v-model="activeCollapse" >
+  <el-collapse v-show="idNumberIsNull" v-model="activeCollapse" >
     <el-collapse-item name="1">
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">就业回访</span>
@@ -188,7 +188,7 @@ export default {
   },
   data () {
     return {
-      schoolNumberIsNull:'',
+      idNumberIsNull:'',
       dialogVisible: false,
       isFormModified2: false,
       isFormModified: false,
@@ -215,7 +215,7 @@ export default {
         probationPeriod: '',
         formalIncome: '',
         postLeader: '',
-        schoolNumber: this.$route.params.schoolNumber
+        idNumber: this.$route.params.idNumber
       }
     }
   },
@@ -226,14 +226,14 @@ export default {
   },
   created () {
     this.Info = this.$route.params.Info
-    if(this.$route.params.schoolNumber!=null){
-      this.schoolNumberIsNull=true
+    if(this.$route.params.idNumber!=null){
+      this.idNumberIsNull=true
     this.$http({
       url: this.$http.adornUrl('/stu/getVisitList'),
       method: 'get'
     }).then(
       response => {
-        this.visit = response.data.visitList.filter(item => item.schoolNumber === this.$route.params.schoolNumber)
+        this.visit = response.data.visitList.filter(item => item.idNumber === this.$route.params.idNumber)
         this.visit.forEach(function (value, index, array) {
           if (array[index].secondEmployDate === null) {
             array[index].secondEmployDate = ''
@@ -243,7 +243,7 @@ export default {
       this.$message.error(error)
       })
     }else {
-      schoolNumberIsNull=false
+      idNumberIsNull=false
     }
   },
   methods: {
@@ -276,7 +276,7 @@ export default {
           this.item.secondEmployDate=new Date (this.item.secondEmployDate).toISOString().slice(0, 10) + " 00:00:00";
         }
         this.selectedTab = this.savedTab
-        this.$confirm('确定要为学号为：'+this.$route.params.schoolNumber+'       的学生添加回访记录吗？', '警告', {
+        this.$confirm('确定要为身份证为：'+this.$route.params.idNumber+'       的学生添加回访记录吗？', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

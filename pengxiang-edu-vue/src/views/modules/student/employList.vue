@@ -28,13 +28,13 @@
                     ></el-date-picker>
                   </template>
                   <template v-else-if="condition.option === 'isPost'">
-                    <el-select style="width: 215px; margin-left: 5px;" v-model="condition.value" >
+                    <el-select style="width: 215px; " v-model="condition.value" >
                       <el-option label="是" :value='1' ></el-option>
                       <el-option label="否" :value='0' ></el-option>
                     </el-select>
                   </template>
                   <template v-else-if="condition.option === 'isSecondEmploy'">
-                  <el-select style="width: 215px; margin-left: 5px;" v-model="condition.value" >
+                  <el-select style="width: 215px; " v-model="condition.value" >
                     <el-option label="是" :value='1' ></el-option>
                     <el-option label="否" :value='0' ></el-option>
                   </el-select>
@@ -42,7 +42,7 @@
                   <template v-else>
                     <el-input v-model="condition.value" placeholder="请输入" style="width: 215px; margin-left: 5px;" clearable></el-input>
                   </template>
-            <el-button type="danger" style=" margin-left: 5px;" icon="el-icon-delete" @click="removeSearchCondition(index) ">删除</el-button>
+            <el-button type="danger" style=" " icon="el-icon-delete" @click="removeSearchCondition(index) ">删除</el-button>
           </div>
           <el-button type="primary" icon="el-icon-search" @click="handleSearch" style=" margin-left: 2px;">搜索</el-button>
         </div>
@@ -129,7 +129,7 @@ export default {
       treeList: [],
       reloadTable:false,
       Visiable: false,
-      selectedStudentNumber: '',
+      selectedIdNumber: '',
       searchCount: 1,
       searchConditions: [{
         option: '',
@@ -155,13 +155,12 @@ export default {
     },
     handleDetail (scope) {
       // 获取所点击行的学号属性
-      this.selectedStudentNumber = scope.row.schoolNumber
-
+      this.selectedIdNumber = scope.row.idNumber
       this.$router.push({
         name: 'employDetail',
         params: {
-          schoolNumber: this.selectedStudentNumber,
-          Info: this.tableData.find(item => item.schoolNumber === this.selectedStudentNumber)
+          idNumber: this.selectedIdNumber,
+          Info: this.tableData.find(item => item.idNumber === this.selectedIdNumber)
         }
       })
     },
@@ -178,12 +177,12 @@ export default {
       this.searchCount--
     },
     handleEdit (scope) {
-      this.selectedStudentNumber = scope.row.schoolNumber
+      this.selectedIdNumber = scope.row.idNumber
       this.$router.push({
         name: 'employModify',
         params: {
-          schoolNumber: this.selectedStudentNumber,
-          Info: this.tableData.find(item => item.schoolNumber === this.selectedStudentNumber)
+          idNumber: this.selectedIdNumber,
+          Info: this.tableData.find(item => item.idNumber === this.selectedIdNumber)
         }
       })
     },

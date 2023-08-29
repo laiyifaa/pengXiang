@@ -20,7 +20,7 @@
     <e-desc-item label="电子邮件">{{ Info.email }}</e-desc-item>
   </e-desc>
 
-  <el-collapse v-show="schoolNumberIsNull"  v-model="activeCollapse" >
+  <el-collapse v-show="idNumberIsNull"  v-model="activeCollapse" >
     <el-collapse-item name="1" >
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">实习详情</span>
@@ -62,7 +62,7 @@ export default {
   },
   data () {
     return {
-      schoolNumberIsNull:'',
+      idNumberIsNull:'',
       Info: null,
       activeCollapse: ['1'],
       workInfo: null
@@ -70,20 +70,23 @@ export default {
   },
   created () {
     this.Info = this.$route.params.Info
-    if(this.$route.params.schoolNumber!=null){
-      this.schoolNumberIsNull=true
+    if(this.$route.params.idNumber!=null){
+      this.idNumberIsNull=true
       this.$http({
         url: this.$http.adornUrl('/stuWork/getPractice'),
         method: 'get'
       }).then(response => {
-        this.workInfo = response.data.prEntities.filter(item => item.schoolNumber == this.$route.params.schoolNumber)
+
+        this.workInfo = response.data.prEntities.filter(item => item.idNumber == this.$route.params.idNumber)
+
       })
         .catch(error => {
           this.$message.error(error)
         })
     }else {
-      this.schoolNumberIsNull=false
+      this.idNumberIsNull=false
     }
+
   },
   computed: {
     age() {

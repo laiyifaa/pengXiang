@@ -20,7 +20,7 @@
       <e-desc-item label="电子邮件">{{ Info.email }}</e-desc-item>
     </e-desc>
 
-    <el-collapse v-show="schoolNumberIsNull" v-model="activeCollapse" >
+    <el-collapse v-show="idNumberIsNull" v-model="activeCollapse" >
       <el-collapse-item name="1">
         <template slot="title">
           <span style="text-align:center; font-weight: bold;padding-left: 10px; font-size: 18px;">实习详情</span>
@@ -159,7 +159,7 @@ export default {
         closeable: false
       },
       item: {
-        schoolNumberIsNull:'',
+        idNumberIsNull:'',
         practiceType: '',
         practiceOrg: '',
         practiceIncome: '',
@@ -171,25 +171,25 @@ export default {
         isSatisfied: '',
         postLeader: '',
         postLeaderPhone: '',
-        schoolNumber: this.$route.params.schoolNumber
+        idNumber: this.$route.params.idNumber
       }
     }
   },
   created () {
     this.Info = this.$route.params.Info
-    if(this.$route.params.schoolNumber!=null){
-      this.schoolNumberIsNull=true
+    if(this.$route.params.idNumber!=null){
+      this.idNumberIsNull=true
       this.$http({
         url: this.$http.adornUrl('/stuWork/getPractice'),
         method: 'get'
       }).then(response => {
-        this.workInfo = response.data.prEntities.filter(item => item.schoolNumber == this.$route.params.schoolNumber)
+        this.workInfo = response.data.prEntities.filter(item => item.idNumber == this.$route.params.idNumber)
       })
         .catch(error => {
           this.$message.error(error)
         })
     }else {
-      this.schoolNumberIsNull=false
+      this.idNumberIsNull=false
     }
 
 
@@ -204,7 +204,7 @@ export default {
         if(null != this.item.realEndDate  && ''!= this.item.realEndDate ){
           this.item.realEndDate = new Date(this.item.realEndDate).toISOString().slice(0, 10) + ' 00:00:00'
         }
-        this.$confirm('确定要为学号为：'+    this.$route.params.schoolNumber   +'           的学生添加实习记录吗？', '警告', {
+        this.$confirm('确定要为身份证号为：'+    this.$route.params.idNumber   +'           的学生添加实习记录吗？', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -247,7 +247,7 @@ export default {
         isSatisfied: '',
         postLeader: '',
         postLeaderPhone: '',
-        schoolNumber: this.$route.params.schoolNumber
+        idNumber: this.$route.params.idNumber
       }
     },
     submitPracticeForm (item) {

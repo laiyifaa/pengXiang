@@ -1,7 +1,7 @@
 <template>
 <div>
     <e-desc margin='0 12px' label-width='130px' title="学生基本信息">
-      <e-desc-item label="学号" >{{ Info.schoolNumber}}</e-desc-item>
+      <e-desc-item label="学号" >{{ Info.scoolNumber}}</e-desc-item>
       <e-desc-item label="姓名" >{{Info.name}}</e-desc-item>
       <e-desc-item label="证件类型">身份证</e-desc-item>
       <e-desc-item label="证件号码">{{ Info.idNumber }}</e-desc-item>
@@ -21,13 +21,13 @@
       <e-desc-item label="电子邮件">{{ Info.email }}</e-desc-item>
     </e-desc>
 
-  <el-collapse v-show="schoolNumberIsNull"   v-model="activeCollapse" >
+  <el-collapse v-show="idNumberIsNull"   v-model="activeCollapse" >
     <el-collapse-item name="1">
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">就业详情</span>
       </template>
       <e-desc margin='0 12px' label-width='100px' >
-        <e-desc-item label="离校日期" >{{ Info.leaveDate }}</e-desc-item>
+        <e-desc-item label="离校日期">{{ formattedLeaveDate }}</e-desc-item>
         <e-desc-item label="离校原因" >{{ Info.leaveReason }}</e-desc-item>
         <e-desc-item label="就业单位">{{ Info.employOrg }}</e-desc-item>
         <e-desc-item  label=" 就业岗位">{{ Info.employPost }}</e-desc-item>
@@ -38,7 +38,7 @@
     </el-collapse-item>
   </el-collapse>
 
-  <el-collapse v-show="schoolNumberIsNull"  v-model="activeCollapse">
+  <el-collapse v-show="idNumberIsNull"  v-model="activeCollapse">
     <el-collapse-item name="1">
       <template slot="title">
         <span style="text-align: center; font-weight: bold; font-size: 16px;">就业回访</span>
@@ -74,6 +74,7 @@
 <script>
 import EDesc from '../other/EDesc'
 import EDescItem from '../other/EDescItem'
+import moment from 'moment';
 
 export default {
   name: 'employDetail',
@@ -82,7 +83,7 @@ export default {
   },
   data() {
     return {
-      schoolNumberIsNull:'',
+      idNumberIsNull:'',
       activeCollapse: ['1'],
       Info: null,
       visit: null
@@ -92,25 +93,42 @@ export default {
     returnBack() {
       this.$router.go(-1)
     }
+
+  },
+  computed: {
+    formattedLeaveDate() {
+      if (this.Info.leaveDate) {
+        return this.Info.leaveDate.split(' ')[0];
+      }
+      return '';
+    }
   },
   created() {
-
     this.Info = this.$route.params.Info
-    if (this.$route.params.schoolNumber != null) {
-      this.schoolNumberIsNull = true
-
+    if (this.$route.params.idNumber != null) {
+      this.idNumberIsNull = true
       this.$http({
         url: this.$http.adornUrl('/stu/getVisitList'),
         method: 'get'
       }).then(
         response => {
-          this.visit = response.data.visitList.filter(item => item.schoolNumber == this.$route.params.schoolNumber)
+          this.visit = response.data.visitList.filter(item => item.idNumber == this.$route.params.idNumber)
+          this.visit.forEach(date => {
+            if (date.visitDate) {
+
+              date.visitDate=  moment(date.visitDate).format('YYYY-MM-DD')
+            }
+            if (date.secondEmployDate) {
+              date.secondEmployDate=  moment(date.secondEmployDate).format('YYYY-MM-DD')
+            }
+          })
         }).catch(error => {
         this.$message.error(error)
       })
     } else {
-      this.schoolNumberIsNull = false
+      this.idNumberIsNull = false
     }
+
   }
 }
 </script>

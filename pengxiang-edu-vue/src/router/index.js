@@ -64,7 +64,10 @@ const globalRoutes = [
   { path: '/student-employImport', component: _import('modules/student/employImport'), name: 'employImport', meta: { title: '学生就业列表导入' }},
   { path: '/student-enrollStuImport', component: _import('modules/student/enrollStuImport'), name: 'enrollStuImport', meta: { title: '考生列表导入' }},
   { path: '/student-studentOut', component: _import('modules/student/studentOut'), name: 'studentOut', meta: { title: '学生列表导出' }},
+  // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/student-enrollStuOut', component: _import('modules/student/enrollStuOut'), name: 'enrollStuOut', meta: { title: '考生列表导出' }},
+  { path: '/student-enrollStuOut', component: _import('modules/student/enrollStuOut'), name: 'enrollStuOut', meta: { title: '考生列表导出' }},
+
 
 ]
 

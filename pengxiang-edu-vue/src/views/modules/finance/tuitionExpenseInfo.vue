@@ -40,7 +40,7 @@
                 <e-desc-item label="返费账户" color="#"> {{ FeeInfo.account }} </e-desc-item>
                 <e-desc-item label="返费账号" color="#"> {{ FeeInfo.accountNumber }} </e-desc-item>
                 <e-desc-item label="返费开户行" color="#"> {{ FeeInfo.depositBank }} </e-desc-item>
-                <e-desc-item label="是否欠费" color="#"> {{ info.ifQMoney }} </e-desc-item>
+                <e-desc-item label="是否欠费" color="#"> {{ FeeInfo.ifQMoney }} </e-desc-item>
               </div>
               <div style="margin-bottom: 20px">
                 <span style="text-align: center; font-weight: bold; font-size: 15px;">实缴、应缴情况</span>
@@ -83,7 +83,7 @@
                 <e-desc-item label="返费账户" color="#"> {{ FeeInfo.account }} </e-desc-item>
                 <e-desc-item label="返费账号" color="#"> {{ FeeInfo.accountNumber }} </e-desc-item>
                 <e-desc-item label="返费开户行" color="#"> {{ FeeInfo.depositBank }} </e-desc-item>
-                <e-desc-item label="是否欠费" color="#"> {{ info.ifQMoney }} </e-desc-item>
+                <e-desc-item label="是否欠费" color="#"> {{ FeeInfo.ifQMoney }} </e-desc-item>
               </div>
               <div style="margin-bottom: 20px">
                 <span style="text-align: center; font-weight: bold; font-size: 15px;">实缴、应缴情况</span>
@@ -126,7 +126,7 @@
                 <e-desc-item label="返费账户" color="#"> {{ FeeInfo.account }} </e-desc-item>
                 <e-desc-item label="返费账号" color="#"> {{ FeeInfo.accountNumber }} </e-desc-item>
                 <e-desc-item label="返费开户行" color="#"> {{ FeeInfo.depositBank }} </e-desc-item>
-                <e-desc-item label="是否欠费" color="#"> {{ info.ifQMoney }} </e-desc-item>
+                <e-desc-item label="是否欠费" color="#"> {{ FeeInfo.ifQMoney }} </e-desc-item>
               </div>
               <div style="margin-bottom: 20px">
                 <span style="text-align: center; font-weight: bold; font-size: 15px;">实缴、应缴情况</span>

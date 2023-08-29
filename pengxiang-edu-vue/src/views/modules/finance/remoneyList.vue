@@ -150,20 +150,20 @@ export default {
     },
     handleDetail (scope) {
       // 获取所点击行的学号属性
-      this.selectedStudentNumber = scope.row.schoolNumber
+      this.selectedIdNumber = scope.row.schoolNumber
       this.$router.push({
         name: 'remoneyDetail',
         params: {
-          schoolNumber: this.selectedStudentNumber
+          schoolNumber: this.selectedIdNumber
         }
       })
     },
     handleEdit (scope) {
-      this.selectedStudentNumber = scope.row.schoolNumber
+      this.selectedIdNumber = scope.row.schoolNumber
       this.$router.push({
         name: 'remoneyEdit',
         params: {
-          schoolNumber: this.selectedStudentNumber
+          schoolNumber: this.selectedIdNumber
         }
       })
     },

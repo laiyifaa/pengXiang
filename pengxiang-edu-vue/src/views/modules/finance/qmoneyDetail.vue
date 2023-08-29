@@ -90,6 +90,22 @@
               <e-desc-item label="欠费合计">{{ qMoneyInfo.feeNum }}</e-desc-item>
             </e-desc>
           </el-tab-pane>
+          <el-tab-pane label="欠费合计" id="4">
+            <e-desc margin='0 12px' label-width='120px' >
+
+              <e-desc-item label="欠培训费">{{ qMoneySum.trainFeeNum }}</e-desc-item>
+              <e-desc-item label="欠服装费">{{ qMoneySum.clothesFeeNum }}</e-desc-item>
+              <e-desc-item label="欠教材费">{{ qMoneySum.bookFeeNum }}</e-desc-item>
+              <e-desc-item label="欠住宿费">{{ qMoneySum.hotelFeeNum }}</e-desc-item>
+              <e-desc-item label="欠被褥费">{{ qMoneySum.bedFeeNum }}</e-desc-item>
+              <e-desc-item label="欠保险费">{{ qMoneySum.insuranceFeeNum }}</e-desc-item>
+              <e-desc-item label="欠公物押金费">{{ qMoneySum.publicFeeNum }}</e-desc-item>
+              <e-desc-item label="欠证书费">{{ qMoneySum.certificateFeeNum }}</e-desc-item>
+              <e-desc-item label="欠国防教育费">{{ qMoneySum.defenseEduFeeNum }}</e-desc-item>
+              <e-desc-item label="欠体检费">{{ qMoneySum.bodyExamFeeNum }}</e-desc-item>
+              <e-desc-item label="欠费合计">{{ qMoneySum.feeNumNum }}</e-desc-item>
+            </e-desc>
+          </el-tab-pane>
         </el-tabs>
     </el-collapse-item>
     </el-collapse>
@@ -155,6 +171,7 @@
           bodyExamFee: '',
           feeNum: ''
         },
+        qMoneySum: {},
         checkAll: false,
         isIndeterminate: true,
         money: ['1']
@@ -163,12 +180,20 @@
     created () {
       this.getDataList()
       this.getQmoneyList()
+      this.getQmoneySum()
     },
     methods: {
       getDataList () {
         this.$http.get(this.$http.adornUrl(`/generator/feearrearage/info/${this.$route.params.index}`)).then(({data}) => {
           if (data && data.code === 0) {
             this.info = data.feeArrearage
+          }
+        })
+      },
+      getQmoneySum () {
+        this.$http.get(this.$http.adornUrl(`/generator/feearrearage/qMoneySum/${this.$route.params.index}`)).then(({data}) => {
+          if (data && data.code === 0) {
+            this.qMoneySum = data.qMoneyNum
           }
         })
       },
