@@ -170,10 +170,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDeptEntity> i
   }
 
   @Override
-  public List<DeptdescriptionDto> listDescription(DeptdescriptionDto record) {
-    record.setDeptId(record.getMajorId());
-    record.setMajorId(record.getDeptId());
-    return this.baseMapper.listDesc(record);
+  public List<DeptdescriptionDto> listDescription(DeptdescriptionDto record,List<Long> deptIdList) {
+    return this.baseMapper.listDesc(new DeptdescriptionDto(),deptIdList);
   }
 
   @Override

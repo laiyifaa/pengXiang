@@ -185,7 +185,7 @@ public class StuBaseInfoEntity extends BaseEntity implements Serializable {
 	/**
 	 * 班型
 	 */
-	@ExcelProperty("班型(1:就业 0:升学)")
+	@ExcelProperty("班型(1就业 0升学)")
 	private Integer classType;
 	/**
 	 * 是否提前入学

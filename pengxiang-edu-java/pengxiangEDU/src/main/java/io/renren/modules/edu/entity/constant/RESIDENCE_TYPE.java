@@ -33,13 +33,13 @@ public enum RESIDENCE_TYPE {
         return description;
     }
 
-    public static int getValue(String inputDescription) {
+    public static Integer getValue(String inputDescription) {
         for (RESIDENCE_TYPE type : RESIDENCE_TYPE.values()) {
             if (type.getDescription().equalsIgnoreCase(inputDescription)) {
                 return type.getValue();
             }
         }
-        return 1; // Return -1 to indicate an invalid description or no match found.
+        return null; // Return -1 to indicate an invalid description or no match found.
     }
 
 }

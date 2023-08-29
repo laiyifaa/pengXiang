@@ -24,4 +24,5 @@ public class StuEmployVistEntity {
     private String schoolNumber;
     private Long stuId;
     private int id;
+    private String idNumber;
 }

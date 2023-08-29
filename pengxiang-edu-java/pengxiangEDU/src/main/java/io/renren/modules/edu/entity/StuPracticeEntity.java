@@ -21,6 +21,8 @@ import java.util.Date;
 public class StuPracticeEntity {
       private int id;
       private Long stuId;
+      @ExcelProperty("身份证号")
+      private String idNumber;
       @ExcelProperty("学号")
       private String schoolNumber;
       @DateTimeFormat(pattern = "yyyy-MM-dd")

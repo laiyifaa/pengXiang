@@ -96,8 +96,9 @@ public class StuBaseInfoController {
         /**
          * service method add SysUser used to check deptId
          */
+
         setListOrExport(record,classTypeName);
-        PageUtils page = stuBaseInfoService.selectStuBaseInfo(Query.getPage(query), record, deptId);
+        PageUtils page = stuBaseInfoService.selectStuBaseInfo(Query.getPage(query), record, deptId,null);
         return R.ok().put("page", page);
     }
 

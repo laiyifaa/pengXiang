@@ -148,25 +148,26 @@ public class EmployServiceImpl implements EmployService {
 
     @Override
     public void importByList(List<StuEmployEntity> entities) {
-        List<String> B_schoolNumbers = stuBaseInfoDao.getAllSchoolNumbers();
-        List<String> E_schoolNumbers = stuEmployDao.getAllSchoolNumbers();
+        List<String> B_idNumbers = stuBaseInfoDao.getAllIdNumber();
+        List<String> E_idNumbers = stuEmployDao.getAllIdNumbers();
         Boolean E_result = false;
         Boolean B_result = false;
         for (StuEmployEntity stuEmployEntity : entities) {
-            for (String str : B_schoolNumbers) {
-                if (str != null && str.equals(stuEmployEntity.getSchoolNumber())){
+            for (String str : B_idNumbers) {
+                if (str != null && str.equals(stuEmployEntity.getIdNumber())){
                     B_result = true;
                 }
             }
             if (B_result) {
-                for (String str : E_schoolNumbers) {
-                    if (str.equals(stuEmployEntity.getSchoolNumber())) {
+                for (String str : E_idNumbers) {
+                    if (str.equals(stuEmployEntity.getIdNumber())) {
                         E_result = true;
                     }
                 }
                 if (E_result) {
                     QueryWrapper<StuEmployEntity> wrapper = new QueryWrapper<>();
-                    wrapper.eq("school_number", stuEmployEntity.getSchoolNumber());
+//                    wrapper.eq("school_number", stuEmployEntity.getSchoolNumber());
+                    wrapper.eq("id_Number",stuEmployEntity.getIdNumber());
                     stuEmployDao.update(stuEmployEntity, wrapper);
                 } else {
                     stuEmployDao.insert(stuEmployEntity);

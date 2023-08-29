@@ -49,4 +49,22 @@
         ORDER BY `year`
     </select>
 
+    <select id="getOneQmoneyNum" resultType="io.renren.modules.edu.dto.FeeArrearageSumDto">
+
+        SELECT  SUM(train_fee) as trainFeeNum,
+                SUM(clothes_fee) as clothesFeeNum,
+                SUM(book_fee) as bookFeeNum,
+                SUM(hotel_fee) as hotelFeeNum,
+                SUM(bed_fee) as bedFeeNum,
+                SUM(insurance_fee) as insuranceFeeNum,
+                SUM(public_fee) as publicFeeNum,
+                SUM(certificate_fee) as certificateFeeNum,
+                SUM(defense_edu_fee) as defenseEduFeeNum,
+                SUM(body_exam_fee) as bodyExamFeeNum,
+                SUM(fee_num) as FeeNumNum
+        FROM fee_arrearage
+        WHERE stu_id = #{stuId}
+        ORDER BY year;
+    </select>
+
 </mapper>

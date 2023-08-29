@@ -19,7 +19,7 @@ public enum CERTIFICATE_ERROR_INFO {
     public String getDescription() {
         return description;
     }
-    public static int getValue(String inputDescription) {
+    public static Integer getValue(String inputDescription) {
         for (CLASS_TYPE type : CLASS_TYPE.values()) {
             if (type.getDescription().equalsIgnoreCase(inputDescription)) {
                 return type.getValue();

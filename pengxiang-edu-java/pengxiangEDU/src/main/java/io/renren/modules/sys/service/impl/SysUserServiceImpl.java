@@ -142,4 +142,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 			throw new RRException("新增用户所选角色，不是本人创建");
 		}
 	}
+
+
+	@Override
+	public void saveUserDeptIds(Long userId, Long[] deptIds) {
+		List<Long> deptIdList = Arrays.asList(deptIds);
+		this.baseMapper.deleteUserDept(userId);
+		this.baseMapper.insertUserDeptIds(userId,deptIdList);
+	}
+
+	@Override
+	public List<Long> queryDeptIdList(Long userId) {
+		return this.baseMapper.queryDeptIdList(userId);
+	}
 }

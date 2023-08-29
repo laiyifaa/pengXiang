@@ -28,12 +28,12 @@ public enum STUTEMP_STATUS {
     }
     return false;
   }
-  public static int getValue(String inputDescription) {
+  public static Integer getValue(String inputDescription) {
     for (STUTEMP_STATUS type : STUTEMP_STATUS.values()) {
       if (type.getDescription().equalsIgnoreCase(inputDescription)) {
         return type.getValue();
       }
     }
-    return 0; // Return -1 to indicate an invalid description or no match found.
+    return null; // Return -1 to indicate an invalid description or no match found.
   }
 }

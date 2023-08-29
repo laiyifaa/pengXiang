@@ -26,12 +26,12 @@ public enum CLASS_TYPE {
         }
         return false;
     }
-    public static int getValue(String inputDescription) {
+    public static Integer getValue(String inputDescription) {
         for (CLASS_TYPE type : CLASS_TYPE.values()) {
             if (type.getDescription().equalsIgnoreCase(inputDescription)) {
                 return type.getValue();
             }
         }
-        return 0; // Return -1 to indicate an invalid description or no match found.
+        return null; // Return -1 to indicate an invalid description or no match found.
     }
 }

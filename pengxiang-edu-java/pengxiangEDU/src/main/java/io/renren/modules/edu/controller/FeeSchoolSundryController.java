@@ -61,7 +61,8 @@ public class FeeSchoolSundryController {
      * @param entity
      * @return
      */
-
+    @Autowired
+    FeeReturnService feeReturnService;
     @Autowired
     FeeSchoolSundryService feeSchoolSundryService;
     @Autowired
@@ -227,6 +228,13 @@ public class FeeSchoolSundryController {
         for (Long id : ids) {
             FeeSchoolSundryEntity byId = feeSchoolSundryService.getById(id);
             byId.setIsDeleted(true);
+
+            LambdaQueryWrapper<FeeReturnEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(FeeReturnEntity::getStuId,byId.getStuId());
+            FeeReturnEntity one = feeReturnService.getOne(lambdaQueryWrapper);
+            one.setIsDeleted(true);
+
+            feeReturnService.updateById(one);
             feeSchoolSundryService.updateById(byId);
         }
         //feeSchoolSundryService.removeByIds(Arrays.asList(ids));

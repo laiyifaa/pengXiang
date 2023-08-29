@@ -260,7 +260,7 @@ public class StuTempServiceImpl extends ServiceImpl<StuTempDao, StuTempEntity> i
         StuBaseInfoEntity record = new StuBaseInfoEntity();
         record.setIdNumber(temp.getIdNumber());
         if(temp.getId() == null
-                && stuBaseInfoDao.selectStuBaseInfo(null,null,record,null,null,null).size()>0
+                && stuBaseInfoDao.selectStuBaseInfo(null,null,record,null,null,null,null,null).size()>0
                 && stuTempDao.selectStuTempInfo(null,tempRecord,null).size()>0){
             throw new Exception("该名学生证件号系统中已存在");
         }

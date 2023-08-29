@@ -12,6 +12,7 @@ import io.renren.modules.edu.entity.constant.SCHOOL_ROLL_STATUS;
 import io.renren.modules.edu.service.EduCertificateService;
 import io.renren.modules.edu.utils.Query;
 import io.renren.modules.edu.vo.*;
+import io.renren.modules.sys.dao.SysUserDao;
 import io.renren.modules.sys.entity.SysUserEntity;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Service;
@@ -56,9 +57,18 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
     @Resource
     private FeeReturnDao feeReturnDao;
 
+    @Resource
+    private SysUserDao sysUserDao;
+
     @Override
     public List<StuBaseInfoEntity> queryExport(Query query, StuBaseInfoEntity record, Long deptId) {
-        List<StuBaseInfoEntity> exportList = baseMapper.selectStuBaseInfo(null == query ? null :Query.getPage(query), null, record, null, deptId,1);
+        SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+        List<Long> deptIdList = sysUserDao.queryDeptIdList(user.getUserId());
+        List<StuBaseInfoEntity> exportList = baseMapper.selectStuBaseInfo(
+                null == query ? null :Query.getPage(query),
+                null,
+                record,user.getAcademyId() , deptId,1,
+                null != deptIdList && deptIdList.size() > 0 ? deptIdList : null,null);
         return exportList;
     }
 
@@ -75,16 +85,17 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
     }
 
     @Override
-    public PageUtils selectStuBaseInfo(IPage<StuBaseInfoEntity> page, StuBaseInfoEntity key, Long deptId) {
+    public PageUtils selectStuBaseInfo(IPage<StuBaseInfoEntity> page, StuBaseInfoEntity key, Long deptId,List<Long>stuIdList) {
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
-        IPage<StuBaseInfoEntity> iPage = page.setRecords(baseMapper.selectStuBaseInfo(page, null,key, user.getAcademyId(), deptId,null));
+        List<Long> deptIdList = sysUserDao.queryDeptIdList(user.getUserId());
+        IPage<StuBaseInfoEntity> iPage = page.setRecords(baseMapper.selectStuBaseInfo(page, null,key, user.getAcademyId(), deptId,null,deptIdList,stuIdList));
         return new PageUtils(iPage);
     }
 
     @Override
     public StuBaseInfoEntity getBaseInfoById(Long stuId)throws Exception {
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
-        List<StuBaseInfoEntity> list = baseMapper.selectStuBaseInfo(null, stuId, null, user.getAcademyId(), null,null);
+        List<StuBaseInfoEntity> list = baseMapper.selectStuBaseInfo(null, stuId, null, user.getAcademyId(), null,null,null,null);
         if(null != list && list.size() != 1)
             throw new Exception();
         return list.get(0);
@@ -93,7 +104,7 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
     @Override
     public StuDetailVo detailById(Long stuId) {
         StuDetailVo detailVo = new StuDetailVo();
-        List<StuBaseInfoEntity> baseInfoList = this.baseMapper.selectStuBaseInfo(null, stuId, null, null, null,null);
+        List<StuBaseInfoEntity> baseInfoList = this.baseMapper.selectStuBaseInfo(null, stuId, null, null, null,null,null,null);
         if(null == baseInfoList || baseInfoList.isEmpty())
             return detailVo;
         StuBaseInfoEntity baseInfo = baseInfoList.get(0);
@@ -106,12 +117,12 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
         /**
          * 回访
          */
-        List<StuEmployVistEntity> visitList = stuEmployVistDao.selectList(new QueryWrapper<StuEmployVistEntity>().eq("stu_id",baseInfo.getStuId()).eq("is_deleted",0));
+        List<StuEmployVistEntity> visitList = stuEmployVistDao.selectList(new QueryWrapper<StuEmployVistEntity>().eq("id_number",baseInfo.getIdNumber()).eq("is_deleted",0));
         detailVo.setVisitList(visitList);
         /**
          * 就业
          */
-        List<StuEmployEntity> employInfoList  = stuEmployDao.selectList(new QueryWrapper<StuEmployEntity>().eq("stu_id", baseInfo.getStuId()).eq("is_deleted",0));
+        List<StuEmployEntity> employInfoList  = stuEmployDao.selectList(new QueryWrapper<StuEmployEntity>().eq("id_number", baseInfo.getIdNumber()).eq("is_deleted",0));
         if(null != employInfoList && employInfoList.size()>0){
             detailVo.setEmployInfo(employInfoList.get(0));
         }else {
@@ -120,7 +131,7 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
         /**
          * 实习
          */
-        List<StuPracticeEntity> practiceList = stuPracticeDao.selectList(new QueryWrapper<StuPracticeEntity>().eq("stu_id", baseInfo.getStuId()).eq("is_deleted", 0));
+        List<StuPracticeEntity> practiceList = stuPracticeDao.selectList(new QueryWrapper<StuPracticeEntity>().eq("id_number", baseInfo.getIdNumber()).eq("is_deleted", 0));
         detailVo.setPracticeList(practiceList);
         /**
          * 考证
@@ -137,7 +148,7 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
         /**
          * 退费
          */
-        List<FeeReturnEntity> feeReturnList = feeReturnDao.selectList(new QueryWrapper<FeeReturnEntity>().eq("is_deleted", 0));
+        List<FeeReturnEntity> feeReturnList = feeReturnDao.selectList(new QueryWrapper<FeeReturnEntity>().eq("stu_id",stuId).eq("is_deleted", 0));
         detailVo.setFeeReturnList(feeReturnList);
 
         return detailVo;
@@ -149,7 +160,7 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
         if(null == cachedDataList || cachedDataList.isEmpty())
             return ;
         //拿全部的dept
-        List<DeptdescriptionDto> deptDescList = sysDeptDao.listDesc(null);
+        List<DeptdescriptionDto> deptDescList = sysDeptDao.listDesc(null,null);
         Map<String, DeptdescriptionDto> deptDescMap = deptDescList.stream().collect(Collectors.toMap(DeptdescriptionDto::getDescription, Function.identity()));
         //来自excel的身份证列表
         Set<String> cacheIdNumberSet = new LinkedHashSet<>(cachedDataList.size());
@@ -260,7 +271,7 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
         }
         StuBaseInfoEntity record = new StuBaseInfoEntity();
         record.setIdNumber(baseInfo.getIdNumber());
-        if(baseInfo.getStuId() == null && stuBaseInfoDao.selectStuBaseInfo(null,null,record,null,null,null).size()>0){
+        if(baseInfo.getStuId() == null && stuBaseInfoDao.selectStuBaseInfo(null,null,record,null,null,null,null,null).size()>0){
             throw new Exception("该名学生证件号系统中已存在");
         }
     }

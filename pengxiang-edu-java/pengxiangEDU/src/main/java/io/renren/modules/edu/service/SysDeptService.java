@@ -46,7 +46,7 @@ public interface SysDeptService extends IService<SysDeptEntity> {
 
   List<MajorSelectVo> getDeptsByPid(Long pid);
 
-  List<DeptdescriptionDto> listDescription(DeptdescriptionDto record);
+  List<DeptdescriptionDto> listDescription(DeptdescriptionDto record,List<Long> deptIdList);
 
 }
 

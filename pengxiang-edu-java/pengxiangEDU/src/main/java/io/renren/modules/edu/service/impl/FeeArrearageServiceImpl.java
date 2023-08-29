@@ -7,6 +7,7 @@ import io.renren.common.utils.RedisUtils;
 import io.renren.modules.app.utils.JwtUtils;
 import io.renren.modules.edu.dao.SysDeptDao;
 import io.renren.modules.edu.dto.DeptdescriptionDto;
+import io.renren.modules.edu.dto.FeeArrearageSumDto;
 import io.renren.modules.edu.dto.ReturnFeeDto;
 import io.renren.modules.edu.dto.qMoneyAndInfoListDto;
 import io.renren.modules.edu.entity.StuBaseInfoEntity;
@@ -64,7 +65,7 @@ public class FeeArrearageServiceImpl extends ServiceImpl<FeeArrearageDao, FeeArr
         Map<Object,String> map = new HashMap();
         List<qMoneyAndInfoListDto> qMoneyAndInfoListDtos = feeArrearageDao.qMoneyAndInfoListDto();
         DeptdescriptionDto deptdescriptionDto2 = new DeptdescriptionDto();
-        List<DeptdescriptionDto> deptdescriptionDtos = sysDeptDao.listDesc(deptdescriptionDto2);
+        List<DeptdescriptionDto> deptdescriptionDtos = sysDeptDao.listDesc(deptdescriptionDto2,null);
         for (DeptdescriptionDto deptdescriptionDto : deptdescriptionDtos) {
             map.put(deptdescriptionDto.getAcademyId(),deptdescriptionDto.getAcademyName());
             map.put(deptdescriptionDto.getMajorId(),deptdescriptionDto.getMajorName());
@@ -196,7 +197,7 @@ public class FeeArrearageServiceImpl extends ServiceImpl<FeeArrearageDao, FeeArr
         Map<Object,String> map = new HashMap();
         List<qMoneyAndInfoListDto> qMoneyAndInfoListDtos = feeArrearageDao.qMoneyAndInfoListDto();
         DeptdescriptionDto deptdescriptionDto2 = new DeptdescriptionDto();
-        List<DeptdescriptionDto> deptdescriptionDtos = sysDeptDao.listDesc(deptdescriptionDto2);
+        List<DeptdescriptionDto> deptdescriptionDtos = sysDeptDao.listDesc(deptdescriptionDto2,null);
         for (DeptdescriptionDto deptdescriptionDto : deptdescriptionDtos) {
             map.put(deptdescriptionDto.getAcademyId(),deptdescriptionDto.getAcademyName());
             map.put(deptdescriptionDto.getMajorId(),deptdescriptionDto.getMajorName());

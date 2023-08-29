@@ -27,6 +27,9 @@ public interface StuBaseInfoDao extends BaseMapper<StuBaseInfoEntity> {
 
     @Select("SELECT school_number FROM stu_base_info")
     List<String> getAllSchoolNumbers();
+
+    @Select("SELECT id_number FROM stu_base_info")
+    List<String> getAllIdNumber();
     /**
      * 查询所有学生
      * @return
@@ -52,7 +55,14 @@ public interface StuBaseInfoDao extends BaseMapper<StuBaseInfoEntity> {
 
     void unbundlingClass(@Param("stuId") Long stuId);
 
-    List<StuBaseInfoEntity> selectStuBaseInfo(IPage<StuBaseInfoEntity> page,@Param("stuId")Long stuId, @Param("key") StuBaseInfoEntity key, @Param("academyId") Long academyId,@Param("deptId")Long deptId,Integer isExcel);
+    List<StuBaseInfoEntity> selectStuBaseInfo(IPage<StuBaseInfoEntity> page,
+                                              @Param("stuId")Long stuId,
+                                              @Param("key") StuBaseInfoEntity key,
+                                              @Param("academyId") Long academyId,
+                                              @Param("deptId")Long deptId,
+                                              @Param("isExcel") Integer isExcel,
+                                              @Param("deptIdList") List<Long> deptIdList,
+                                              @Param("stuIdList")List<Long> stuIdList);
 
     Integer deleteByIds(@Param("idList")List<Long> idList );
 

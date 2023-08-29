@@ -51,6 +51,7 @@ public class StuTempEntity  implements Serializable {
 	/**
 	 * 班型（1就业、0升学）
 	 */
+	@ExcelProperty("班型(1就业 0升学)")
 	private Integer classType;
 	/**
 	 * 学制（2\3）

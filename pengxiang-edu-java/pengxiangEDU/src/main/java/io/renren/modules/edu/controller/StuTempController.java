@@ -14,6 +14,7 @@ import io.renren.modules.edu.service.StuTempService;
 import io.renren.modules.edu.utils.Query;
 import io.renren.modules.edu.vo.StuTempVo;
 import io.renren.modules.sys.entity.SysUserEntity;
+import io.renren.modules.sys.service.SysUserService;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;

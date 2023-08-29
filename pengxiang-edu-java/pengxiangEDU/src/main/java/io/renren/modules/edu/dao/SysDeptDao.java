@@ -37,7 +37,7 @@ public interface SysDeptDao extends BaseMapper<SysDeptEntity> {
 
     List<SysDeptEntity> listAll();
 
-    List<DeptdescriptionDto> listDesc( DeptdescriptionDto record);
+    List<DeptdescriptionDto> listDesc(@Param("record") DeptdescriptionDto record,@Param("deptIdList") List<Long> classIdList);
 
     List<DeptdescriptionDto> listStuTempDesc(DeptdescriptionDto record);
 }

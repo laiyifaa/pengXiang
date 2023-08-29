@@ -83,7 +83,7 @@ public class WorkServiceImpl implements WorkService {
             stuWorkDto.setPhone(stuInfoEntity.getPhone());
             stuWorkDto.setSchoolNumber(stuInfoEntity.getSchoolNumber());
             stuWorkDto.setAdmissionDate(stuInfoEntity.getAdmissionDate());
-            stuWorkDto.setTimes(getPracticeCountBySchoolNumber().getOrDefault(stuInfoEntity.getSchoolNumber(), 0));
+            stuWorkDto.setTimes(getPracticeCountBySchoolNumber().getOrDefault(stuInfoEntity.getIdNumber(), 0));
             stuWorkDtos.add(stuWorkDto);
         }
         StuWorkByPageDto stuWorkByPageDto=new StuWorkByPageDto();
@@ -533,19 +533,20 @@ public class WorkServiceImpl implements WorkService {
 
     @Override
     public void importByList(List<StuPracticeEntity> entities) {
-        List<String> B_schoolNumbers = stuBaseInfoDao.getAllSchoolNumbers();
+//        List<String> B_schoolNumbers = stuBaseInfoDao.getAllSchoolNumbers();
+        List<String> B_idNumber = stuBaseInfoDao.getAllIdNumber();
         List<StuPracticeEntity> stuPracticeEntities  = stuPracticeDao.selectList(null);
         Boolean E_result = false;
         Boolean B_result = false;
         for (StuPracticeEntity stuPracticeEntity : entities) {
-            for (String str : B_schoolNumbers) {
-                if (str != null && str.equals(stuPracticeEntity.getSchoolNumber())){
+            for (String str : B_idNumber) {
+                if (str != null && str.equals(stuPracticeEntity.getIdNumber())){
                     B_result = true;
                 }
             }
             if (B_result) {
                 for (StuPracticeEntity stuPractice : stuPracticeEntities) {
-                    if (stuPractice.getSchoolNumber().equals(stuPracticeEntity.getSchoolNumber())) {
+                    if (stuPractice.getIdNumber().equals(stuPracticeEntity.getIdNumber())) {
                         if(stuPractice.getLeaveDate().equals(stuPracticeEntity.getLeaveDate())){
                             E_result = true;
                         }
@@ -568,7 +569,8 @@ public class WorkServiceImpl implements WorkService {
                 }
                 if (E_result) {
                     QueryWrapper<StuPracticeEntity> wrapper = new QueryWrapper<>();
-                    wrapper.eq("school_number", stuPracticeEntity.getSchoolNumber());
+//                    wrapper.eq("school_number", stuPracticeEntity.getSchoolNumber());
+                    wrapper.eq("id_number",stuPracticeEntity.getIdNumber());
                     stuPracticeDao.update(stuPracticeEntity, wrapper);
                 } else {
                     stuPracticeDao.insert(stuPracticeEntity);
@@ -584,7 +586,7 @@ public class WorkServiceImpl implements WorkService {
         // 统计实习次数
         Map<String, Integer> practiceCountMap = new HashMap<>();
         for (StuPracticeEntity practice : practiceList) {
-            String studentId = practice.getSchoolNumber();
+            String studentId = practice.getIdNumber();
             practiceCountMap.put(studentId, practiceCountMap.getOrDefault(studentId, 0) + 1);
         }
         return practiceCountMap;

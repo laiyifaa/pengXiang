@@ -15,6 +15,8 @@ import java.util.List;
 
 @Mapper
 public interface StuEmployDao extends BaseMapper<StuEmployEntity> {
-    @Select("SELECT school_number FROM stu_employ")
-    List<String> getAllSchoolNumbers();
+//    @Select("SELECT school_number FROM stu_employ")
+//    List<String> getAllSchoolNumbers();
+    @Select("SELECT id_number FROM stu_employ")
+    List<String> getAllIdNumbers();
 }

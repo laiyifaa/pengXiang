@@ -173,6 +173,9 @@ public class FeeSchoolSundryEntity extends BaseEntity implements Serializable {
 	 */
 	private Integer isArrearage;
 
+	@TableField(exist = false)
+	private String IfQMoney;
+
 	@TableField(fill = FieldFill.INSERT)
 	@ExcelIgnore
 	private Boolean isDeleted;

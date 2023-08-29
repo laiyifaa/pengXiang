@@ -20,11 +20,13 @@ import java.util.Date;
 public class StuEmployEntity {
     private int id;
     private Long stuId;
+    @ExcelProperty("身份证号")
+    private String idNumber;
     @ExcelProperty("学号")
     private String schoolNumber;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @ExcelProperty(value = "离校日期",converter = DateConverter.class)
+    @ExcelProperty(value = "离校日期")
     private Date leaveDate;
     @ExcelProperty("离校原因")
     private String leaveReason;

@@ -8,6 +8,7 @@ import io.renren.common.utils.RedisUtils;
 import io.renren.modules.edu.dao.StuBaseInfoDao;
 import io.renren.modules.edu.dto.*;
 import io.renren.modules.edu.entity.*;
+import io.renren.modules.edu.entity.constant.RESIDENCE_TYPE;
 import io.renren.modules.edu.excel.EmptyDataException;
 import io.renren.modules.edu.service.AcademyService;
 import io.renren.modules.edu.service.StuBaseInfoService;
@@ -211,7 +212,7 @@ public class FeeSchoolSundryServiceImpl extends ServiceImpl<FeeSchoolSundryDao, 
         if(sundryEntity==null)throw new RuntimeException("缴费信息记录为空，检查记录id是否正确");
 
         //获取学生base信息
-        List<StuBaseInfoEntity> vos = stuBaseInfoDao.selectStuBaseInfo(null, sundryEntity.getStuId(), null, null, null,null);
+        List<StuBaseInfoEntity> vos = stuBaseInfoDao.selectStuBaseInfo(null, sundryEntity.getStuId(), null, null, null,null,null,null);
         if(vos==null||vos.size()==0)throw new RuntimeException("学生信息记录为空，检查记录中学生相关信息是否正确，联系管理员");
 
         LambdaQueryWrapper<FeeSchoolSundryEntity> queryWrapper = new LambdaQueryWrapper<>();
@@ -227,9 +228,32 @@ public class FeeSchoolSundryServiceImpl extends ServiceImpl<FeeSchoolSundryDao, 
                     vos.get(0).setIfQMoney("未欠费");
                 }
             }
+           if (vos.get(0).getResidenceType() == null)vos.get(0).setResidenceTypeName("");
+           else {
+            if (vos.get(0).getResidenceType() == 1){
+                vos.get(0).setResidenceTypeName("农业户口");
+            }
+            if (vos.get(0).getResidenceType() == 0){
+                vos.get(0).setResidenceTypeName("非农户口");
+            }
+            }
 
+           List<FeeSchoolSundryEntity> list = new ArrayList<>();
+           list.add(new FeeSchoolSundryEntity());
+           list.add(new FeeSchoolSundryEntity());
+           list.add(new FeeSchoolSundryEntity());
+        for (FeeSchoolSundryEntity feeSchoolSundryEntity : feeSchoolSundryEntities) {
+            if (feeSchoolSundryEntity.getIsArrearage() == null)feeSchoolSundryEntity.setIfQMoney("");
+            else if (feeSchoolSundryEntity.getIsArrearage() == 1){
+                feeSchoolSundryEntity.setIfQMoney("已欠费");
+            }
+            else if (feeSchoolSundryEntity.getIsArrearage() == 0){
+                feeSchoolSundryEntity.setIfQMoney("未欠费");
+            }
+            list.set(feeSchoolSundryEntity.getPaySchoolYear()-1,feeSchoolSundryEntity);
+        }
         res.put("stuInfo",vos.get(0));
-        res.put("feeInfo",feeSchoolSundryEntities);
+        res.put("feeInfo",list);
 
         return res;
 

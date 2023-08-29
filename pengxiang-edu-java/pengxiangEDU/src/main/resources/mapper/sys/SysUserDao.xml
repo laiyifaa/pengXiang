@@ -20,5 +20,31 @@
 	<select id="queryByUserName" resultType="io.renren.modules.sys.entity.SysUserEntity">
 		select * from sys_user where username = #{username}
 	</select>
+	
+	<insert id="insertUserDeptIds" >
+		INSERT INTO sys_user_dept(
+		                          user_id,
+		                          dept_id
+		)VALUES
+		<foreach collection="deptIdList" item="deptId" separator="," index="index">
+			(
+			 #{userId},
+			 #{deptId}
+			)
+		</foreach>
+	</insert>
+	
+	<delete id="deleteUserDept" parameterType="java.lang.Long">
+			DELETE FROM  sys_user_dept
+			<where>
+				<if test="null != userId">
+					AND user_id = #{userId}
+				</if>
+			</where>
+	</delete>
 
+
+	<select id="queryDeptIdList" resultType="long">
+		select dept_id from sys_user_dept where user_id = #{value}
+	</select>
 </mapper>

@@ -78,12 +78,9 @@ public class SysUserEntity implements Serializable {
 	private List<Long> roleIdList;
 
 
-	/**
-	 * 部门ID列表
-	 */
-	@TableField(exist=false)
-	private List<Long> deptList;
 
+	@TableField(exist=false)
+	private Long[] deptIds;
 	/**
 	 * 创建者ID
 	 */
@@ -95,5 +92,8 @@ public class SysUserEntity implements Serializable {
 	private Date createTime;
 
 	private Long academyId;
+
+	@TableField(exist=false)
+	private Long[][] userDeptOptions;
 
 }

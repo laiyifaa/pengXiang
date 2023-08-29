@@ -7,6 +7,7 @@ import io.renren.modules.edu.entity.constant.CERTIFICATE_TYPE;
 import io.renren.modules.edu.utils.Query;
 import io.renren.modules.edu.vo.CertificateDetailVo;
 import io.renren.modules.edu.vo.CertificateVo;
+import io.renren.modules.sys.dao.SysUserDao;
 import io.renren.modules.sys.entity.SysUserEntity;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,9 @@ public class EduCertificateServiceImpl extends ServiceImpl<EduCertificateDao, Ed
     @Resource
     private StuBaseInfoDao stuBaseInfoDao;
 
+    @Resource
+    private SysUserDao sysUserDao;
+
     @Override
     public List<CertificateVo> queryExport(Query query, EduCertificateEntity key, Long deptId) {
  /*       SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
@@ -50,7 +54,14 @@ public class EduCertificateServiceImpl extends ServiceImpl<EduCertificateDao, Ed
             Long academyId = user.getAcademyId();
             deptId = academyId == -1 ? null : academyId;
         }
-        IPage<CertificateVo> iPage = page.setRecords(this.baseMapper.selectCertificateVoInfo(page, key, deptId));
+        List<Long> deptIdList = sysUserDao.queryDeptIdList(user.getUserId());
+        IPage<CertificateVo> iPage;
+        if(null == deptIdList || deptIdList.size() == 0){
+            iPage = page.setRecords(this.baseMapper.selectCertificateVoInfo(page, key, deptId,null));
+        }else {
+            iPage = page.setRecords(this.baseMapper.selectCertificateVoInfo(page, key, deptId,deptIdList));
+        }
+
         return new PageUtils(iPage);
     }
 
@@ -68,7 +79,7 @@ public class EduCertificateServiceImpl extends ServiceImpl<EduCertificateDao, Ed
     @Override
     public CertificateDetailVo detailById(Long stuId) {
         CertificateDetailVo detailVo = new CertificateDetailVo();
-        List<StuBaseInfoEntity> baseInfoList = stuBaseInfoDao.selectStuBaseInfo(null, stuId, null, null, null,null);
+        List<StuBaseInfoEntity> baseInfoList = stuBaseInfoDao.selectStuBaseInfo(null, stuId, null, null, null,null,null,null);
         if(baseInfoList == null || baseInfoList.size() != 1 )
             return null;
         detailVo.setBaseInfo(baseInfoList.get(0));

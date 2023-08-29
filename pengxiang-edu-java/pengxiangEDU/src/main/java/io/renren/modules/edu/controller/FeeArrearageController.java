@@ -12,6 +12,8 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.renren.common.utils.RedisUtils;
+import io.renren.modules.edu.dao.FeeArrearageDao;
+import io.renren.modules.edu.dto.FeeArrearageSumDto;
 import io.renren.modules.edu.dto.qMoneyAndInfoListDto;
 import io.renren.modules.edu.entity.FeeSchoolSundryEntity;
 import io.renren.modules.edu.service.FeeSchoolSundryService;
@@ -29,6 +31,7 @@ import io.renren.modules.edu.service.FeeArrearageService;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,6 +53,9 @@ public class FeeArrearageController {
     RedisUtils redis;
     @Autowired
     FeeSchoolSundryService feeSchoolSundryService;
+    @Resource
+    FeeArrearageDao feeArrearageDao;
+
     /**
      * 列表
      */
@@ -117,9 +123,24 @@ public class FeeArrearageController {
         FeeArrearageEntity getone = feeArrearageService.getOne(queryWrapper);
         List<FeeArrearageEntity> list = feeArrearageService.getOneQmoneyListDto(getone.getStuId());
 
+        if (list.get(0).getYear() == 2){
+            list.add(0,new FeeArrearageEntity());
+        }else if (list.get(0).getYear() == 3){
+            list.add(0,new FeeArrearageEntity());
+            list.add(0,new FeeArrearageEntity());
+        }
+        FeeArrearageEntity feeArrearageEntity = new FeeArrearageEntity();
         return R.ok().put("qMoneyinfo", list);
     }
-
+    @RequestMapping("/qMoneySum/{id}")
+    //  @RequiresPermissions("generator:feearrearage:info")
+    public R qMoneySum(@PathVariable("id") Long id){
+        LambdaQueryWrapper<FeeArrearageEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(FeeArrearageEntity::getId,id);
+        FeeArrearageEntity getone = feeArrearageService.getOne(queryWrapper);
+        FeeArrearageSumDto oneQmoneyNum = feeArrearageDao.getOneQmoneyNum(getone.getStuId());
+        return R.ok().put("qMoneyNum", oneQmoneyNum);
+    }
     /**
      * 保存
      */

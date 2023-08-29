@@ -286,7 +286,7 @@
             school_roll_status = #{student.schoolRollStatus},</if>
             <if test="null != student.registerDate ">
             register_date = #{student.registerDate},</if>
-            <if test="null != student.classType and student.classType != ''">
+            <if test="null != student.classType ">
             class_type = #{student.classType},</if>
             <if test="null != student.isAdmissionEarly and student.isAdmissionEarly != ''">
             is_admission_early = #{student.isAdmissionEarly},</if>
@@ -463,6 +463,18 @@
         bi.class_id = #{deptId}
           )
       </if>
+        <if test="null != deptIdList and deptIdList.size >0 ">
+            AND bi.class_id IN
+            <foreach collection="deptIdList" item="deptId" open="(" separator="," close=")">
+                #{deptId}
+            </foreach>
+        </if>
+        <if test="null != stuIdList and stuIdList.size > 0">
+            AND bi.stu_id IN
+            <foreach collection="stuIdList" item="sid" open="(" separator="," close=")">
+                #{sid}
+            </foreach>
+        </if>
 
     </select>
     <select id="getNotGraduateStuByDeptLimited" resultType="io.renren.modules.edu.entity.StuBaseInfoEntity">

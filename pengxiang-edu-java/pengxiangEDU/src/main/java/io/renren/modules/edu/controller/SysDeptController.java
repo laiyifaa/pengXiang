@@ -1,20 +1,17 @@
 package io.renren.modules.edu.controller;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.renren.common.utils.Constant;
-import io.renren.modules.edu.utils.Methods;
 import io.renren.modules.edu.utils.Query;
 import io.renren.modules.edu.vo.*;
 import io.renren.modules.sys.entity.SysUserEntity;
-import io.renren.modules.sys.service.SysUserDeptService;
+import io.renren.modules.sys.service.SysUserService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,17 +34,7 @@ public class SysDeptController {
     @Autowired
     private SysDeptService sysDeptService;
     @Autowired
-    private SysUserDeptService sysUserDeptService;
-    /**
-     * 列表
-     */
-//  @RequestMapping("/list")
-//    //@RequiresPermissions("sysdept:list")
-//  public R list(@RequestParam Map<String, Object> params) {
-//    PageUtils page = sysDeptService.queryPage(params);
-//
-//    return R.ok().put("page", page);
-//  }
+    private SysUserService sysUserService;
 
     /**
      * 自定义分页
@@ -112,23 +99,14 @@ public class SysDeptController {
     @GetMapping("/getDeptTreeList")
     public R getDeptTreeList() {
         List<SysDeptEntity> deptList = sysDeptService.getDeptTreeList();
-        SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
- /*       if(user.getUserId() != Constant.SUPER_ADMIN){
-            HashSet<Long> deptSet = new HashSet<>(sysUserDeptService.queryDeptIdList(user.getUserId()));
 
-        }*/
+        SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+
         List<DeptTreeListVo> treeListVos = getVoListByPid(user.getAcademyId(), deptList);
-/*        //如果不是超级管理员，最后查一次院校部门，作为根节点
-        if (user.getAcademyId() != -1) {
-            SysDeptEntity academy = sysDeptService.getBaseMapper().selectById(user.getAcademyId());
-            DeptTreeListVo academyNode = new DeptTreeListVo();
-            academyNode.setId(academy.getDeptId());
-            academyNode.setLabel(academy.getName());
-            academyNode.setChildren(treeListVos);
-            List<DeptTreeListVo> withAcademyRoot= new ArrayList<>();
-            withAcademyRoot.add(academyNode);
-            return R.ok().put("data", withAcademyRoot);
-        }*/
+        List<Long> deptIdList = sysUserService.queryDeptIdList(user.getUserId());
+        if(deptIdList != null && deptIdList.size() > 0 && user.getUserId() != Constant.SUPER_ADMIN){
+            screenDeptTreeListVo(deptIdList,treeListVos);
+        }
         return R.ok().put("data", treeListVos);
     }
 
@@ -211,6 +189,7 @@ public class SysDeptController {
             vo.setId(deptEntity.getDeptId());
             vo.setLabel(deptEntity.getName());
             vo.setPid(deptEntity.getPid());
+            vo.setValue(vo.getId());
             deptVoMap.put(deptEntity.getDeptId(),vo);
         }
         if(pid != -1){
@@ -236,6 +215,50 @@ public class SysDeptController {
         return voList;
     }
 
+    private void screenDeptTreeListVo(  List<Long> deptIdList,List<DeptTreeListVo> treeListVos){
+        Set<Long> deptIdSet = new LinkedHashSet<>(deptIdList);
+        for(int i = 0; i < treeListVos.size();++i){
+            //院校
+            DeptTreeListVo firstVo = treeListVos.get(i);
+            List<DeptTreeListVo> secondList = firstVo.getChildren();
+            if(null == secondList || secondList.size() == 0)
+                continue;
+            Iterator<DeptTreeListVo> secondIterator = secondList.iterator();
+            while (secondIterator.hasNext()){
+                //年级
+                DeptTreeListVo secondVo = secondIterator.next();
+                List<DeptTreeListVo> thirdList = secondVo.getChildren();
+                if(null == thirdList || thirdList.size() == 0){
+                    secondIterator.remove();
+                    continue;
+                }
+                Iterator<DeptTreeListVo> thirdIterator = thirdList.iterator();
+                while (thirdIterator.hasNext()){
+                    //专业
+                    DeptTreeListVo thirdVo = thirdIterator.next();
+                    List<DeptTreeListVo> voList = thirdVo.getChildren();
+                    if(null == voList || voList.size() == 0){
+                        thirdIterator.remove();
+                        continue;
+                    }
+                    Iterator<DeptTreeListVo> voIterator = voList.iterator();
+                    while (voIterator.hasNext()){
+                        DeptTreeListVo vo = voIterator.next();
+                        if(!deptIdSet.contains(vo.getId())){
+                            voIterator.remove();
+                        }
+                    }
+                    if(thirdVo.getChildren() == null || thirdVo.getChildren().size() == 0){
+                        thirdIterator.remove();
+                    }
+                }
+                if(secondVo.getChildren() == null || secondVo.getChildren().size() == 0){
+                    secondIterator.remove();
+                }
+            }
+
+        }
+    }
     //只获取前三层
     private List<DeptTreeListVo> getVoListByPid3Level(Long pid, List<SysDeptEntity> deptList) {
 
@@ -251,31 +274,5 @@ public class SysDeptController {
         return voList;
     }
 
-/*
-    private Set<SysDeptEntity> getEntityListByPid(Long pid, List<SysDeptEntity> deptList, Set<SysDeptEntity> results) {
-
-        List<SysDeptEntity> collect = deptList.stream().filter(item -> {
-            if (item.getDeptId() == pid) results.add(item);
-            return item.getPid() == pid;
-        }).collect(Collectors.toList());
-        for (SysDeptEntity item : collect) {
-            getEntityListByPid(item.getDeptId(), deptList, results);
-            results.add(item);
-        }
-        return results;
-
-    }*/
-
-   /* private List<DeptTreeListVo> getDeptTreeByPid(Long pid, Map<Long, List<SysDeptEntity>> map) {
-        List<SysDeptEntity> deptEntityList = map.get(pid);
-        List<DeptTreeListVo> result = deptEntityList.stream().map(item -> {
-            DeptTreeListVo deptTreeListVo = new DeptTreeListVo();
-            deptTreeListVo.setLabel(item.getName());
-            deptTreeListVo.setId(item.getDeptId());
-            deptTreeListVo.setChildren(getDeptTreeByPid(item.getDeptId(), map));
-            return deptTreeListVo;
-        }).collect(Collectors.toList());
-        return result;
-    }*/
 
 }

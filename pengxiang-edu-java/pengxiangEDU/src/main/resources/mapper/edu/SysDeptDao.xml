@@ -120,17 +120,23 @@
         AND
         p.pid IS NOT NULL
 
-        <if test="null != classId">
+        <if test="null != record.classId">
         AND    c.dept_id = #{classId}
         </if>
-       <if test="null != gradeId">
+       <if test="null != record.gradeId">
         AND    p.dept_id = #{gradeId}
        </if>
-      <if test="null != majorId">
+      <if test="null != record.majorId">
         AND    g.dept_id = #{majorId}
       </if>
-        <if test="null != academyId">
+        <if test="null != record.academyId">
         AND  d.dept_id = #{academyId}
+        </if>
+        <if test="null != deptIdList and deptIdList.size >0">
+            AND c.dept_id IN
+            <foreach collection="deptIdList" item="deptId" open="(" separator="," close=")">
+                #{deptId}
+            </foreach>
         </if>
         </where>
     </select>

@@ -1,3 +1,4 @@
+/*
 package io.renren.modules.edu.controller;
 
 import io.renren.common.utils.PageUtils;
@@ -17,13 +18,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 
 
+*/
 /**
  *
  *
  * @author chenshun
  * @email sunlightcs@gmail.com
  * @date 2022-11-16 09:55:50
- */
+ *//*
+
 @RestController
 @RequestMapping("generator/stuwork")
 public class StuWorkController {
@@ -37,9 +40,11 @@ public class StuWorkController {
     @Autowired
     private SysDeptService sysDeptService;
 
-    /**
+    */
+/**
      * 实习列表
-     */
+     *//*
+
     @GetMapping("/internshipList")
 //    //@RequiresPermissions("internshipList:list")
     public R internshipList(@RequestParam("key")String key,io.renren.modules.edu.utils.Query query){
@@ -48,9 +53,11 @@ public class StuWorkController {
         return R.ok().put("page", page);
     }
 
-    /**
+    */
+/**
      * 信息
-     */
+     *//*
+
     @GetMapping("/internshipInfo/{id}")
 //    //@RequiresPermissions("inemstuinternship:info")
     public R internshipInfo(@PathVariable("id") Long id){
@@ -59,12 +66,14 @@ public class StuWorkController {
 
     }
 
-  /**
+  */
+/**
    *
    * @param key
    * @param query
    * @return
-   */
+   *//*
+
     @GetMapping("/employedList")
 //    //@RequiresPermissions("employedList:list")
     public R employedList(@RequestParam("key")String key,io.renren.modules.edu.utils.Query query){
@@ -73,9 +82,11 @@ public class StuWorkController {
         return R.ok().put("page", page);
     }
 
-    /**
+    */
+/**
      * 信息
-     */
+     *//*
+
     @GetMapping("/employedInfo/{id}")
 //    //@RequiresPermissions("inememployedsturecord:info")
     public R employedInfo(@PathVariable("id") Long id){
@@ -86,9 +97,11 @@ public class StuWorkController {
 
 
 
-    /**
+    */
+/**
      * 保存
-     */
+     *//*
+
     @RequestMapping("/save")
 //    //@RequiresPermissions("inemstuinternship:save")
     public R save(@RequestBody InemStuInternshipEntity inemStuInternship){
@@ -97,9 +110,11 @@ public class StuWorkController {
         return R.ok();
     }
 
-    /**
+    */
+/**
      * 修改
-     */
+     *//*
+
     @RequestMapping("/update")
 //    //@RequiresPermissions("inemstuinternship:update")
     public R update(@RequestBody InemStuInternshipEntity inemStuInternship){
@@ -108,9 +123,11 @@ public class StuWorkController {
         return R.ok();
     }
 
-    /**
+    */
+/**
      * 删除
-     */
+     *//*
+
     @RequestMapping("/delete")
     //@RequiresPermissions("inemstuinternship:delete")
     public R delete(@RequestBody Integer[] ids){
@@ -120,3 +137,4 @@ public class StuWorkController {
     }
 
 }
+*/

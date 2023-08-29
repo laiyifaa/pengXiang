@@ -17,9 +17,10 @@ import io.renren.common.validator.Assert;
 import io.renren.common.validator.ValidatorUtils;
 import io.renren.common.validator.group.AddGroup;
 import io.renren.common.validator.group.UpdateGroup;
+import io.renren.modules.edu.dto.DeptdescriptionDto;
+import io.renren.modules.edu.service.SysDeptService;
 import io.renren.modules.sys.entity.SysUserEntity;
 import io.renren.modules.sys.form.PasswordForm;
-import io.renren.modules.sys.service.SysUserDeptService;
 import io.renren.modules.sys.service.SysUserRoleService;
 import io.renren.modules.sys.service.SysUserService;
 import org.apache.commons.lang.ArrayUtils;
@@ -44,7 +45,7 @@ public class SysUserController extends AbstractController {
 	private SysUserRoleService sysUserRoleService;
 
 	@Autowired
-	private SysUserDeptService sysUserDeptService;
+	private SysDeptService sysDeptService;
 
 	@Autowired
 	private RedisUtils redis;
@@ -104,10 +105,12 @@ public class SysUserController extends AbstractController {
 
 		//获取用户所属的角色列表
 		List<Long> roleIdList = sysUserRoleService.queryRoleIdList(userId);
-		List<Long> deptIdList = sysUserDeptService.queryDeptIdList(userId);
 		user.setRoleIdList(roleIdList);
-		user.setDeptList(deptIdList);
+
+		// todo
 		setDeptListToRedis(user);
+
+		setUserDeptOption(user);
 		return R.ok().put("user", user);
 	}
 
@@ -121,8 +124,12 @@ public class SysUserController extends AbstractController {
 		ValidatorUtils.validateEntity(user, AddGroup.class);
 
 		user.setCreateUserId(getUserId());
-		sysUserService.saveUser(user);
 
+		Long[] deptIds = user.getDeptIds();
+		sysUserService.saveUser(user);
+		if(null != deptIds && deptIds.length > 0){
+			sysUserService.saveUserDeptIds(user.getUserId(),deptIds);
+		}
 		return R.ok();
 	}
 
@@ -136,8 +143,12 @@ public class SysUserController extends AbstractController {
 		ValidatorUtils.validateEntity(user, UpdateGroup.class);
 
 		user.setCreateUserId(getUserId());
-		sysUserService.update(user);
 
+		Long[] deptIds = user.getDeptIds();
+		sysUserService.update(user);
+		if(null != deptIds && deptIds.length > 0){
+			sysUserService.saveUserDeptIds(user.getUserId(),deptIds);
+		}
 		return R.ok();
 	}
 
@@ -165,5 +176,25 @@ public class SysUserController extends AbstractController {
 		if(user.getUserId() == Constant.SUPER_ADMIN)
 			return;
 
+	}
+	private void setUserDeptOption(SysUserEntity user){
+		if(Constant.SUPER_ADMIN  == user.getUserId())
+			return;
+		List<Long> deptIdList = sysUserService.queryDeptIdList(user.getUserId());
+		if(null == deptIdList || deptIdList.size() == 0){
+			return;
+		}
+		List<DeptdescriptionDto> descriptionList = sysDeptService.listDescription(null, deptIdList);
+		Long[][] userDeptOptions = new Long[deptIdList.size()][4];
+		for(int i = 0; i < descriptionList.size() ; ++i){
+			DeptdescriptionDto dto = descriptionList.get(i);
+			userDeptOptions[i] = new Long[]{
+					dto.getAcademyId(),
+					dto.getGradeId(),
+					dto.getMajorId(),
+					dto.getClassId()
+			};
+		}
+		user.setUserDeptOptions(userDeptOptions);
 	}
 }

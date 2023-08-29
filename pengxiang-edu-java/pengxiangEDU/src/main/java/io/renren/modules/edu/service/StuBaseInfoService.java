@@ -33,7 +33,7 @@ public interface StuBaseInfoService extends IService<StuBaseInfoEntity> {
 
   void unbundlingClass(List<Long> stuIds);*/
 
-  PageUtils selectStuBaseInfo(IPage<StuBaseInfoEntity> page, StuBaseInfoEntity key,Long deptId);
+  PageUtils selectStuBaseInfo(IPage<StuBaseInfoEntity> page, StuBaseInfoEntity key,Long deptId,List<Long>stuIdList);
 
   void importByList(List<StuBaseInfoEntity> cachedDataList) throws RuntimeException;
 

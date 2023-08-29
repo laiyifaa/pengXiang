@@ -58,6 +58,12 @@
                     AND base.school_number  like concat('%',#{key.schoolNumber},'%')
                 </if>
             </if>
+            <if test="null != deptIdList and deptIdList.size >0 ">
+                AND base.class_id IN
+                <foreach collection="deptIdList" item="deptId" open="(" separator="," close=")">
+                    #{deptId}
+                </foreach>
+            </if>
         </where>
     </select>
 

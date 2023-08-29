@@ -7,7 +7,8 @@ public enum CURRENT_STATUS {
     LEAVE_OF_ABSENCE(3, "请假"),
     SUSPENSION(4, "休学"),
     WITHDRAWN(5, "退学"),
-    GRADUATED(6, "毕业");
+    GRADUATED(6, "毕业"),
+    NO_CHECK(7,"未报到");
 
     private final int value;
     private final String description;
@@ -33,12 +34,12 @@ public enum CURRENT_STATUS {
         return false;
     }
 
-    public static int getValue(String inputDescription) {
+    public static Integer getValue(String inputDescription) {
         for (CURRENT_STATUS type : CURRENT_STATUS.values()) {
             if (type.getDescription().equalsIgnoreCase(inputDescription)) {
                 return type.getValue();
             }
         }
-        return 0; // Return -1 to indicate an invalid description or no match found.
+        return null; // Return -1 to indicate an invalid description or no match found.
     }
 }
