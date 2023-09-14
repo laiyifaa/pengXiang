@@ -2,6 +2,7 @@ package io.renren.modules.edu.controller;
 
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
+import io.renren.common.utils.RedisUtils;
 import io.renren.modules.edu.dto.SearchAllDto;
 import io.renren.modules.edu.entity.StuDetailInfoEntity;
 import io.renren.modules.edu.service.SearchService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,6 +21,8 @@ import java.util.List;
 public class SearchController {
     @Autowired
     private SearchService searchService;
+    @Autowired
+    RedisUtils redisUtils;
 
     @Autowired
     private StuBaseInfoService stuBaseInfoService;
@@ -37,6 +41,9 @@ public class SearchController {
         List<Long> list = searchService.search(searchConditions);
         System.out.println(list);
         PageUtils result = stuBaseInfoService.selectStuBaseInfo(Query.getPage(query), null, null, list);
+        if (list == null){
+            result.setList(new ArrayList<>());
+        }
         return R.ok().put("result",result);
     }
 }

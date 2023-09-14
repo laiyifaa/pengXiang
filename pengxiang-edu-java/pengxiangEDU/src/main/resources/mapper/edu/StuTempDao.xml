@@ -95,7 +95,8 @@
     </update>
     <select id="listAllKey" resultType="io.renren.modules.edu.dto.StuKeyWordDto" >
         SELECT  id AS id,
-        id_number AS idNumber
+        id_number AS idNumber,
+        stu_name AS stuName
         FROM stu_temp
         <where>
             1 = 1 AND   is_deleted = 0

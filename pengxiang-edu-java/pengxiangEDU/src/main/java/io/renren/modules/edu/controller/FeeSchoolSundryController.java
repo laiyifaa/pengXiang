@@ -1,11 +1,12 @@
 package io.renren.modules.edu.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.alibaba.excel.EasyExcel;
@@ -16,21 +17,21 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.renren.common.utils.RedisUtils;
 import io.renren.modules.edu.dto.FeeSchoolSundryDto;
 import io.renren.modules.edu.dto.StuKeyWordDto;
-import io.renren.modules.edu.dto.qMoneyAndInfoListDto;
 import io.renren.modules.edu.entity.*;
 import io.renren.modules.edu.excel.EmptyDataException;
 import io.renren.modules.edu.excel.FeeSchoolSundryListener;
-import io.renren.modules.edu.excel.StuBaseInfoListener;
 import io.renren.modules.edu.service.*;
 import io.renren.modules.edu.utils.Query;
 
 import io.renren.modules.edu.vo.*;
 import io.renren.modules.sys.entity.SysUserEntity;
+import org.apache.http.HttpStatus;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.cache.CacheProperties;
-import org.springframework.data.repository.query.Param;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +39,6 @@ import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
@@ -69,6 +69,12 @@ public class FeeSchoolSundryController {
     FeeArrearageService feeArrearageService;
     @Autowired
     RedisUtils redis;
+    @Autowired
+    StuFileService stuFileService;
+
+    @Value("${upload.directory}")
+    private String uploadDirectory;
+
     @PostMapping("/upload")
     public R upload(MultipartFile file){
         try {
@@ -266,6 +272,54 @@ public class FeeSchoolSundryController {
         return R.ok().put("page", page);
     }
 
+    @GetMapping("/getImg")
+    public void getImg(HttpServletResponse response,@RequestParam("stuId")Long stuId){
+        List<StuFileEntity> list = stuFileService.get(stuId, 1);
+        if(list.size() == 0){
+            response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            return;
+        }
+        StuFileEntity stuFile = list.get(0);
+        Path path = Paths.get(stuFile.getPath());
+        if (Files.exists(path) && Files.isReadable(path)) {
+            String contentType = getImageContentType(stuFile.getPath());
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "inline; filename=" + stuFile.getPath());
+
+            try {
+                Files.copy(path, response.getOutputStream());
+                response.getOutputStream().flush();
+            } catch (IOException e) {
+                response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
+
+    @PostMapping("/uploadImg")
+    public R uploadImg(MultipartFile file,@RequestParam("stuId") Long stuId) {
+        if (file.isEmpty()) {
+            return R.error("请选择一个文件上传");
+        }
+        try {
+            String originalFilename = file.getOriginalFilename();
+            String randomFileName = UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));
+
+            // 构建文件存储路径
+            String filePath = uploadDirectory + File.separator + randomFileName;
+            File dest = new File(filePath);
+
+            // 保存文件
+            file.transferTo(dest);
+            stuFileService.addOne(filePath,1,stuId);
+
+        }catch (Exception ioe){
+            return R.error("文件保存失败");
+        }
+        return R.ok();
+    }
 
     //todo ---> zbl
     @RequestMapping("/save")
@@ -292,5 +346,25 @@ public class FeeSchoolSundryController {
 //        res.put("stuInfo",vos.get(0));
 //        res.put("feeInfo",sundryEntity);
         return R.ok().put("infoMap",infoMap);
+    }
+
+
+    private String getImageContentType(String imageName) {
+        String[] parts = imageName.split("\\.");
+        if (parts.length > 1) {
+            String extension = parts[parts.length - 1].toLowerCase();
+            switch (extension) {
+                case "jpg":
+                case "jpeg":
+                    return "image/jpeg";
+                case "png":
+                    return "image/png";
+                case "gif":
+                    return "image/gif";
+                // 添加其他图片格式的支持
+            }
+        }
+        // 如果无法识别文件格式，默认使用通用的媒体类型
+        return "application/octet-stream";
     }
 }

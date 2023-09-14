@@ -5,18 +5,23 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mchange.v1.identicator.IdList;
 import io.renren.modules.edu.dao.FieldsDao;
 import io.renren.modules.edu.dao.StuEmployDao;
+import io.renren.modules.edu.dao.StuEmployVistDao;
 import io.renren.modules.edu.dao.StuPracticeDao;
 import io.renren.modules.edu.dto.SearchAllDto;
 import io.renren.modules.edu.dto.SearchListDto;
 import io.renren.modules.edu.entity.*;
 import io.renren.modules.edu.service.*;
+import io.renren.modules.edu.utils.DateUtils;
+import lombok.Data;
 import lombok.Lombok;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,7 +33,7 @@ public class SearchServiceImpl implements SearchService {
     @Resource
     private StuTempService stuTempService;
     @Resource
-    private WorkService workService;
+    private StuEmployVistDao stuEmployVistDao;
     @Resource
     private StuEmployDao stuEmployDao;
     @Resource
@@ -59,6 +64,8 @@ public class SearchServiceImpl implements SearchService {
         return searchListDto;
     }
 
+
+
     @Override
     public List<Long> search(List<SearchAllDto> list) {
 
@@ -70,7 +77,16 @@ public class SearchServiceImpl implements SearchService {
         QueryWrapper<FeeReturnEntity> FeeReturnQueryWrapper = new QueryWrapper<>();
         QueryWrapper<FeeArrearageEntity> FeeArrearageQueryWrapper = new QueryWrapper<>();
         QueryWrapper<EduCertificateEntity> EduCertificateQueryWrapper = new QueryWrapper<>();
+        QueryWrapper<StuEmployVistEntity> stuEmployVistEntityQueryWrapper = new QueryWrapper<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd ");
         for (SearchAllDto searchAllDto : list) {
+            if (searchAllDto.getItem().getInputType() == 2){
+
+                String value = searchAllDto.getValue();
+                String s = DateUtils.dealDateFormat(value);
+                searchAllDto.setValue(s);
+                System.out.println(s);
+            }
             if (searchAllDto.getSearchType() == 0){
                 if (searchAllDto.getItem().getPlateType()==1){
                     StuBaseInfoqueryWrapper.like(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
@@ -81,8 +97,13 @@ public class SearchServiceImpl implements SearchService {
                     stuTempService.list(StuTempqueryWrapper);
                 }
                 else if (searchAllDto.getItem().getPlateType() == 3){
-                    StuEmployqueryWrapper.like(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
-                    stuEmployDao.selectList(StuEmployqueryWrapper);
+                    if (searchAllDto.getItem().getInputType()==46 || searchAllDto.getItem().getInputType()==47 ||searchAllDto.getItem().getInputType()==48){
+                        stuEmployVistEntityQueryWrapper.like(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                        stuEmployVistDao.selectList(stuEmployVistEntityQueryWrapper);
+                    }else {
+                        StuEmployqueryWrapper.like(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                        stuEmployDao.selectList(StuEmployqueryWrapper);
+                    }
                 }
                 else if (searchAllDto.getItem().getPlateType() == 4){
                     StuPracticequeryWrapper.like(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
@@ -104,7 +125,140 @@ public class SearchServiceImpl implements SearchService {
                     EduCertificateQueryWrapper.like(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
                     eduCertificateService.list(EduCertificateQueryWrapper);
                 }
-            }else {
+            }else if (searchAllDto.getSearchType() == 2){
+                if (searchAllDto.getItem().getPlateType()==1){
+                    StuBaseInfoqueryWrapper.le(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuBaseInfoService.list(StuBaseInfoqueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 2){
+                    StuTempqueryWrapper.le(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuTempService.list(StuTempqueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 3){
+                    StuEmployqueryWrapper.le(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuEmployDao.selectList(StuEmployqueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 4){
+                    StuPracticequeryWrapper.le(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuPracticeDao.selectList(StuPracticequeryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 5){
+                    FeeSchoolSundryQueryWrapper.le(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    feeSchoolSundryService.list(FeeSchoolSundryQueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 6){
+                    FeeReturnQueryWrapper.le(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    feeReturnService.list(FeeReturnQueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 7){
+                    FeeArrearageQueryWrapper.le(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    feeArrearageService.list(FeeArrearageQueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 8){
+                    EduCertificateQueryWrapper.le(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    eduCertificateService.list(EduCertificateQueryWrapper);
+                }
+            }else if (searchAllDto.getSearchType() == 3){
+                if (searchAllDto.getItem().getPlateType()==1){
+                    StuBaseInfoqueryWrapper.ge(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuBaseInfoService.list(StuBaseInfoqueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 2){
+                    StuTempqueryWrapper.ge(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuTempService.list(StuTempqueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 3){
+                    StuEmployqueryWrapper.ge(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuEmployDao.selectList(StuEmployqueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 4){
+                    StuPracticequeryWrapper.ge(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuPracticeDao.selectList(StuPracticequeryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 5){
+                    FeeSchoolSundryQueryWrapper.ge(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    feeSchoolSundryService.list(FeeSchoolSundryQueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 6){
+                    FeeReturnQueryWrapper.ge(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    feeReturnService.list(FeeReturnQueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 7){
+                    FeeArrearageQueryWrapper.ge(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    feeArrearageService.list(FeeArrearageQueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 8){
+                    EduCertificateQueryWrapper.ge(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    eduCertificateService.list(EduCertificateQueryWrapper);
+                }
+            }else if (searchAllDto.getSearchType() == 4){
+                if (searchAllDto.getItem().getPlateType()==1){
+                    StuBaseInfoqueryWrapper.gt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuBaseInfoService.list(StuBaseInfoqueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 2){
+                    StuTempqueryWrapper.gt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuTempService.list(StuTempqueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 3){
+                    StuEmployqueryWrapper.gt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuEmployDao.selectList(StuEmployqueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 4){
+                    StuPracticequeryWrapper.gt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuPracticeDao.selectList(StuPracticequeryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 5){
+                    FeeSchoolSundryQueryWrapper.gt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    feeSchoolSundryService.list(FeeSchoolSundryQueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 6){
+                    FeeReturnQueryWrapper.gt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    feeReturnService.list(FeeReturnQueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 7){
+                    FeeArrearageQueryWrapper.gt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    feeArrearageService.list(FeeArrearageQueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 8){
+                    EduCertificateQueryWrapper.gt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    eduCertificateService.list(EduCertificateQueryWrapper);
+                }
+            }else if (searchAllDto.getSearchType() == 5){
+                if (searchAllDto.getItem().getPlateType()==1){
+                    StuBaseInfoqueryWrapper.lt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuBaseInfoService.list(StuBaseInfoqueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 2){
+                    StuTempqueryWrapper.lt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuTempService.list(StuTempqueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 3){
+                    StuEmployqueryWrapper.lt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuEmployDao.selectList(StuEmployqueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 4){
+                    StuPracticequeryWrapper.lt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    stuPracticeDao.selectList(StuPracticequeryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 5){
+                    FeeSchoolSundryQueryWrapper.lt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    feeSchoolSundryService.list(FeeSchoolSundryQueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 6){
+                    FeeReturnQueryWrapper.lt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    feeReturnService.list(FeeReturnQueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 7){
+                    FeeArrearageQueryWrapper.lt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    feeArrearageService.list(FeeArrearageQueryWrapper);
+                }
+                else if (searchAllDto.getItem().getPlateType() == 8){
+                    EduCertificateQueryWrapper.lt(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
+                    eduCertificateService.list(EduCertificateQueryWrapper);
+                }
+            }
+            else {
                 if (searchAllDto.getItem().getPlateType()==1){
                     StuBaseInfoqueryWrapper.eq(searchAllDto.getItem().getFieldsDatabaseName(),searchAllDto.getValue());
                     stuBaseInfoService.list(StuBaseInfoqueryWrapper);
@@ -167,11 +321,25 @@ public class SearchServiceImpl implements SearchService {
         if (StuEmployqueryWrapper.getParamNameValuePairs().size() != 0){
              stuEmployEntities = stuEmployDao.selectList(StuEmployqueryWrapper);
         }
+
+        List<StuEmployVistEntity> stuEmployVistEntityList = new ArrayList<>();
+        if (stuEmployVistEntityQueryWrapper.isEmptyOfEntity()){
+            stuEmployVistEntityList = stuEmployVistDao.selectList(stuEmployVistEntityQueryWrapper);
+        }
+
         List<StuPracticeEntity> stuPracticeEntities = new ArrayList<>();
         if (StuPracticequeryWrapper.getParamNameValuePairs().size() != 0){
              stuPracticeEntities = stuPracticeDao.selectList(StuPracticequeryWrapper);
         }
         List<List<Long>> IdList = new ArrayList<>();
+
+        List<Long> IdListVisit = new ArrayList<>();
+        for (StuEmployVistEntity stuEmployVistEntity : stuEmployVistEntityList) {
+            if (!IdListVisit.contains(stuEmployVistEntity.getStuId())){
+                IdListVisit.add(stuEmployVistEntity.getStuId());
+            }
+        }
+
         List<Long> IdList1 = new ArrayList<>();
         for (StuEmployEntity stuEmployEntity : stuEmployEntities) {
 
@@ -236,6 +404,7 @@ public class SearchServiceImpl implements SearchService {
         IdList.add(IdList6);
         IdList.add(IdList7);
         IdList.add(IdList8);
+        IdList.add(IdListVisit);
         List<Long> intersection = getIntersection(IdList);
         return intersection;
     }

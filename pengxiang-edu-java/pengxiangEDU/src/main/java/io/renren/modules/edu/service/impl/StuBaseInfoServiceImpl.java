@@ -60,6 +60,9 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
     @Resource
     private SysUserDao sysUserDao;
 
+    @Resource
+    private StuTempDao stuTempDao;
+
     @Override
     public List<StuBaseInfoEntity> queryExport(Query query, StuBaseInfoEntity record, Long deptId) {
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
@@ -172,6 +175,18 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
             cacheIdNumberSet.add(entity.getIdNumber());
         }
         List<String> cacheIdNumberList = new ArrayList<>(cacheIdNumberSet);
+
+        //2023-09-12 要求进行先招生后学管
+        List<StuKeyWordDto> tempStudentList = stuTempDao.listAllKey(cacheIdNumberList, 1);
+        Set<String> tempStudentIdSet = tempStudentList.stream().map(StuKeyWordDto::getIdNumber).collect(Collectors.toSet());
+
+        for(int i = 0; i < cachedDataList.size();++i){
+            StuBaseInfoEntity entity = cachedDataList.get(i);
+            if(!tempStudentIdSet.contains(entity.getIdNumber())){
+                throw new RuntimeException("第"+(i+2)+"行学生尚未进行招生录入或与招生登记的身份证号码存在出入");
+            }
+        }
+
         //查询数据库 是否有这些 身份证(关键词)
         List<StuKeyWordDto> oldStudentList = stuBaseInfoDao.listAllKey(cacheIdNumberList, 1);
         Set<String> oldIdNumberSet = oldStudentList.stream().map(StuKeyWordDto::getIdNumber).collect(Collectors.toSet());
@@ -198,6 +213,7 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
         }
 
     }
+
     private Boolean setExcelStuBaseInfo(StuBaseInfoEntity entity,  Map<String, DeptdescriptionDto> map){
         entity.setResidenceType(RESIDENCE_TYPE.getValue(entity.getResidenceTypeName()));
         entity.setSchoolRollStatus(SCHOOL_ROLL_STATUS.getValue(entity.getSchoolRollStatusName()));

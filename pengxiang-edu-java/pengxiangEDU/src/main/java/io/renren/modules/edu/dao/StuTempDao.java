@@ -14,8 +14,8 @@ import java.util.List;
 /**
  * 招生临时信息
  * 
- * @author chenshun
- * @email sunlightcs@gmail.com
+ * @author ischen
+ * @email
  * @date 2023-07-20 16:49:26
  */
 @Mapper
@@ -24,6 +24,9 @@ public interface StuTempDao extends BaseMapper<StuTempEntity> {
 
 
 	List<StuTempVo> selectStuTempInfo(IPage<StuTempVo>page,StuTempEntity record,@Param("deptId") Long deptId);
+
+
+
 
 	Integer deleteByIds(@Param("idList")List<Long> idList );
 
@@ -34,4 +37,5 @@ public interface StuTempDao extends BaseMapper<StuTempEntity> {
 	List<StuKeyWordDto> listAllKey(@Param("keyList") List<String>keyList, @Param("keyType") Integer keyType);
 
 	void batchInsert(@Param("stuList") List<StuTempEntity>   stuList);
+
 }
