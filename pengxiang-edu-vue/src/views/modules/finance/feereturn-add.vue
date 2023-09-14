@@ -58,6 +58,9 @@
     <el-form-item label="退费开户行" prop="depositBank">
       <el-input v-model="dataForm.depositBank" placeholder="退费开户行"></el-input>
     </el-form-item>
+      <el-form-item label="退费备注" prop="remark">
+        <el-input v-model="dataForm.remark" placeholder="退费开户行"></el-input>
+      </el-form-item>
 <!--    <el-form-item label="创建(退费)时间" prop="createTime">-->
 <!--      <el-input v-model="dataForm.createTime" placeholder="创建(退费)时间"></el-input>-->
 <!--    </el-form-item>-->
@@ -112,7 +115,8 @@
           updateTime: '',
           createBy: '',
           updateBy: '',
-          isDeleted: ''
+          isDeleted: '',
+          remark: ''
         },
         dataRule: {
           stuName: [
@@ -224,7 +228,8 @@
                 'updateTime': this.dataForm.updateTime,
                 'createBy': this.dataForm.createBy,
                 'updateBy': this.dataForm.updateBy,
-                'isDeleted': this.dataForm.isDeleted
+                'isDeleted': this.dataForm.isDeleted,
+                'remark': this.dataForm.remark
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

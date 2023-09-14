@@ -47,7 +47,23 @@
       <el-input v-model="dataForm.derateType" placeholder="减免类型"></el-input>
     </el-form-item>
     <el-form-item label="减免备注" prop="derateDetail">
-      <el-input v-model="dataForm.derateDetail" placeholder="减免备注"></el-input>
+      <el-input v-model="dataForm.derateDetail" placeholder="减免备注">
+
+
+
+
+      </el-input>
+      <el-upload
+        ref="imgUpload"
+        :on-success="imgSuccess"
+        :on-remove="imgRemove"
+        accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
+        :headers="headerMsg"
+        :action="upLoadUrl"
+        multiple>
+        <el-button type="text">上传图片</el-button>
+      </el-upload>
+
     </el-form-item>
     <el-form-item label="返费时间" prop="returnFeeTime">
       <el-input v-model="dataForm.returnFeeTime" placeholder="返费时间"></el-input>
@@ -107,7 +123,10 @@
 </template>
 
 <script>
+  import StuFeeImport from "./stuFeeImport.vue";
+
   export default {
+    components: {StuFeeImport},
     data () {
       return {
         visible: false,

@@ -21,6 +21,7 @@
         <o-u-t-many v-if="outVisiable" ref="outDialog"></o-u-t-many>
         <el-button type="success" @click="handleImport">导入</el-button>
         <stu-fee-import v-if="importVisiable" ref="dialog"></stu-fee-import>
+        <stu-fee-attachment v-if="attachmentVisiable" ref="attachmentDialog"></stu-fee-attachment>
         <el-button  type="primary" @click="addHandle()">新增</el-button>
         <el-button  type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
 
@@ -83,11 +84,11 @@
             label="性别"
             width="50" align="center">
           </el-table-column>
-          <el-table-column
+<!--          <el-table-column
             prop="nativePlace"
             label="籍贯"
             width="140" align="center">
-          </el-table-column>
+          </el-table-column>-->
           <el-table-column
             prop="majorName"
             label="专业"
@@ -147,7 +148,7 @@
             fixed="right"
             header-align="center"
             align="center"
-            width="150"
+            width="200"
             label="操作">
             <template slot-scope="scope">
               <router-link :to="{name:'tuitionExpenseInfo',params:{index:scope.row.id}}">
@@ -162,6 +163,8 @@
 <!--              </router-link>-->
               <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">编辑</el-button>
               <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+              <el-button type="text" size="small" @click="handleAttachment(scope.row.stuId)">附件</el-button>
+
             </template>
           </el-table-column>
         </el-table>
@@ -188,12 +191,14 @@ import AddOrUpdate from './feeschoolsundry-add-or-update'
 import Add from './feeschoolsundry-add'
 import OUTMany from './feeInfoOut'
 import StuFeeImport from './stuFeeImport'
+import StuFeeAttachment from './stuFeeAttachment'
 
 export default {
   data () {
     return {
       importVisiable: false,
       outVisiable: false,
+      attachmentVisiable: false,
       deptId: '',
       year: '',
       Visiableee: false,
@@ -225,7 +230,8 @@ export default {
     AddOrUpdate,
     Add,
     OUTMany,
-    StuFeeImport
+    StuFeeImport,
+    StuFeeAttachment
   },
   activated () {
     this.getDataList()
@@ -394,6 +400,12 @@ export default {
       this.importVisiable = true
       this.$nextTick(() => {
         this.$refs.dialog.init()
+      })
+    },
+    handleAttachment (val) {
+      this.attachmentVisiable = true
+      this.$nextTick(() => {
+        this.$refs.attachmentDialog.init(val)
       })
     },
     handleExport (id) {

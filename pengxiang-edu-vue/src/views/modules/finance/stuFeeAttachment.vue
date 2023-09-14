@@ -1,32 +1,25 @@
 <template>
   <!--1.首先，弹窗页面中要有el-dialog组件即弹窗组件，我们把弹窗中的内容放在el-dialog组件中-->
   <!--2.设置:visible.sync属性，动态绑定一个布尔值，通过这个属性来控制弹窗是否弹出-->
-  <el-dialog title="导入" :visible.sync="detailVisible"
-             width="700px"
-             height="700px">
-    <div style="border:dashed 2px rgb(43, 226, 165);" width="700px" @drop="handleDrop" @dragover.prevent>
+  <el-dialog   title="附件" :visible.sync="detailVisible"
+                       width="700px"
+                       height="700px">
+
+    <span class="span" ><img  v-loading="dataListLoading" v-if="flag  === 1 " style="width: 100%;height: 50%" :src="content"/></span>
+    <div style="border:dashed 2px rgb(43, 226, 165);" width="700px"   @drop="handleDrop" @dragover.prevent>
+
       <div class="el-icon-upload" v-if="!selectedFile"></div>
       <div class="box1" v-if="!selectedFile">拖拽到此处上传</div>
       <div v-else>
         {{ selectedFile.name }}
         <span class="delete-btn" @click="deleteFile">X</span>
       </div>
+
       <div class="but">
         <input type="file" ref="fileInput" style="display: none" @change="handleFileChange">
-        <el-button type="primary" @click="chooseFile">选择文件</el-button>
+        <el-button type="primary" @click="chooseFile">选择图片文件</el-button>
         <el-button type="primary" @click="uploadData">上传数据</el-button>
-        <el-button type="primary" @click="downloadTemplate">模板文件下载</el-button>
       </div>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <div class="grid-content bg-purple" style="text-align: center;border-right: 2px dashed rgb(113, 111, 111);">
-            素材格式<br>支持excel
-          </div>
-        </el-col>
-        <el-col :span="12">
-          <div class="grid-content bg-purple" style="text-align: center;">文件大小<br>单个5MG以内</div>
-        </el-col>
-      </el-row>
     </div>
   </el-dialog>
 </template>
@@ -37,7 +30,11 @@ export default {
   data () {
     return {
       detailVisible: false,
-      selectedFile: null
+      selectedFile: null,
+      stuId: null,
+      flag: 0,
+      content: '',
+      dataListLoading: true
     }
   },
   methods: {
@@ -56,8 +53,26 @@ export default {
     deleteFile () {
       this.selectedFile = null
     },
-    init () {
+    init (val) {
       this.detailVisible = true
+      this.stuId = val
+      this.selectedFile = null
+      this.$http({
+        url: this.$http.adornUrl('generator/feeschoolsundry/getImg'),
+        method: 'get',
+        responseType: 'blob',
+        params: this.$http.adornParams({
+          'stuId': this.stuId
+        })
+      }).then(response => {
+        this.flag = 1
+        let url = window.URL.createObjectURL(response.data)
+        this.content = url
+        this.dataListLoading = false
+      }).catch(response => {
+        // User clicked "Cancel" in the confirmation dialog
+        this.flag = 0
+      })
     },
     uploadData () {
       if (this.selectedFile === null) {
@@ -73,8 +88,9 @@ export default {
           uploadConfirmed = true // Set the flag to true
           const formData = new FormData()
           formData.append('file', this.selectedFile)
+          formData.append('stuId', this.stuId)
           this.$http({
-            url: this.$http.adornUrl('generator/feeschoolsundry/upload'),
+            url: this.$http.adornUrl('generator/feeschoolsundry/uploadImg'),
             method: 'post',
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -85,9 +101,9 @@ export default {
               this.$message({
                 message: '操作成功，请刷新列表',
                 type: 'success',
-                duration: 4500,
+                duration: 2500,
                 onClose: () => {
-                  this.getData()
+                  this.detailVisible = false
                 }
               })
             } else if (uploadConfirmed && data) {
@@ -99,25 +115,6 @@ export default {
           uploadConfirmed = false // Set the flag to false
         })
       }
-    },
-    downloadTemplate () {
-      this.$http({
-        url: this.$http.adornUrl('file/download/excel/stu_fee.xlsx'),
-        method: 'get',
-        responseType: 'blob'
-      }).then(response => {
-        const blob = new Blob([response.data], {
-          type: response.headers['content-type']
-        })
-        const url = window.URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute('download', '缴费信息导入模版.xlsx')
-        document.body.appendChild(link)
-        link.click()
-        this.$message.success('导出中，请耐心等待下载！')
-        window.URL.revokeObjectURL(url)
-      })
     }
   }
 }
@@ -162,3 +159,4 @@ export default {
   margin: 0 5px;
 }
 </style>
+

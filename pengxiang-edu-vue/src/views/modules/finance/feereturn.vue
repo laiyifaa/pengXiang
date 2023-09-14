@@ -146,6 +146,11 @@
             width="80" align="center">
           </el-table-column>
           <el-table-column
+            prop="remark"
+            label="退费备注"
+            width="80" align="center">
+          </el-table-column>
+          <el-table-column
             fixed="right"
             header-align="center"
             align="center"
