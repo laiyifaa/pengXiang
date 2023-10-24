@@ -85,8 +85,10 @@
       </e-desc-item>
       <e-desc-item label="户口性质" icon="*">
         <el-select v-model="info.residenceType" placeholder="请选择户口性质"  style="width: 100%">
-          <el-option label="农业户口" :value='1' :key='1'></el-option>
-          <el-option label="非农户口" :value='0' :key='0'></el-option>
+          <el-option label="农村" :value='1' :key='1'></el-option>
+          <el-option label="城市" :value='0' :key='0'></el-option>
+          <el-option label="县城" :value='2' :key='2'></el-option>
+          <el-option label="县镇" :value='3' :key='3'></el-option>
         </el-select>
       </e-desc-item>
 
@@ -108,6 +110,18 @@
           <el-option label="状态未知" :value="3" :key="3" ></el-option>
         </el-select>
       </e-desc-item>
+      <e-desc-item label="当前状态">
+        <el-select v-model="info.currentStatus " placeholder="请选择考生状态" style="width: 100%">
+          <el-option label="在校" :value="0" :key="0"></el-option>
+          <el-option label="实习" :value="1" :key="1"></el-option>
+          <el-option label="就业" :value="2" :key="2"></el-option>
+          <el-option label="请假" :value="3" :key="3"></el-option>
+          <el-option label="休学" :value="4" :key="4"></el-option>
+          <el-option label="退学" :value="5" :key="5"></el-option>
+          <el-option label="毕业" :value="6" :key="6"></el-option>
+          <el-option label="未报到" :value="7" :key="7"></el-option>
+        </el-select>
+      </e-desc-item>
       <e-desc-item label="班型" icon="*">
         <el-select v-model="info.classType " placeholder="请选择班型" style="width: 100%">
           <el-option label="就业" :value="1" :key="1"></el-option>
@@ -115,10 +129,6 @@
         </el-select>
       </e-desc-item>
       <e-desc-item label="院校" icon="*">
-<!--        <el-input
-          v-model="info.academyName"
-          clearable>
-        </el-input>-->
         <el-select v-model="info.academyId"  value-key="value" placeholder="请选择" @change="handleAcademyId" style="width: 100%">
           <el-option
             v-for="item in academyList"

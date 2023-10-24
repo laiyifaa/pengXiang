@@ -213,9 +213,11 @@ export default {
     // 表单提交
     dataFormSubmit () {
       var deptIdList = []
-      for (let i = 0; i < this.userDeptOptions.length; i++) {
-        if (this.userDeptOptions[i].length !== 4) { continue }
-        deptIdList.push(this.userDeptOptions[i][3])
+      if (this.userDeptOptions != null) {
+        for (let i = 0; i < this.userDeptOptions.length; i++) {
+          if (this.userDeptOptions[i] == null || this.userDeptOptions[i].length !== 4) { continue }
+          deptIdList.push(this.userDeptOptions[i][3])
+        }
       }
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {

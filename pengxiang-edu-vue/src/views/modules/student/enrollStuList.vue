@@ -50,6 +50,7 @@
                 type="selection"
                 width="55">
               </el-table-column>
+              <el-option label="姓名" value="stuName"></el-option>
               <el-option label="班型" value="classType"></el-option>
               <el-option label="招生老师" value="enrollTeacher"></el-option>
               <el-option label="招生季" value="admissionSeason"></el-option>
@@ -112,7 +113,7 @@
         <el-pagination @size-change="handleSizeChange"
                        @current-change="handleCurrentChange"
                        :current-page="pageIndex"
-                       :page-sizes="[10, 20, 30, 40]"
+                       :page-sizes="[20, 50, 100, 200]"
                        :page-size="pageSize"
                        layout="total, sizes, prev, pager, next, jumper"
                        :total="totalPage" style="text-align:right;margin-right: 60px">
@@ -264,11 +265,13 @@ export default {
       // 处理导出逻辑
       this.outVisiable = true
       var classTypeOption = null
+      var stuNameOption = null
       var enrollTeacherOption = null
       var admissionSeasonOption = null
       var statusOption = null
       if (this.searchConditions != null && this.searchConditions.length >= 0) {
         classTypeOption = this.searchConditions.filter(condition => condition.option === 'classType')
+        stuNameOption = this.searchConditions.filter(condition => condition.option === 'stuName')
         enrollTeacherOption = this.searchConditions.filter(condition => condition.option === 'enrollTeacher')
         admissionSeasonOption = this.searchConditions.filter(condition => condition.option === 'admissionSeason')
         statusOption = this.searchConditions.filter(condition => condition.option === 'status')
@@ -279,6 +282,7 @@ export default {
           enrollTeacherOption.length === 0 ? null : enrollTeacherOption[0].value,
           admissionSeasonOption.length === 0 ? null : admissionSeasonOption[0].value,
           statusOption.length === 0 ? null : statusOption[0].value,
+          stuNameOption.length === 0 ? null : stuNameOption[0].value,
           this.deptId)
       })
     },
@@ -297,11 +301,13 @@ export default {
     getData: function () {
       this.dataListLoading = true
       var classTypeOption = null
+      var stuNameOption = null
       var enrollTeacherOption = null
       var admissionSeasonOption = null
       var statusOption = null
       if (this.searchConditions != null && this.searchConditions.length >= 0) {
         classTypeOption = this.searchConditions.filter(condition => condition.option === 'classType')
+        stuNameOption = this.searchConditions.filter(condition => condition.option === 'stuName')
         enrollTeacherOption = this.searchConditions.filter(condition => condition.option === 'enrollTeacher')
         admissionSeasonOption = this.searchConditions.filter(condition => condition.option === 'admissionSeason')
         statusOption = this.searchConditions.filter(condition => condition.option === 'status')
@@ -316,7 +322,8 @@ export default {
           'classTypeName': classTypeOption.length === 0 ? null : classTypeOption[0].value,
           'enrollTeacher': enrollTeacherOption.length === 0 ? null : enrollTeacherOption[0].value,
           'admissionSeason': admissionSeasonOption.length === 0 ? null : admissionSeasonOption[0].value,
-          'statusName': statusOption.length === 0 ? null : statusOption[0].value
+          'statusName': statusOption.length === 0 ? null : statusOption[0].value,
+          'stuName': stuNameOption.length === 0 ? null : stuNameOption[0].value
         })
       }).then(({data}) => {
         if (data.code === 500) {
@@ -371,7 +378,7 @@ export default {
         value: ''
       }], // 条件搜索栏目数据
       pageIndex: 1, // 当前页码
-      pageSize: 10, // 每页显示条数
+      pageSize: 20, // 每页显示条数
       totalPage: 0, // 总条数
       searchText: '',
       dataListLoading: false,

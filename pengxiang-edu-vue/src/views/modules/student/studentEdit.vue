@@ -65,8 +65,10 @@
       </e-desc-item>
       <e-desc-item label="户口性质" icon="*">
         <el-select v-model="baseInfo.residenceType" placeholder="请选择户口性质"  style="width: 100%">
-          <el-option label="农业户口" :value='1' :key='1'></el-option>
-          <el-option label="非农户口" :value='0' :key='0'></el-option>
+          <el-option label="农村" :value='1' :key='1'></el-option>
+          <el-option label="城市" :value='0' :key='0'></el-option>
+          <el-option label="县城" :value='2' :key='2'></el-option>
+          <el-option label="县镇" :value='3' :key='3'></el-option>
         </el-select>
       </e-desc-item>
       <e-desc-item label="入学前技能水平">
@@ -167,15 +169,16 @@
             <el-option label="休学" :value="4" :key="4"></el-option>
             <el-option label="退学" :value="5" :key="5"></el-option>
             <el-option label="毕业" :value="6" :key="6"></el-option>
+            <el-option label="未报到" :value="7" :key="7"></el-option>
+
           </el-select>
         </e-desc-item>
           <e-desc-item label="学籍状态" >
             <el-select v-model="baseInfo.schoolRollStatus " placeholder="请选择学籍状态" disabled>
-              <el-option label="在册在籍" :value="0" :key="0"></el-option>
-              <el-option label="在册不在籍" :value="1" :key="1"></el-option>
-              <el-option label="在籍退学" :value="2" :key="2"></el-option>
-              <el-option label="非在册非在籍" :value="3" :key="3"></el-option>
-              <el-option label="提前入学" :value="4" :key="4"></el-option>
+              <el-option label="已注册" :value="0" :key="0"></el-option>
+              <el-option label="未注册" :value="1" :key="1"></el-option>
+              <el-option label="注册前退学" :value="2" :key="2"></el-option>
+              <el-option label="注册后退学" :value="3" :key="3"></el-option>
             </el-select>
           </e-desc-item>
 

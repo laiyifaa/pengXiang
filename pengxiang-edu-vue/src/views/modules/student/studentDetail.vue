@@ -10,7 +10,7 @@
       <e-desc-item label="籍贯">{{ info.baseInfo.nativePlace }}</e-desc-item>
       <e-desc-item label="民族">{{ info.baseInfo.nation }}</e-desc-item>
       <e-desc-item label="联系电话">{{ info.baseInfo.phone }}</e-desc-item>
-      <e-desc-item label="户口性质">{{ info.baseInfo.residenceTypeName=== 0 ? '非农户口' : '农业户口' }}</e-desc-item>
+      <e-desc-item label="户口性质">{{ info.baseInfo.residenceTypeName }}</e-desc-item>
       <e-desc-item label="入学前技能水平">{{ info.baseInfo.skillBefore }}</e-desc-item>
       <e-desc-item label="入学学历">{{ info.baseInfo.eduBefore }}</e-desc-item>
       <e-desc-item label="毕业学校">{{ info.baseInfo.schoolBefore }}</e-desc-item>
@@ -29,12 +29,11 @@
           <e-desc-item label="班级">{{ info.baseInfo.className }}</e-desc-item>
           <e-desc-item label="班型">{{ info.baseInfo.classType  === 1?'就业':'升学'}}</e-desc-item>
           <e-desc-item label="学制">{{ info.baseInfo.schoolingLength }}</e-desc-item>
-          <e-desc-item label="当前状态">{{ info.baseInfo.currentStatus===0 ? '在校' : info.baseInfo.currentStatus===1 ? '实习' : info.baseInfo.currentStatus===2 ? '就业' : info.baseInfo.currentStatus===3 ? '请假' : info.baseInfo.currentStatus===4 ? '休学' : info.baseInfo.currentStatus===5 ? '退学' :info.baseInfo.currentStatus===6? '毕业':'无'}}</e-desc-item>
-          <e-desc-item label="学籍状态">{{ info.baseInfo.schoolRollStatus===0 ? '在册在籍' : info.baseInfo.schoolRollStatus===1 ? '在册不在籍' : info.baseInfo.schoolRollStatus===2 ? '在籍退学' : info.baseInfo.schoolRollStatus===3 ? '非在册非在籍' :info.baseInfo.schoolRollStatus ===4? '提前入学' :'无'}}</e-desc-item>
+          <e-desc-item label="当前状态">{{ info.baseInfo.currentStatus===0 ? '在校' : info.baseInfo.currentStatus===1 ? '实习' : info.baseInfo.currentStatus===2 ? '就业' : info.baseInfo.currentStatus===3 ? '请假' : info.baseInfo.currentStatus===4 ? '休学' : info.baseInfo.currentStatus===5 ? '退学' :info.baseInfo.currentStatus===6? '毕业':info.baseInfo.currentStatus===7 ? '未报到' :'无'}}</e-desc-item>
+          <e-desc-item label="学籍状态">{{ info.baseInfo.schoolRollStatus===0 ? '已注册' : info.baseInfo.schoolRollStatus===1 ? '未注册' : info.baseInfo.schoolRollStatus===2 ? '注册前退学' : info.baseInfo.schoolRollStatus===3 ? '注册后退学' :'无'}}</e-desc-item>
           <e-desc-item label="现就读学校">{{ info.baseInfo.studyIn }}</e-desc-item>
           <e-desc-item label="现学籍学校">{{ info.baseInfo.statusSchool }}</e-desc-item>
           <e-desc-item label="培养层次">{{ info.baseInfo.developLevel }}</e-desc-item>
-          <e-desc-item label="招生季">{{ info.baseInfo.admissionSeason }}</e-desc-item>
           <e-desc-item label="入学日期">{{ info.baseInfo.admissionDate }}</e-desc-item>
           <e-desc-item label="注册学籍日期">{{ info.baseInfo.registerDate }}</e-desc-item>
           <e-desc-item label="是否提前入学">{{ info.baseInfo.isAdmissionEarly }}</e-desc-item>
@@ -42,6 +41,23 @@
           <e-desc-item label="班主任">{{ info.baseInfo.headTeacher }}</e-desc-item>
           <e-desc-item label="班主任电话">{{ info.baseInfo.headTeacherPhone }}</e-desc-item>
           <e-desc-item label="班主任所属部门">{{ info.baseInfo.headTeacherDept }}</e-desc-item>
+
+        </e-desc>
+      </el-collapse-item>
+    </el-collapse>
+
+
+    <el-collapse v-model="enrollStu" @change="handleChange" >
+      <el-collapse-item name="1">
+        <template slot="title">
+          <span style="text-align: center; font-weight: bold; font-size: 16px;">招生信息</span>
+        </template>
+        <e-desc margin='0 12px' label-width='150px' column="4" >
+          <e-desc-item label="招生老师" icon="*">{{info.enrollTeacher}}</e-desc-item>
+          <e-desc-item label="招生老师部门">{{info.enrollTeacherDept}}</e-desc-item>
+          <e-desc-item label="招生老师电话">{{info.enrollTeacherPhone}}</e-desc-item>
+          <e-desc-item label="招生季">{{ info.baseInfo.admissionSeason }}</e-desc-item>
+          <e-desc-item label="考生状态">{{info.status === 0 ? '未参加面试' : info.status === 1 ? '通过面试' :info.status === 2 ? '未通过面试' : '状态未知'}}</e-desc-item>
 
         </e-desc>
       </el-collapse-item>
@@ -375,6 +391,7 @@ export default {
       f_tryWork: ['1'],
       money: ['1'],
       stuStatus: ['1'],
+      enrollStu: ['1'],
       room: ['1'],
       f_remoney: ['1'],
       f_qmoney: ['1'],

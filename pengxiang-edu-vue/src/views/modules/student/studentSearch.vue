@@ -21,7 +21,7 @@
         <el-pagination @size-change="handleSizeChange"
                        @current-change="handleCurrentChange"
                        :current-page="currentPage"
-                       :page-sizes="[10, 20, 30, 40]"
+                       :page-sizes="[20, 50, 100, 200]"
                        :page-size="pageSize"
                        layout="total, sizes, prev, pager, next, jumper"
                        :total="total" style="text-align:right;margin-right: 60px"> </el-pagination>
@@ -70,8 +70,10 @@
 
           <template v-if="condition.item[1].inputType === 12">
             <el-select style="width: 215px;margin-left: 50px; " v-model="condition.value" >
-              <el-option label="非农户口" :value="'0'" ></el-option>
-              <el-option label="农村户口" :value="'1'" ></el-option>
+              <el-option label="农村" :value='1' :key='1'></el-option>
+              <el-option label="城市" :value='0' :key='0'></el-option>
+              <el-option label="县城" :value='2' :key='2'></el-option>
+              <el-option label="县镇" :value='3' :key='3'></el-option>
             </el-select>
           </template>
 
@@ -127,11 +129,10 @@
 
           <template v-if="condition.item[1].inputType === 21">
             <el-select style="width: 215px;margin-left: 50px; " v-model="condition.value" >
-              <el-option label="在册在籍" :value="'在册在籍'" ></el-option>
-              <el-option label="在册不在籍" :value="'在册不在籍'" ></el-option>
-              <el-option label="在籍退学" :value="'在籍退学'" ></el-option>
-              <el-option label="非在册非在籍" :value="'非在册非在籍'" ></el-option>
-              <el-option label="提前入学" :value="'提前入学'" ></el-option>
+              <el-option label="已注册" :value="'0'" ></el-option>
+              <el-option label="未注册" :value="'1'" ></el-option>
+              <el-option label="注册前退学" :value="'2'" ></el-option>
+              <el-option label="注册后退学" :value="'3'" ></el-option>
             </el-select>
           </template>
 
@@ -151,13 +152,14 @@
 
           <template v-if="condition.item[1].inputType === 30">
             <el-select style="width: 215px;margin-left: 50px; " v-model="condition.value" >
-              <el-option label="在校" :value="'在校'" ></el-option>
-              <el-option label="退学" :value="'退学'" ></el-option>
-              <el-option label="实习" :value="'实习'" ></el-option>
-              <el-option label="就业" :value="'就业'" ></el-option>
-              <el-option label="请假" :value="'请假'" ></el-option>
-              <el-option label="休学" :value="'休学'" ></el-option>
-              <el-option label="毕业" :value="'毕业'" ></el-option>
+              <el-option label="在校" :value="'0'" ></el-option>
+              <el-option label="退学" :value="'1'" ></el-option>
+              <el-option label="实习" :value="'2'" ></el-option>
+              <el-option label="就业" :value="'3'" ></el-option>
+              <el-option label="请假" :value="'4'" ></el-option>
+              <el-option label="休学" :value="'5'" ></el-option>
+              <el-option label="毕业" :value="'6'" ></el-option>
+              <el-option label="未报到" :value="7"></el-option>
             </el-select>
           </template>
 
@@ -170,10 +172,9 @@
 
           <template v-if="condition.item[1].inputType === 38">
             <el-select style="width: 215px;margin-left: 50px; " v-model="condition.value" >
-              <el-option label="未参加面试" :value="'未参加面试'" ></el-option>
-              <el-option label="通过面试" :value="'通过面试'" ></el-option>
-              <el-option label="未通过面试" :value="'未通过面试'" ></el-option>
-              <el-option label="状态未知" :value="'状态未知'" ></el-option>
+              <el-option label="未参加面试" :value="'0'" ></el-option>
+              <el-option label="通过面试" :value="'1'" ></el-option>
+              <el-option label="未通过面试" :value="'2'" ></el-option>
             </el-select>
           </template>
 
@@ -207,8 +208,8 @@
 
           <template v-if="condition.item[1].inputType === 56">
             <el-select style="width: 215px;margin-left: 50px; " v-model="condition.value" >
-              <el-option label="认识实习" :value="'认识实习'" ></el-option>
-              <el-option label="岗位实习" :value="'岗位实习'" ></el-option>
+              <el-option label="认识实习" :value="'1'" ></el-option>
+              <el-option label="岗位实习" :value="'2'" ></el-option>
             </el-select>
           </template>
 
@@ -222,8 +223,8 @@
 
           <template v-if="condition.item[1].inputType === 110">
             <el-select style="width: 215px;margin-left: 50px; " v-model="condition.value" >
-              <el-option label="必考证书" :value="'必考证书'" ></el-option>
-              <el-option label="选考证书" :value="'选考证书'" ></el-option>
+              <el-option label="必考证书" :value="'1'" ></el-option>
+              <el-option label="选考证书" :value="'0'" ></el-option>
             </el-select>
           </template>
 
@@ -242,16 +243,16 @@
 
           <template v-if="condition.item[1].inputType === 113">
             <el-select style="width: 215px;margin-left: 50px; " v-model="condition.value" >
-              <el-option label="未考" :value="'未考'" ></el-option>
-              <el-option label="已考" :value="'已考'" ></el-option>
+              <el-option label="未考" :value="'0'" ></el-option>
+              <el-option label="已考" :value="'1'" ></el-option>
             </el-select>
           </template>
 
           <template v-if="condition.item[1].inputType === 115">
             <el-select style="width: 215px;margin-left: 50px; " v-model="condition.value" >
               <el-option label="无" :value="'无'" ></el-option>
-              <el-option label="已补发" :value="'已补发'" ></el-option>
-              <el-option label="未补发" :value="'未补发'" ></el-option>
+              <el-option label="已补发" :value="'1'" ></el-option>
+              <el-option label="未补发" :value="'0'" ></el-option>
             </el-select>
           </template>
 
@@ -542,7 +543,7 @@ export default {
     return {
       loading: true,
       currentPage: 1, // 当前页码
-      pageSize: 10, // 每页显示条数
+      pageSize: 20, // 每页显示条数
       total: 0, // 总条数
       gridData: [],
       academyId: null,

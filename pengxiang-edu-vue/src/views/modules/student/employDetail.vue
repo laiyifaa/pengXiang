@@ -9,7 +9,7 @@
       <e-desc-item label="性别">{{ Info.gender }}</e-desc-item>
       <e-desc-item label="民族">{{ Info.nation }}</e-desc-item>
       <e-desc-item label="籍贯">{{ Info.nativePlace }}</e-desc-item>
-      <e-desc-item label="户口性质">{{ Info.residenceType === 0 ? '非农户口' : '农业户口' }}</e-desc-item>
+      <e-desc-item label="户口性质">{{ Info.residenceType=== 0 ? '城市' : Info.residenceType === 1 ? '农村': Info.residenceType === 2 ? '县城' : '县镇'}}</e-desc-item>
       <e-desc-item label="政治面貌">{{ Info.politicalStatus }}</e-desc-item>
       <e-desc-item label="联系电话">{{ Info.phone }}</e-desc-item>
       <e-desc-item label="系部">{{ Info.deptName }}</e-desc-item>

@@ -37,6 +37,7 @@
                   <el-option label="请假" :value="4"></el-option>
                   <el-option label="休学" :value="5"></el-option>
                   <el-option label="毕业" :value="6"></el-option>
+                  <el-option label="未报到" :value="7"></el-option>
                 </el-select>
               </e-desc-item>
               <e-desc-item label="变更后的当前状态">
@@ -48,24 +49,23 @@
                   <el-option label="请假" :value="4"></el-option>
                   <el-option label="休学" :value="5"></el-option>
                   <el-option label="毕业" :value="6"></el-option>
+                  <el-option label="未报到" :value="7"></el-option>
                 </el-select>
               </e-desc-item>
               <e-desc-item label="变更前的学籍状态">
                 <el-select v-model="item.oldSchoolRollStatus" placeholder="请选择学籍状态" >
-                  <el-option label="在册在籍" :value="0"></el-option>
-                  <el-option label="在册不在籍" :value="1"></el-option>
-                  <el-option label="在籍退学" :value="2"></el-option>
-                  <el-option label="非在册非在籍" :value="3"></el-option>
-                  <el-option label="提前入学" :value="4"></el-option>
+                  <el-option label="已注册" :value="0"></el-option>
+                  <el-option label="未注册" :value="1"></el-option>
+                  <el-option label="注册前退学" :value="2"></el-option>
+                  <el-option label="注册后退学" :value="3"></el-option>
                 </el-select>
               </e-desc-item>
               <e-desc-item label="变更后的学籍状态">
                 <el-select v-model="item.newSchoolRollStatus" placeholder="请选择学籍状态" >
-                  <el-option label="在册在籍" :value="0"></el-option>
-                  <el-option label="在册不在籍" :value="1"></el-option>
-                  <el-option label="在籍退学" :value="2"></el-option>
-                  <el-option label="非在册非在籍" :value="3"></el-option>
-                  <el-option label="提前入学" :value="4"></el-option>
+                  <el-option label="已注册" :value="0"></el-option>
+                  <el-option label="未注册" :value="1"></el-option>
+                  <el-option label="注册前退学" :value="2"></el-option>
+                  <el-option label="注册后退学" :value="3"></el-option>
                 </el-select>
               </e-desc-item>
               <e-desc-item label="学籍变更时间">
@@ -117,6 +117,7 @@
             <el-option label="请假" :value="4"></el-option>
             <el-option label="休学" :value="5"></el-option>
             <el-option label="毕业" :value="6"></el-option>
+            <el-option label="未报到" :value="7"></el-option>
           </el-select>
         </e-desc-item>
         <e-desc-item label="变更后的当前状态">
@@ -128,24 +129,23 @@
             <el-option label="请假" :value="4"></el-option>
             <el-option label="休学" :value="5"></el-option>
             <el-option label="毕业" :value="6"></el-option>
+            <el-option label="未报到" :value="7"></el-option>
           </el-select>
         </e-desc-item>
         <e-desc-item label="变更前的学籍状态">
           <el-select v-model="addStatus.oldSchoolRollStatus" placeholder="请选择学籍状态" disabled>
-            <el-option label="在册在籍" :value="0"></el-option>
-            <el-option label="在册不在籍" :value="1"></el-option>
-            <el-option label="在籍退学" :value="2"></el-option>
-            <el-option label="非在册非在籍" :value="3"></el-option>
-            <el-option label="提前入学" :value="4"></el-option>
+            <el-option label="已注册" :value="0"></el-option>
+            <el-option label="未注册" :value="1"></el-option>
+            <el-option label="注册前退学" :value="2"></el-option>
+            <el-option label="注册后退学" :value="3"></el-option>
           </el-select>
         </e-desc-item>
         <e-desc-item label="变更后的学籍状态">
           <el-select v-model="addStatus.newSchoolRollStatus" placeholder="请选择学籍状态" >
-            <el-option label="在册在籍" :value="0"></el-option>
-            <el-option label="在册不在籍" :value="1"></el-option>
-            <el-option label="在籍退学" :value="2"></el-option>
-            <el-option label="非在册非在籍" :value="3"></el-option>
-            <el-option label="提前入学" :value="4"></el-option>
+            <el-option label="已注册" :value="0"></el-option>
+            <el-option label="未注册" :value="1"></el-option>
+            <el-option label="注册前退学" :value="2"></el-option>
+            <el-option label="注册后退学" :value="3"></el-option>
           </el-select>
         </e-desc-item>
         <e-desc-item label="学籍变更时间">
@@ -245,6 +245,8 @@ export default {
           return '退学'
         case 6:
           return '毕业'
+        case 7:
+          return '未报到'
         default:
           return ''
       }
@@ -252,15 +254,13 @@ export default {
     getSchoolStatusText (status) {
       switch (status) {
         case 0:
-          return '在册在籍'
+          return '已注册'
         case 1:
-          return '在册不在籍'
+          return '未注册'
         case 2:
-          return '在籍退学'
+          return '注册前退学'
         case 3:
-          return '非在册非在籍'
-        case 4:
-          return '提前入学'
+          return '注册后退学'
         default:
           return ''
       }

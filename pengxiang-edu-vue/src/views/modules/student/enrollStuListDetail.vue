@@ -15,7 +15,9 @@
       <e-desc-item label="入学前技能水平">{{info.skillBefore}}</e-desc-item>
       <e-desc-item label="入学学历">{{info.eduBefore}}</e-desc-item>
       <e-desc-item label="毕业学校">{{info.schoolBefore}}</e-desc-item>
-      <e-desc-item label="户口性质">{{info.residenceType === 0 ? '非农户口' : '农业户口'}}</e-desc-item>
+      <e-desc-item label="户口性质">{{info.residenceType=== 0 ? '城市' : info.residenceType === 1 ? '农村': info.residenceType === 2 ? '县城' : '县镇'}}</e-desc-item>
+
+
 
     </e-desc>
     <!-- 学生招生详情 -->
@@ -36,6 +38,7 @@
           <e-desc-item label="招生老师电话">{{info.enrollTeacherPhone}}</e-desc-item>
           <e-desc-item label="招生季">{{info.admissionSeason}}</e-desc-item>
           <e-desc-item label="考生状态">{{info.status === 0 ? '未参加面试' : info.status === 1 ? '通过面试' :info.status === 2 ? '未通过面试' : '状态未知'}}</e-desc-item>
+          <e-desc-item label="当前状态">{{info.currentStatusName }}</e-desc-item>
 
         </e-desc>
 

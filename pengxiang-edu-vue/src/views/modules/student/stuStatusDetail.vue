@@ -90,6 +90,8 @@ export default {
           return '退学'
         case 6:
           return '毕业'
+        case 7:
+          return '未报到'
         default:
           return ''
       }
@@ -97,15 +99,13 @@ export default {
     getSchoolStatusText (status) {
       switch (status) {
         case 0:
-          return '在册在籍'
+          return '已注册'
         case 1:
-          return '在册不在籍'
+          return '未注册'
         case 2:
-          return '在籍退学'
+          return '注册前退学'
         case 3:
-          return '非在册非在籍'
-        case 4:
-          return '提前入学'
+          return '注册后退学'
         default:
           return ''
       }

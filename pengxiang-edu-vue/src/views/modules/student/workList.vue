@@ -73,7 +73,7 @@
 <el-pagination @size-change="handleSizeChange"
                @current-change="handleCurrentChange"
                :current-page="currentPage"
-               :page-sizes="[10, 20, 30, 40]"
+               :page-sizes="[20, 50, 100, 200]"
                :page-size="pageSize"
                layout="total, sizes, prev, pager, next, jumper"
                :total="total" style="text-align:right;margin-right: 60px"> </el-pagination>
@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import WorkImport from "./workImport";
+import WorkImport from './workImport'
 
 export default {
 
@@ -103,8 +103,8 @@ export default {
   data () {
     return {
       Visiable: false,
-      showDialog:false,
-      dataChange:false,
+      showDialog: false,
+      dataChange: false,
       treeList: [],
       defaultProps: {
         children: 'children',
@@ -116,7 +116,7 @@ export default {
         value: ''
       }], // 条件搜索栏目数据
       currentPage: 1, // 当前页码
-      pageSize: 10, // 每页显示条数
+      pageSize: 20, // 每页显示条数
       total: 0, // 总条数
       searchText: '',
       tableData: []
@@ -150,12 +150,12 @@ export default {
       console.log(this.tableData)
       this.selectedIdNumber = scope.row.idNumber
       this.$router.push({
-          name: 'workDetail',
-          params: {
-            idNumber: this.selectedIdNumber,
-            Info: this.tableData.find(item => item.idNumber === this.selectedIdNumber)
-          }
-        })
+        name: 'workDetail',
+        params: {
+          idNumber: this.selectedIdNumber,
+          Info: this.tableData.find(item => item.idNumber === this.selectedIdNumber)
+        }
+      })
     },
     handleEdit (scope) {
       this.selectedIdNumber = scope.row.idNumber
@@ -171,19 +171,19 @@ export default {
       const params = {}
       this.searchConditions.forEach(condition => {
         if (condition.option && condition.value) {
-          params[condition.option] = condition.value;
+          params[condition.option] = condition.value
         }
       })
-      if(this.$refs.treeRef.getCurrentNode()!=null){
-        params.id = this.$refs.treeRef.getCurrentNode().id;
+      if (this.$refs.treeRef.getCurrentNode() != null) {
+        params.id = this.$refs.treeRef.getCurrentNode().id
       }
-      params.pageNum=this.currentPage
-      params.pageSize=this.pageSize
+      params.pageNum = this.currentPage
+      params.pageSize = this.pageSize
       this.$http({
         url: this.$http.adornUrl('/stuWork/search'),
         method: 'get',
         params: params
-      }).then(response =>{
+      }).then(response => {
         if (response.data.workDtos === null) {
           // 结果为空，弹出警告框
           this.$alert('搜索结果为空', '警告', {
@@ -191,13 +191,13 @@ export default {
             type: 'warning'
           })
         } else {
-          this.tableData = response.data.workDtos.list;
-          this.total=response.data.workDtos.total
-          this.dataChange=!this.dataChange
+          this.tableData = response.data.workDtos.list
+          this.total = response.data.workDtos.total
+          this.dataChange = !this.dataChange
         }
       })
     },
-    handleExport(option) {
+    handleExport (option) {
       this.$confirm('确定要导出吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -207,19 +207,19 @@ export default {
           const params = {}
           this.searchConditions.forEach(condition => {
             if (condition.option && condition.value) {
-              params[condition.option] = condition.value;
+              params[condition.option] = condition.value
             }
           })
-          if(this.$refs.treeRef.getCurrentNode()!=null){
-            params.id = this.$refs.treeRef.getCurrentNode().id;
+          if (this.$refs.treeRef.getCurrentNode() != null) {
+            params.id = this.$refs.treeRef.getCurrentNode().id
           }
 
-          params.pageNum=this.currentPage
-          params.pageSize=this.pageSize
+          params.pageNum = this.currentPage
+          params.pageSize = this.pageSize
 
           this.$http({
-            url:this.$http.adornUrl('/stuWork/export'),
-            method:'get',
+            url: this.$http.adornUrl('/stuWork/export'),
+            method: 'get',
             params: params,
             responseType: 'blob'
           }).then(response => {
@@ -238,16 +238,16 @@ export default {
           const params = {}
           this.searchConditions.forEach(condition => {
             if (condition.option && condition.value) {
-              params[condition.option] = condition.value;
+              params[condition.option] = condition.value
             }
           })
-          if(this.$refs.treeRef.getCurrentNode()!=null){
-            params.id = this.$refs.treeRef.getCurrentNode().id;
+          if (this.$refs.treeRef.getCurrentNode() != null) {
+            params.id = this.$refs.treeRef.getCurrentNode().id
           }
 
           this.$http({
-            url:this.$http.adornUrl('/stuWork/export'),
-            method:'get',
+            url: this.$http.adornUrl('/stuWork/export'),
+            method: 'get',
             params: params,
             responseType: 'blob'
           }).then(response => {
@@ -257,32 +257,28 @@ export default {
             const url = window.URL.createObjectURL(blob)
             const link = document.createElement('a')
             link.href = url
-            /*link.setAttribute('download', isAll === true ? '所有学生就业信息.xlsx' : '当前页学生就业信息.xlsx')*/
+            /* link.setAttribute('download', isAll === true ? '所有学生就业信息.xlsx' : '当前页学生就业信息.xlsx') */
             link.setAttribute('download', '实习信息.xlsx')
             document.body.appendChild(link)
             link.click()
             window.URL.revokeObjectURL(url)
           })
-
         }
-        this.showDialog = false; // 关闭Dialog
+        this.showDialog = false // 关闭Dialog
       }).catch(() => {
 
       })
-
     },
     Export () {
-        this.showDialog=true
+      this.showDialog = true
     },
     handleSizeChange (size) {
       this.pageSize = size
-      if(this.searchConditions[0].value!=''){
+      if (this.searchConditions[0].value != '') {
         this.handleSearch()
-      }
-      else if(this.$refs.treeRef.getCurrentNode()!=null){
+      } else if (this.$refs.treeRef.getCurrentNode() != null) {
         this.reGetDeptsByPid(this.$refs.treeRef.getCurrentNode())
-      }
-      else {
+      } else {
         this.getData()
       }
     },
@@ -290,65 +286,62 @@ export default {
     handleCurrentChange (page) {
       this.currentPage = page
       // 重新请求数据
-     if(this.searchConditions[0].value!=''){
-       this.handleSearch()
-     }
-     else if(this.$refs.treeRef.getCurrentNode()!=null){
-       this.reGetDeptsByPid(this.$refs.treeRef.getCurrentNode())
-     }
-     else {
-       this.getData()
-     }
-   },
+      if (this.searchConditions[0].value != '') {
+        this.handleSearch()
+      } else if (this.$refs.treeRef.getCurrentNode() != null) {
+        this.reGetDeptsByPid(this.$refs.treeRef.getCurrentNode())
+      } else {
+        this.getData()
+      }
+    },
     // 请求数据方法
     getData () {
       this.$http({
         url: this.$http.adornUrl('/stuWork/getList'),
         method: 'get',
-        params:{
+        params: {
           pageNum: this.currentPage,
           pageSize: this.pageSize
         }
       }).then(response => {
         this.tableData = response.data.workDtos.list
-        this.total=response.data.workDtos.total
+        this.total = response.data.workDtos.total
       })
         .catch(error => {
           this.$message.error(error)
         })
-
     },
     getDeptsByPid (node) {
-      this.currentPage = 1;
-      let param={
+      this.currentPage = 1
+      let param = {
         id: node.id,
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
       this.$http({
-        url:this.$http.adornUrl('stuWork/treeSearch'),
-        method:'get',
+        url: this.$http.adornUrl('stuWork/treeSearch'),
+        method: 'get',
         params: param
-      }).then(response=>{
-        this.tableData = response.data.workDtos === null ? [] : response.data.workDtos.list;
-        this.total = response.data.workDtos === null ? 0 :response.data.workDtos.total
-        this.dataChange=!this.dataChange
+      }).then(response => {
+        this.tableData = response.data.workDtos === null ? [] : response.data.workDtos.list
+        this.total = response.data.workDtos === null ? 0 : response.data.workDtos.total
+        this.dataChange = !this.dataChange
       })
     },
-   reGetDeptsByPid (node) {
-      let param={
+    reGetDeptsByPid (node) {
+      let param = {
         id: node.id,
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
       this.$http({
-        url:this.$http.adornUrl('stuWork/treeSearch'),
-        method:'get',
+        url: this.$http.adornUrl('stuWork/treeSearch'),
+        method: 'get',
         params: param
-      }).then(response=>{
-        this.tableData = response.data.workDtos === null ? [] : response.data.workDtos.list;
-        this.total = response.data.workDtos === null ? 0 :response.data.workDtos.total
-        this.dataChange=!this.dataChange
+      }).then(response => {
+        this.tableData = response.data.workDtos === null ? [] : response.data.workDtos.list
+        this.total = response.data.workDtos === null ? 0 : response.data.workDtos.total
+        this.dataChange = !this.dataChange
       })
     },
     getDeptTreeList () {

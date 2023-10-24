@@ -54,7 +54,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[20, 50, 100, 200]"
       :page-size="pageSize"
       :total="totalPage"
       layout="total, sizes, prev, pager, next, jumper">
@@ -75,7 +75,7 @@
         dataForm: {},
         dataList: [],
         pageIndex: 1,
-        pageSize: 10,
+        pageSize: 20,
         totalPage: 0,
         dataListLoading: false,
         dataListSelections: [],

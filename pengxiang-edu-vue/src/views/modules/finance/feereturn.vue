@@ -172,7 +172,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[20, 50, 100, 200]"
       :page-size="pageSize"
       :total="totalPage"
       layout="total, sizes, prev, pager, next, jumper">
@@ -186,7 +186,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from 'moment'
 import AddOrUpdate from './feereturn-add-or-update'
 import OUTMany from './returnfeeOut'
 import Add from './feereturn-add'
@@ -219,7 +219,7 @@ export default {
       },
       dataList: [],
       pageIndex: 1,
-      pageSize: 10,
+      pageSize: 20,
       totalPage: 0,
       dataListLoading: false,
       dataListSelections: [],
@@ -239,8 +239,8 @@ export default {
   },
   methods: {
     dateChange () {
-      this.start = start;
-      this.end = end;
+      this.start = start
+      this.end = end
     },
     handleEdit () {
       this.$router.push('finance-tuitionExpenseEdit')
@@ -356,7 +356,7 @@ export default {
     getDeptsByPid (data, node, item) {
       this.deptId = data.id
       this.pageIndex = 1
-      this.pageSize = 10
+      this.pageSize = 20
       this.$http({
         url: this.$http.adornUrl('/generator/feereturn/list'),
         method: 'get',
@@ -442,7 +442,7 @@ export default {
           }
         })
       })
-    },
+    }
   }
 }
 </script>
