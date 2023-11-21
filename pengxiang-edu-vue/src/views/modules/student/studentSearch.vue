@@ -33,6 +33,21 @@
     </el-col>
     <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
   </el-row>
+    <el-col :span="20" style="margin-top: 20px">
+      时间段选择(默认关)：
+      <el-date-picker v-model="start" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
+                      @change="dateChange" style="width: 140px;height: 25px">
+      </el-date-picker>
+
+      <el-date-picker v-model="end" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
+                      @change="dateChange" style="width: 140px;height: 25px">
+      </el-date-picker>
+      <el-switch
+        v-model="value"
+        active-color="#13ce66"
+        inactive-color="#ff4949">
+      </el-switch>
+    </el-col>//不完全，只设定了样式
     <el-row>
       <div v-for="(condition, index) in searchConditions" :key="index" style="margin-left: 10px;margin-top: 20px; display: flex; align-items: center;">
         <el-cascader
@@ -138,8 +153,8 @@
 
           <template v-if="condition.item[1].inputType === 22">
             <el-select style="width: 215px;margin-left: 50px; " v-model="condition.value" >
-              <el-option label="升学" :value="'升学'" ></el-option>
-              <el-option label="就业" :value="'就业'" ></el-option>
+              <el-option label="升学" :value="'0'" ></el-option>
+              <el-option label="就业" :value="'1'" ></el-option>
             </el-select>
           </template>
 
@@ -250,9 +265,9 @@
 
           <template v-if="condition.item[1].inputType === 115">
             <el-select style="width: 215px;margin-left: 50px; " v-model="condition.value" >
-              <el-option label="无" :value="'无'" ></el-option>
-              <el-option label="已补发" :value="'1'" ></el-option>
-              <el-option label="未补发" :value="'0'" ></el-option>
+              <el-option label="无" :value='0' ></el-option>
+              <el-option label="已补发" :value='1' ></el-option>
+              <el-option label="未补发" :value='2' ></el-option>
             </el-select>
           </template>
 
@@ -333,8 +348,11 @@ export default {
     this.getAcademyList()
   },
   methods: {
-    changeSearch(index) {
-      console.log(this.searchConditions[index].type);
+    dateChange(){
+
+    },
+    changeSearch (index) {
+      console.log(this.searchConditions[index].type)
       this.$set(this.searchConditions[index], 'type', '')
       this.$set(this.searchConditions[index], 'value', '')
     },
@@ -351,17 +369,18 @@ export default {
       this.search()
     },
     handleDetail (val) {
+      window.open(`#/student-studentDetail?stuId=${val}`, '_blank')
       // 处理详情逻辑
-      this.$router.push({
+     /* this.$router.push({
         name: 'studentDetail',
         params: {
           stuId: val
         }
-      })
+      }) */
     },
     search () {
       this.loading = true
-      this.conditions.splice(0,this.conditions.length)
+      this.conditions.splice(0, this.conditions.length)
 
       for (let i = 0; i < this.searchConditions.length; i++) {
         const condition = this.searchConditions[i]
@@ -387,11 +406,10 @@ export default {
         this.gridData = data.result.list
         this.total = data.result.totalCount
       }).finally(() => {
-        this.loading = false; // Set loading state to false after the request is complete
+        this.loading = false // Set loading state to false after the request is complete
       })
 
       this.dialogTableVisible = true
-
     },
     addSearchCondition () {
       this.searchConditions.push({
@@ -487,49 +505,49 @@ export default {
         url: this.$http.adornUrl('/search/getData'),
         method: 'get'
       }).then(response => {
-        response.data.Dto.list1.forEach((data)=>{
+        response.data.Dto.list1.forEach((data) => {
           this.options[0].children.push({
             value: data,
             label: data.fieldsName
           })
         })
-        response.data.Dto.list2.forEach((data)=>{
+        response.data.Dto.list2.forEach((data) => {
           this.options[1].children.push({
             value: data,
             label: data.fieldsName
           })
         })
-        response.data.Dto.list3.forEach((data)=>{
+        response.data.Dto.list3.forEach((data) => {
           this.options[2].children.push({
             value: data,
             label: data.fieldsName
           })
         })
-        response.data.Dto.list4.forEach((data)=>{
+        response.data.Dto.list4.forEach((data) => {
           this.options[3].children.push({
             value: data,
             label: data.fieldsName
           })
         })
-        response.data.Dto.list5.forEach((data)=>{
+        response.data.Dto.list5.forEach((data) => {
           this.options[4].children.push({
             value: data,
             label: data.fieldsName
           })
         })
-        response.data.Dto.list6.forEach((data)=>{
+        response.data.Dto.list6.forEach((data) => {
           this.options[5].children.push({
             value: data,
             label: data.fieldsName
           })
         })
-        response.data.Dto.list7.forEach((data)=>{
+        response.data.Dto.list7.forEach((data) => {
           this.options[6].children.push({
             value: data,
             label: data.fieldsName
           })
         })
-        response.data.Dto.list8.forEach((data)=>{
+        response.data.Dto.list8.forEach((data) => {
           this.options[7].children.push({
             value: data,
             label: data.fieldsName

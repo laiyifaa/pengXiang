@@ -209,9 +209,9 @@
 
     </el-dialog>
 
-        <div class="footer-container">
-          <el-button type="primary" class="custom-button" @click="returnBack">返回</el-button>
-        </div>
+<!--        <div class="footer-container">-->
+<!--          <el-button type="primary" class="custom-button" @click="returnBack">返回</el-button>-->
+<!--        </div>-->
   </div>
 </template>
 
@@ -253,7 +253,9 @@ export default {
     }
   },
   created () {
-    this.stuId = this.$route.params.stuId
+    //this.stuId = this.$route.params.stuId
+    this.stuId = this.$route.query.stuId
+
   },
   mounted () {
     this.getData()

@@ -93,7 +93,8 @@ export default {
     }
   },
   created () {
-    this.id = this.$route.params.stuId
+   // this.id = this.$route.params.stuId
+    this.id = this.$route.query.stuId
   },
   mounted () {
     this.getData()

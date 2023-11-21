@@ -438,8 +438,8 @@ export default {
     }
   },
   mounted () {
-    if (this.$route.params.isEdit === true) {
-      this.info.id = this.$route.params.stuId
+    if (this.$route.query.isEdit == 1) {
+      this.info.id = this.$route.query.stuId
       this.getData()
     } else {
       this.getAcademyList()

@@ -72,7 +72,6 @@
       </el-table-column>
 
       <el-table-column prop="name" width="110" label="姓名" align="center"></el-table-column>
-
       <el-table-column prop="phone" width="110" label="联系电话" align="center"></el-table-column>
       <el-table-column prop="gradeName" width="110" label="年级" align="center"></el-table-column>
       <el-table-column prop="deptName" width="110" label="系部" align="center"></el-table-column>
@@ -83,7 +82,7 @@
       <el-table-column prop="employOrg" width="110" label="就业单位" align="center"></el-table-column>
       <el-table-column prop="employPost" width="110" label="就页岗位" align="center"></el-table-column>
       <el-table-column prop="postLeader" width="110" label="岗位负责人" align="center"></el-table-column>
-      <el-table-column  align="center"  label="操作">
+      <el-table-column  align="center"  label="操作" fixed="right">
         <template slot-scope="scope">
           <div style="display: flex; justify-content: center;">
             <el-button type="text" @click="handleDetail(scope)">详情</el-button>
@@ -154,15 +153,20 @@ export default {
       })
     },
     handleDetail (scope) {
-      // 获取所点击行的学号属性
+       // 获取所点击行的学号属性
       this.selectedIdNumber = scope.row.idNumber
-      this.$router.push({
-        name: 'employDetail',
-        params: {
-          idNumber: this.selectedIdNumber,
-          Info: this.tableData.find(item => item.idNumber === this.selectedIdNumber)
-        }
-      })
+      let info
+      info = this.tableData.find(item => item.idNumber === this.selectedIdNumber)
+      window.open(`#/student-employDetail?idNumber=${this.selectedIdNumber}&Info=${encodeURIComponent(JSON.stringify(info))}`, '_blank')
+      // window.open(`#/student-employDetail`, '_blank')
+      //
+      // this.$router.push({
+      //   name: 'employDetail',
+      //   params: {
+      //     idNumber: this.selectedIdNumber,
+      //     Info: this.tableData.find(item => item.idNumber === this.selectedIdNumber)
+      //   }
+      // })
     },
     addSearchCondition () {
       this.searchConditions.push({
@@ -177,14 +181,11 @@ export default {
       this.searchCount--
     },
     handleEdit (scope) {
+
       this.selectedIdNumber = scope.row.idNumber
-      this.$router.push({
-        name: 'employModify',
-        params: {
-          idNumber: this.selectedIdNumber,
-          Info: this.tableData.find(item => item.idNumber === this.selectedIdNumber)
-        }
-      })
+      let info
+      info = this.tableData.find(item => item.idNumber === this.selectedIdNumber)
+      window.open(`#/student-employModify?idNumber=${this.selectedIdNumber}&Info=${encodeURIComponent(JSON.stringify(info))}`, '_blank')
     },
     handleSearch () {
       const params = {}

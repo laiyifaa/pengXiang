@@ -53,13 +53,36 @@
           <span style="text-align: center; font-weight: bold; font-size: 16px;">招生信息</span>
         </template>
         <e-desc margin='0 12px' label-width='150px' column="4" >
-          <e-desc-item label="招生老师" icon="*">{{info.enrollTeacher}}</e-desc-item>
-          <e-desc-item label="招生老师部门">{{info.enrollTeacherDept}}</e-desc-item>
-          <e-desc-item label="招生老师电话">{{info.enrollTeacherPhone}}</e-desc-item>
+          <e-desc-item label="招生老师" icon="*">{{info.tempInfo.enrollTeacher}}</e-desc-item>
+          <e-desc-item label="招生老师部门">{{info.tempInfo.enrollTeacherDept}}</e-desc-item>
+          <e-desc-item label="招生老师电话">{{info.tempInfo.enrollTeacherPhone}}</e-desc-item>
           <e-desc-item label="招生季">{{ info.baseInfo.admissionSeason }}</e-desc-item>
-          <e-desc-item label="考生状态">{{info.status === 0 ? '未参加面试' : info.status === 1 ? '通过面试' :info.status === 2 ? '未通过面试' : '状态未知'}}</e-desc-item>
+          <e-desc-item label="考生状态">{{info.tempInfo.status === 0 ? '未参加面试' : info.status === 1 ? '通过面试' :info.status === 2 ? '未通过面试' : '状态未知'}}</e-desc-item>
 
         </e-desc>
+      </el-collapse-item>
+    </el-collapse>
+
+    <el-collapse  v-model="activeCollapse" >
+      <el-collapse-item name="1" >
+        <template slot="title">
+          <span style="text-align: center; font-weight: bold; font-size: 16px;">学籍变更记录</span>
+        </template>
+        <el-tabs type="border-card" key>
+          <el-tab-pane v-for="(item, index) in changeList" :key="index" :label="`${item.updateTime}变更`">
+            <e-desc margin='0 12px' label-width='140px' column="3" >
+              <e-desc-item label="变更前的当前状态">{{ getCurrentStatusText(item.oldCurrentStatus) }}</e-desc-item>
+              <e-desc-item label="变更后的当前状态">{{ getCurrentStatusText(item.newCurrentStatus) }}</e-desc-item>
+              <e-desc-item label="变更前的学籍状态">{{ getSchoolStatusText(item.oldSchoolRollStatus) }}</e-desc-item>
+              <e-desc-item label="变更后的学籍状态">{{ getSchoolStatusText(item.newSchoolRollStatus) }}</e-desc-item>
+              <e-desc-item label="学籍变更时间">{{ item.updateTime }}</e-desc-item>
+              <e-desc-item label="离校日期">{{ item.levelDate }}</e-desc-item>
+              <e-desc-item label="结束日期">{{ item.endDate }}</e-desc-item>
+              <e-desc-item label="学籍变更原因">{{ item.changeDetail }}</e-desc-item>
+            </e-desc>
+          </el-tab-pane>
+        </el-tabs>
+
       </el-collapse-item>
     </el-collapse>
 
@@ -121,9 +144,9 @@
           <span style="text-align: center; font-weight: bold; font-size: 16px;">缴费信息</span>
         </template>
         <el-tabs type="border-card">
-          <el-tab-pane v-for="(item, index) in info.feeList" :key="index" :label="`第${item.paySchoolYear}次缴费信息`">
+          <el-tab-pane v-for="(item, index) in info.feeList" :key="index" :label="display( item.paySchoolYear)">
             <e-desc margin='0 12px' label-width='150px' column="4" >
-              <e-desc-item label="缴费学年"> {{item.paySchoolYear}} </e-desc-item>
+              <e-desc-item  label="缴费（学年）-（学期）"> {{item.paySchoolYear}} </e-desc-item>
               <e-desc-item label="缴费学年"> {{item.paySchoolDate}} </e-desc-item>
               <e-desc-item label="减免类型">  {{item.derateType === 1 ? '贫困生':'非贫困生'}}</e-desc-item>
               <e-desc-item label="应缴培训费" color="#"  > {{ item.payTrainFee }} </e-desc-item>
@@ -355,6 +378,8 @@ export default {
   },
   data () {
     return {
+      activeCollapse: ['1'],
+      changeList: [],
       htmlTitle: '学生信息',
       imageUrl: '',
       id: 0,
@@ -401,6 +426,51 @@ export default {
     }
   },
   methods: {
+    display (item) {
+      let data=String(item)
+      if (data.includes('-')) {
+        const [x, y] = data.split('-')
+        return `第${x}学年第${y}学期`
+      } else {
+        return `第${data}学年`
+      }
+    },
+    getCurrentStatusText (status) {
+      switch (status) {
+        case 0:
+          return '在校'
+        case 1:
+          return '实习'
+        case 2:
+          return '就业'
+        case 3:
+          return '请假'
+        case 4:
+          return '休学'
+        case 5:
+          return '退学'
+        case 6:
+          return '毕业'
+        case 7:
+          return '未报到'
+        default:
+          return ''
+      }
+    },
+    getSchoolStatusText (status) {
+      switch (status) {
+        case 0:
+          return '已注册'
+        case 1:
+          return '未注册'
+        case 2:
+          return '注册前退学'
+        case 3:
+          return '注册后退学'
+        default:
+          return ''
+      }
+    },
     getData () {
       this.$http({
         url: this.$http.adornUrl('/stu/baseInfo/detail'),
@@ -422,8 +492,25 @@ export default {
               array[index].returnFeeTime = array[index].returnFeeTime.substring(0, 10)
             }
           })
+
         } else {
           this.$message.error(data.msg)
+        }
+      })
+    },
+    getStatusChangeInfo () {
+      this.$http({
+        url: this.$http.adornUrl('stu/change/info'),
+        method: 'get',
+        params: this.$http.adornParams({
+          'stuId': this.id
+        })
+      }).then(({data}) => {
+        if (data && data.code === 0) {
+          this.changeList = data.changeList
+          console.log(this.changeList)
+        } else {
+          this.$message.error('获取学籍变更记录出错啦')
         }
       })
     },
@@ -461,10 +548,12 @@ export default {
     }
   },
   created () {
-    this.id = this.$route.params.stuId
+    // this.id = this.$route.params.stuId
+    this.id = this.$route.query.stuId
   },
   mounted () {
     this.getData()
+    this.getStatusChangeInfo()
   }
 }
 </script>

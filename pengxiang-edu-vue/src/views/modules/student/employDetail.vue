@@ -64,9 +64,7 @@
       </el-tabs>
     </el-collapse-item>
   </el-collapse>
-  <div class="button-container">
-    <button class="custom-button" @click="returnBack">返回</button>
-  </div>
+
 </div>
 
 </template>
@@ -74,61 +72,74 @@
 <script>
 import EDesc from '../other/EDesc'
 import EDescItem from '../other/EDescItem'
-import moment from 'moment';
+import moment from 'moment'
 
 export default {
   name: 'employDetail',
   components: {
     EDesc, EDescItem
   },
-  data() {
+  data () {
     return {
-      idNumberIsNull:'',
+      idNumberIsNull: '',
       activeCollapse: ['1'],
       Info: null,
       visit: null
     }
   },
   methods: {
-    returnBack() {
+    returnBack () {
       this.$router.go(-1)
     }
 
   },
   computed: {
-    formattedLeaveDate() {
+    formattedLeaveDate () {
       if (this.Info.leaveDate) {
-        return this.Info.leaveDate.split(' ')[0];
+        return this.Info.leaveDate.split(' ')[0]
       }
-      return '';
+      return ''
     }
   },
-  created() {
-    this.Info = this.$route.params.Info
-    if (this.$route.params.idNumber != null) {
+  created () {
+    this.Info =JSON.parse(decodeURIComponent(this.$route.query.Info));
+    console.log(this.Info)
+    // this.$http({
+    //   url: this.$http.adornUrl('/stu/getInfo'),
+    //   params: this.$http.adornParams({
+    //     'idNumber': this.$route.query.idNumber
+    //   }),
+    //   method: 'get'
+    // }).then(
+    //   response => {
+    //     this.Info = response.data.Info
+    //     console.log(this.Info)
+    //   }).catch(error => {
+    //     this.$message.error(error)
+    //   })
+
+    if (this.$route.query.idNumber != null) {
       this.idNumberIsNull = true
       this.$http({
         url: this.$http.adornUrl('/stu/getVisitList'),
         method: 'get'
       }).then(
         response => {
-          this.visit = response.data.visitList.filter(item => item.idNumber == this.$route.params.idNumber)
+          this.visit = response.data.visitList.filter(item => item.idNumber == this.$route.query.idNumber)
           this.visit.forEach(date => {
             if (date.visitDate) {
-
-              date.visitDate=  moment(date.visitDate).format('YYYY-MM-DD')
+              date.visitDate = moment(date.visitDate).format('YYYY-MM-DD')
             }
             if (date.secondEmployDate) {
-              date.secondEmployDate=  moment(date.secondEmployDate).format('YYYY-MM-DD')
+              date.secondEmployDate = moment(date.secondEmployDate).format('YYYY-MM-DD')
             }
           })
         }).catch(error => {
-        this.$message.error(error)
-      })
+          this.$message.error(error)
+        })
     } else {
       this.idNumberIsNull = false
     }
-
   }
 }
 </script>

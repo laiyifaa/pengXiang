@@ -31,7 +31,7 @@
     <el-row style="margin-top: 20px;">
       <el-col :span="8" style="text-align:left;margin-left: 20px">
         <el-button type="primary" icon="el-icon-refresh"  @click="getData"></el-button>
-     <el-button type="success" @click="handleEdit(null,false)" style="background-color: lightgreen">新增</el-button>
+     <el-button type="success" @click="handleEdit(null,0)" style="background-color: lightgreen">新增</el-button>
         <el-button type="success" @click="handleImport">导入</el-button>
         <student-import v-if="importVisiable" ref="importDialog"></student-import>
         <el-button type="success" @click="handleExport">导出</el-button>
@@ -98,7 +98,7 @@
           <el-button
             size="mini"
             type="primary"
-            @click="handleEdit(scope.row.stuId,true)">编辑
+            @click="handleEdit(scope.row.stuId,1)">编辑
           </el-button>
           <el-button
             size="mini"
@@ -190,22 +190,24 @@ export default {
       this.searchCount--
     },
     handleDetail (val) {
-      // 处理详情逻辑
+      window.open(`#/student-studentDetail?stuId=${val}`, '_blank')
+     /* // 处理详情逻辑
       this.$router.push({
         name: 'studentDetail',
         params: {
           stuId: val
         }
-      })
+      }) */
     },
     handleEdit (val, isEdit) {
-      this.$router.push({
+      window.open(`#/student-studentEdit?stuId=${val}&isEdit=${isEdit}`, '_blank')
+      /* this.$router.push({
         name: 'studentEdit',
         params: {
           stuId: val,
           isEdit: isEdit
         }
-      })
+      }) */
     },
     handleSearch () {
       this.getData()

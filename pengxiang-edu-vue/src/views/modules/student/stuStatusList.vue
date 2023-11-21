@@ -21,7 +21,8 @@
     </div>
   </el-col>
 </el-row>
-  <el-col :span="3">
+
+  <el-col :span="3" >
     <el-tree
       ref="treeRef"
       :data="treeList"
@@ -32,6 +33,22 @@
       @node-click="(data, node, item)=>getDeptsByPid(data, node, item)"
     >
     </el-tree>
+  </el-col>
+  <el-col :span="20" style="margin-top: 20px;margin-left: 20px">
+    时间段选择(默认关)：
+    <el-date-picker v-model="start" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
+                    style="width: 140px;height: 25px">
+    </el-date-picker>
+
+    <el-date-picker v-model="end" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
+                    style="width: 140px;height: 25px">
+    </el-date-picker>
+
+    <el-switch
+      v-model="value"
+      active-color="#13ce66"
+      inactive-color="#ccc">
+    </el-switch>
   </el-col>
   <el-col :span="21">
   <el-table :data="tableData"  border style="width: 100%;; margin-top: 20px;" v-loading="dataListLoading">
@@ -72,10 +89,15 @@
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
   name: 'workList',
   data () {
     return {
+      value: false,
+      start: moment().subtract(1, 'year').format('YYYY-MM-DD'),
+      end: moment().format('YYYY-MM-DD'),
       treeList: [],
       deptId: null,
       searchCount: 1,
@@ -130,22 +152,10 @@ export default {
       this.searchCount--
     },
     handleDetail (scope) {
-      console.log()
-      this.$router.push({
-        name: 'stuStatusDetail',
-        params: {
-          stuBaseInfoEntity: scope.row
-        }
-      })
+     window.open(`#/student-stuStatusDetail?stuBaseInfoEntity=${encodeURIComponent(JSON.stringify(scope.row))}`, '_blank')
     },
     handleEdit (scope) {
-      this.$router.push({
-        name: 'stuStatusEdit',
-        params: {
-          stuBaseInfoEntity: scope.row
-        }
-      })
-      // 处理修改逻辑
+      window.open(`#/student-stuStatusEdit?stuBaseInfoEntity=${encodeURIComponent(JSON.stringify(scope.row))}`, '_blank')
     },
     handleSizeChange (size) {
       this.pageSize = size
@@ -182,39 +192,84 @@ export default {
         idNumberOption = this.searchConditions.filter(condition => condition.option === 'idNumber')
         headTeacherOption = this.searchConditions.filter(condition => condition.option === 'headTeacher')
       }
-      this.$http({
-        url: this.$http.adornUrl('stu/baseInfo/list'),
-        method: 'get',
-        params: this.$http.adornParams({
-          'page': this.currentPage,
-          'limit': this.pageSize,
-          'deptId': this.deptId,
-          'stuName': stuNameOption.length === 0 ? null : stuNameOption[0].value,
-          'idNumber': idNumberOption.length === 0 ? null : idNumberOption[0].value,
-          'headTeacher': headTeacherOption.length === 0 ? null : headTeacherOption[0].value
-        })
-      }).then(({data}) => {
-        if (data.code === 500) {
-          this.$message.error(data.msg)
-        }
-        if (data && data.code === 0) {
-          this.tableData = data.page.list
-          this.total = data.page.totalCount
-          this.tableData.forEach(function (value, index, array) {
-            switch (array[index].classType) {
-              case 0:
-                array[index].classType = '升学'
-                break
-              default:
-                array[index].classType = '就业'
+      // eslint-disable-next-line no-undef
+      if (this.value){
+        if (this.start != null && this.end != null) {
+          console.log(this.start)
+          this.$http({
+            url: this.$http.adornUrl('stu/baseInfo/timeList'),
+            method: 'get',
+            params: this.$http.adornParams({
+              'page': this.currentPage,
+              'limit': this.pageSize,
+              'deptId': this.deptId,
+              'stuName': stuNameOption.length === 0 ? null : stuNameOption[0].value,
+              'idNumber': idNumberOption.length === 0 ? null : idNumberOption[0].value,
+              'headTeacher': headTeacherOption.length === 0 ? null : headTeacherOption[0].value,
+              'start': this.start,
+              'end': this.end
+            })
+          }).then(({data}) => {
+            if (data.code === 500) {
+              this.$message.error(data.msg)
+            }
+            if (data && data.code === 0) {
+              this.tableData = data.page.list
+              this.total = data.page.totalCount
+              this.tableData.forEach(function (value, index, array) {
+                switch (array[index].classType) {
+                  case 0:
+                    array[index].classType = '升学'
+                    break
+                  default:
+                    array[index].classType = '就业'
+                }
+              })
+            } else {
+              this.$message.error(data.msg)
+              this.tableData = []
+              this.total = 0
             }
           })
         } else {
-          this.$message.error(data.msg)
-          this.tableData = []
-          this.total = 0
+          this.$message.error('时间输入错误，请重新输入！')
         }
-      })
+
+      } else {
+        this.$http({
+          url: this.$http.adornUrl('stu/baseInfo/list'),
+          method: 'get',
+          params: this.$http.adornParams({
+            'page': this.currentPage,
+            'limit': this.pageSize,
+            'deptId': this.deptId,
+            'stuName': stuNameOption.length === 0 ? null : stuNameOption[0].value,
+            'idNumber': idNumberOption.length === 0 ? null : idNumberOption[0].value,
+            'headTeacher': headTeacherOption.length === 0 ? null : headTeacherOption[0].value
+          })
+        }).then(({data}) => {
+          if (data.code === 500) {
+            this.$message.error(data.msg)
+          }
+          if (data && data.code === 0) {
+            this.tableData = data.page.list
+            this.total = data.page.totalCount
+            this.tableData.forEach(function (value, index, array) {
+              switch (array[index].classType) {
+                case 0:
+                  array[index].classType = '升学'
+                  break
+                default:
+                  array[index].classType = '就业'
+              }
+            })
+          } else {
+            this.$message.error(data.msg)
+            this.tableData = []
+            this.total = 0
+          }
+        })
+      }
 
       this.dataListLoading = false
     },
@@ -240,7 +295,5 @@ export default {
   }
 }
 </script>
-
 <style scoped>
-
 </style>

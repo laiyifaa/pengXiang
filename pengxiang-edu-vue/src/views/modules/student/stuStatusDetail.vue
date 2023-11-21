@@ -43,10 +43,6 @@
 
       </el-collapse-item>
     </el-collapse>
-
-    <div class="button-container">
-      <button class="custom-button" @click="returnBack">返回</button>
-    </div>
   </div>
 
 </template>
@@ -68,7 +64,7 @@ export default {
     }
   },
   created () {
-    this.baseInfo = this.$route.params.stuBaseInfoEntity
+    this.baseInfo = JSON.parse(decodeURIComponent(this.$route.query.stuBaseInfoEntity))
   },
   mounted () {
     this.getData()
@@ -124,9 +120,6 @@ export default {
           this.$message.error(data.method)
         }
       })
-    },
-    returnBack () {
-      this.$router.go(-1)
     }
   }
 }

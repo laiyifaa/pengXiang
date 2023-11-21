@@ -25,7 +25,7 @@ const globalRoutes = [
   { path: '/student-workModify', component: _import('modules/student/workModify'), props: true, name: 'workModify', meta: { title: '实习修改界面' }},
 //
   // eslint-disable-next-line standard/object-curly-even-spacing
-  { path: '/student-employDetail/:schoolNumber', component: _import('modules/student/employDetail'), name: 'employDetail', meta: { title: '就业详情界面' }},
+  { path: '/student-employDetail', component: _import('modules/student/employDetail'), name: 'employDetail', meta: { title: '就业详情界面' }},
   // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/student-employModify', component: _import('modules/student/employModify'), name: 'employModify', meta: { title: '就业修改界面' }},
 //
@@ -56,7 +56,7 @@ const globalRoutes = [
   // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/student-studentEdit', component: _import('modules/student/studentEdit'), name: 'studentEdit', meta: { title: '学生编辑' }},
   // eslint-disable-next-line standard/object-curly-even-spacing
-  { path: '/edu-certificateDetail', component: _import('modules/edu/certificateDetail'), name: 'certificateDetail', meta: { title: '考证详情' }},
+  { path: '/edu-certificateDetail/', component: _import('modules/edu/certificateDetail'), name: 'certificateDetail', meta: { title: '考证详情' }},
   // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/edu-certificateEdit', component: _import('modules/edu/certificateEdit'), name: 'certificateEdit', meta: { title: '考证编辑' }},
   // eslint-disable-next-line standard/object-curly-even-spacing
@@ -67,8 +67,6 @@ const globalRoutes = [
   // eslint-disable-next-line standard/object-curly-even-spacing
   { path: '/student-enrollStuOut', component: _import('modules/student/enrollStuOut'), name: 'enrollStuOut', meta: { title: '考生列表导出' }},
   { path: '/student-enrollStuOut', component: _import('modules/student/enrollStuOut'), name: 'enrollStuOut', meta: { title: '考生列表导出' }},
-
-
 ]
 
 // 主入口路由(需嵌套上左右整体布局)

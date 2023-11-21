@@ -180,9 +180,6 @@
         <el-button type="primary" @click="handleSubmit(addStatus,true)">确定</el-button>
       </div>
     </el-dialog>
-    <div class="button-container">
-      <button class="custom-button" @click="returnBack">返回</button>
-    </div>
   </div>
 
 </template>
@@ -222,8 +219,7 @@ export default {
     }
   },
   created () {
-    this.baseInfo = this.$route.params.stuBaseInfoEntity
-    console.log(this.baseInfo)
+    this.baseInfo = JSON.parse(decodeURIComponent(this.$route.query.stuBaseInfoEntity))
   },
   mounted () {
     this.getData()

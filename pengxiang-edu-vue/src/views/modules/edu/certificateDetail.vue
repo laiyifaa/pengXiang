@@ -56,9 +56,9 @@
     </el-collapse-item>
   </el-collapse>
 
-  <div class="button-container">
+<!--  <div class="button-container">
     <button class="custom-button" @click="returnBack">返回</button>
-  </div>
+  </div>-->
 </div>
 </template>
 
@@ -86,7 +86,8 @@ export default {
     }
   },
   created () {
-    this.stuId = this.$route.params.stuId
+    //this.stuId = this.$route.params.stuId
+    this.stuId = this.$route.query.stuId
   },
   mounted () {
     this.getData()

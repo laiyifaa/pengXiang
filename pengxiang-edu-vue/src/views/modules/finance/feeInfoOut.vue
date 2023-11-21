@@ -4,18 +4,24 @@
   <el-dialog title="导出" :visible.sync="outVisible" width="50%">
     <div>
       <el-row :gutter="20">
-        <el-col :span="12"><div class="grid-content bg-purple">
-          <div class="bcolor2" ><u>导出所选</u></div><br>
-          <el-row style="position: relative;left: 170px;">
-            <el-button type="success" @click="handleExport()">Excel导出</el-button>
-          </el-row>
-        </div>
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <div class="bcolor2"><u>导出当前页</u></div>
+            <br>
+            <el-row style="position: relative;left: 170px;">
+              <el-button type="success" @click="exportData(false)">Excel导出</el-button>
+            </el-row>
+          </div>
         </el-col>
-        <el-col :span="12"><div class="grid-content bg-purple"><div class="bcolor2" ><u>导出所有</u></div><br>
-          <el-row style="position: relative;left: 170px;">
-            <el-button type="success" @click="handleExportAll()">Excel导出</el-button>
-          </el-row>
-        </div></el-col>
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <div class="bcolor2"><u>导出所有</u></div>
+            <br>
+            <el-row style="position: relative;left: 170px;">
+              <el-button type="success" @click="exportData(true)">Excel导出</el-button>
+            </el-row>
+          </div>
+        </el-col>
       </el-row>
     </div>
   </el-dialog>
@@ -26,79 +32,70 @@
           name: 'studentOut',
           data () {
             return {
-              ids: [],
+              pageSize: null,
+              pageIndex: null,
+              stuName: null,
+              idNumber: null,
+              year: null,
+              deptId: null,
+              residenceTypeName: null,
+              schoolNumber: null,
+              isArrearage: null,
+              derateType: null,
               outVisible: false
             }
           },
           methods: {
           // 3.定义一个init函数，通过设置detailVisible值为true来让弹窗弹出，这个函数会在父组件的方法中被调用
-            init (idList) {
-              this.ids = idList
+            init (pageSize, pageIndex, year, deptId, stuName, idNumber, residenceTypeName, schoolNumber, isArrearage, derateType) {
               this.outVisible = true
+              this.pageSize = pageSize
+              this.pageIndex = pageIndex
+              this.year = year
+              this.derateType = derateType
+              this.deptId = deptId
+              this.stuName = stuName
+              this.idNumber = idNumber
+              this.residenceTypeName = residenceTypeName
+              this.schoolNumber = schoolNumber
+              this.isArrearage = isArrearage
             },
-            handleExportAll () {
-              this.$confirm(`确定进行'批量导出'操作?（当前页）`, '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-              }).then(() => {
-                this.$http({
-                  url: this.$http.adornUrl('/generator/feeschoolsundry/exportInAll'),
-                  method: 'post',
-                  responseType: 'blob' // 指定响应类型为 Blob
-                }).then(response => {
-                  // 创建一个Blob对象
-                  const blob = new Blob([response.data], { type: response.headers['content-type'] })
-
-                  // 创建一个a标签用于下载
-                  const url = window.URL.createObjectURL(blob)
-                  const link = document.createElement('a')
-                  link.href = url
-                  let aData = new Date()
-                  let dateValue = aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate()
-                  link.setAttribute('download', dateValue + '学生财务信息.xlsx')
-                  document.body.appendChild(link)
-                  // 触发点击事件下载文件
-                  link.click()
-                  this.$message.success("导出中，请耐心等待下载！")
-                  // 释放对象URL资源
-                  window.URL.revokeObjectURL(url)
-                })
-              })
-            },
-            handleExport () {
+            exportData (isAll) {
               this.$confirm(`确定进行导出`, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
               }).then(() => {
                 this.$http({
-                  url: this.$http.adornUrl('/generator/feeschoolsundry/export'),
-                  method: 'post',
-                  data: this.ids,
-                  responseType: 'blob' // 指定响应类型为 Blob
+                  url: this.$http.adornUrl('generator/feeschoolsundry/export'),
+                  method: 'get',
+                  params: this.$http.adornParams(
+                    {
+                      'page': this.pageIndex,
+                      'limit': this.pageSize,
+                      'year': this.year,
+                      'deptId': this.deptId,
+                      'stuName': this.stuName,
+                      'idNumber': this.idNumber,
+                      'residenceTypeName': this.residenceTypeName,
+                      'schoolNumber': this.schoolNumber,
+                      'isArrearage': this.isArrearage,
+                      'derateType': this.derateType,
+                      'isAll': isAll
+                    }
+                  ),
+                  responseType: 'blob'
                 }).then(response => {
-                  // 创建一个Blob对象
-                  const blob = new Blob([response.data], { type: response.headers['content-type'] })
-
-                  if (response.data.size === 54) {
-                    this.$message.error("未选择需要导出的学生数据，请返回进行选择")
-                  } else {
-                    // 创建一个a标签用于下载
-                    const url = window.URL.createObjectURL(blob)
-                    const link = document.createElement('a')
-                    link.href = url
-                    let aData = new Date()
-                    let dateValue = aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate()
-                    link.setAttribute('download', dateValue + '学生财务信息.xlsx')
-                    document.body.appendChild(link)
-                    // 触发点击事件下载文件
-                    link.click()
-
-                    this.$message.success("导出中，请耐心等待下载！")
-                    // 释放对象URL资源
-                    window.URL.revokeObjectURL(url)
-                  }
+                  const blob = new Blob([response.data], {
+                    type: response.headers['content-type']
+                  })
+                  const url = window.URL.createObjectURL(blob)
+                  const link = document.createElement('a')
+                  link.href = url
+                  link.setAttribute('download', isAll === true ? '所有学生学杂费信息.xlsx' : '当前页学生学杂费信息.xlsx')
+                  document.body.appendChild(link)
+                  link.click()
+                  window.URL.revokeObjectURL(url)
                 })
               })
             }

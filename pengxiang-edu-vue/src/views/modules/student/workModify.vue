@@ -131,9 +131,6 @@
 
     </el-dialog>
 
-    <div class="footer-container">
-      <el-button type="primary" class="custom-button" @click="returnBack">返回</el-button>
-    </div>
   </div>
 </template>
 
@@ -275,9 +272,6 @@ export default {
       } else {
         this.$message.error('请填入必填信息')
       }
-    },
-    returnBack () {
-      this.$router.go(-1)
     },
     addTab () {
       this.dialogVisible = true

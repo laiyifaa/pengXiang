@@ -42,12 +42,8 @@
           </e-desc>
         </el-tab-pane>
       </el-tabs>
-
     </el-collapse-item>
   </el-collapse>
-    <div class="button-container">
-      <button class="custom-button" @click="returnBack">返回</button>
-    </div>
 </div>
 </template>
 
@@ -94,12 +90,8 @@ export default {
       const currentYear = new Date().getFullYear();
       return currentYear - birthYear;
     }
-  },
-  methods: {
-    returnBack () {
-      this.$router.go(-1)
-    }
   }
+
 }
 </script>
 

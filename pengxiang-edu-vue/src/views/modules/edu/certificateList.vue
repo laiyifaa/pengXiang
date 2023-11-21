@@ -31,12 +31,17 @@
     </el-col>
     <el-col :span="21">
 <el-row style="margin-top: 20px;">
-<!--  <el-col :span="3" style="text-align:left;margin-left: 20px">-->
+  <el-col :span="3" style="text-align:left;margin-left: 20px">
+    <el-button type="success" @click="handleImport">导入</el-button>
+    <certificate-import v-if="importVisiable" ref="importDialog"></certificate-import>
+<!--    <el-button type="success" @click="handleExport">导出</el-button>
+    <certificate-out v-if="outVisiable" ref="outDialog"></certificate-out>-->
 <!--    <el-button type="success" @click="handleImport">导入</el-button>-->
 <!--    <el-button type="success" @click="handleExport">导出</el-button>-->
-<!--  </el-col>-->
+  </el-col>
   <el-col :span="20" >
     <div style="display: flex; align-items: center;">
+
       <el-button type="primary" icon="el-icon-plus" style="width: 80px; padding-left: 1px;" @click="addSearchCondition" v-show="searchCount<2">查询条件</el-button>
       <div v-for="(condition, index) in searchConditions" :key="index" style=" margin-left: 10px;">
         <el-select style="width: 110px;" v-model="condition.option" placeholder="查询条件" >
@@ -85,10 +90,15 @@
 </template>
 
 <script>
+import certificateImport from './certificateImport.vue'
+
 export default {
   name: 'certificateList',
+  components: { certificateImport},
   data () {
     return {
+      importVisiable: false,
+      outVisiable: false,
       dataListLoading: false,
       deptId: null,
       treeList: [],
@@ -142,27 +152,29 @@ export default {
       this.searchCount--
     },
     handleDetail (val) {
-      this.$router.push({
-        name: 'certificateDetail',
-        params: {
-          stuId: val
-        }
-      })
+      // eslint-disable-next-line no-template-curly-in-string
+      window.open(`#/edu-certificateDetail?stuId=${val}`, '_blank');
     },
     handleEdit (val) {
-      this.$router.push({
-        name: 'certificateEdit',
-        params: {
-          stuId: val
-        }
-      })
+      // this.$router.push({
+      //   name: 'certificateEdit',
+      //   params: {
+      //     stuId: val
+      //   }
+      // })
+      window.open(`#/edu-certificateEdit?stuId=${val}`, '_blank');
     },
     handleSearch () {
       this.getData()
     },
     handleImport () {
-
+      this.importVisiable = true
+      // 处理导入逻辑
+      this.$nextTick(() => {
+        this.$refs.importDialog.init()
+      })
     },
+
     handleExport () {
     },
     handleSizeChange (size) {
@@ -193,7 +205,7 @@ export default {
           'limit': this.pageSize,
           'deptId': this.deptId,
           'stuName': stuNameOption.length === 0 ? null : stuNameOption[0].value,
-          'schoolNumber': schoolNumberOption.length === 0 ? null : schoolNumberOption[0].value,
+          'schoolNumber': schoolNumberOption.length === 0 ? null : schoolNumberOption[0].value
         })
       }).then(({data}) => {
         if (data && data.code === 0) {

@@ -2,15 +2,28 @@
   <div class="mod-config">
     <el-row :gutter="20" >
       <el-col :span="3">
+        <el-input
+          placeholder="输入关键字进行过滤"
+          style="padding-top: 20px;width:90%"
+          v-model="filterText">
+        </el-input>
         <el-tree
-          style="padding-top: 80px;"
+          class="filter-tree"
+          style="padding-top: 20px;"
+          highlight-current
           :data="treeList"
           node-key="id"
           :default-expanded-keys="[]"
           :default-checked-keys="[]"
           :props="defaultProps"
+          :filter-node-method="filterNode"
+          ref="tree"
           @node-click="(data, node, item)=>getDeptsByPid(data, node, item)"
         >
+          <span slot-scope="{ node }" class="custom-tree-node">
+            <span v-if="!filterText">{{ node.label }}</span>
+            <span v-if="filterText" v-html="node.label.replace(new RegExp(filterText,'g'),`<font style='color:lightseagreen'>${filterText}</font>`)" />
+        </span>
         </el-tree>
       </el-col>
       <el-col :span="21">
@@ -34,18 +47,13 @@
           <el-button type="primary" icon="el-icon-plus" style="width: 80px; padding-left: 1px;" @click="addSearchCondition" v-show="searchCount<3">查询条件</el-button>
           <div v-for="(condition, index) in searchConditions" :key="index" style=" margin-left: 10px;">
             <el-select style="width: 110px;" v-model="condition.option" placeholder="查询条件">
-              <el-option label="姓名" value="stu_name"></el-option>
-              <el-option label="身份证号" value="id_number"></el-option>
-              <el-option label="招生季" value="admission_season"></el-option>
-              <el-option label="户口类型" value="residence_type"></el-option>
+              <el-option label="姓名" value="stuName"></el-option>
+              <el-option label="学号" value="schoolNumber"></el-option>
+              <el-option label="身份证号" value="idNumber"></el-option>
+              <el-option label="户口性质" value="residenceTypeName"></el-option>
               <el-option label="是否欠费" value="isArrearage"></el-option>
               <el-option label="缴费学年" value="year"></el-option>
               <el-option label="减免类型" value="derateType"></el-option>
-<!--              <el-option label="班主任" value="head_teacher"></el-option>-->
-<!--              <el-option label="籍贯" value="native_place"></el-option>-->
-<!--              <el-option label="政治面貌" value="political_status"></el-option>-->
-<!--              <el-option label="缴费学年" value="year"></el-option>-->
-
             </el-select>
             <el-input v-model="condition.value" placeholder="请输入" style="width: 200px;" clearable></el-input>
             <i class="el-icon-circle-close" type="danger" icon="el-icon-circle-close" @click="removeSearchCondition(index)" style="margin: 10px"></i>
@@ -121,8 +129,8 @@
           </el-table-column>
           <el-table-column
             prop="paySchoolYear"
-            label="缴费学年"
-            width="80" align="center">
+            label="缴费学年-学期"
+            width="110" align="center">
           </el-table-column>
           <el-table-column
             prop="paySchoolDate"
@@ -151,11 +159,11 @@
             width="200"
             label="操作">
             <template slot-scope="scope">
-              <router-link :to="{name:'tuitionExpenseInfo',params:{index:scope.row.id}}">
+<!--              <router-link :to="{name:'tuitionExpenseInfo',params:{index:scope.row.id}}">-->
                 <el-button
                   type="text"
-                  @click="handleDetail(scope.row.id)">详情</el-button>
-              </router-link>
+                  @click="handleDetail(scope.row.id,scope.row.paySchoolYear)">详情</el-button>
+<!--              </router-link>-->
 <!--              <router-link :to="{name:'tuitionExpenseEdit',params:{index:scope.row.id}}">-->
 <!--                <el-button-->
 <!--                  type="text"-->
@@ -199,10 +207,11 @@ export default {
       importVisiable: false,
       outVisiable: false,
       attachmentVisiable: false,
-      deptId: '',
+      deptId: null,
       year: '',
       Visiableee: false,
       treeList: [],
+      filterText: '',
       IfQMoney: '',
       searchConditions: [{
         option: '',
@@ -238,37 +247,13 @@ export default {
     this.getDeptTreeList()
   },
   methods: {
+    filterNode (value, data, node) {
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
+    },
     handleEdit () {
       this.$router.push('finance-tuitionExpenseEdit')
       // 处理修改逻辑
-    },
-    handleExport2 () {
-      this.$confirm(`确定进行'批量导出'操作?（目前条件下所有）`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$http({
-          url: this.$http.adornUrl('/generator/feearrearage/exportInAll'),
-          method: 'post',
-          responseType: 'blob' // 指定响应类型为 Blob
-        }).then(response => {
-          // 创建一个Blob对象
-          const blob = new Blob([response.data], { type: response.headers['content-type'] })
-
-          // 创建一个a标签用于下载
-          const url = window.URL.createObjectURL(blob)
-          const link = document.createElement('a')
-          link.href = url
-          link.setAttribute('download', '')
-          document.body.appendChild(link)
-          // 触发点击事件下载文件
-          link.click()
-
-          // 释放对象URL资源
-          window.URL.revokeObjectURL(url)
-        })
-      })
     },
     addSearchCondition () {
       this.searchConditions.push({
@@ -278,31 +263,21 @@ export default {
       this.searchCount++
     },
     handleSearch () {
-      this.dataListLoading = true
-      this.$http.post(this.$http.adornUrl('/generator/feeschoolsundry/search'), {
-        'page': this.pageIndex,
-        'limit': this.pageSize,
-        searchConditions: this.searchConditions
-      }).then(({data}) => {
-        if (data && data.code === 0) {
-          this.dataList = data.page.list
-          this.totalPage = data.page.totalCount
-        } else {
-          this.dataList = []
-          this.totalPage = 0
-          this.$message.error(data.msg)
-        }
-        this.dataListLoading = false
-      })
+      this.pageIndex = 1
+      this.pageSize = 20
+      this.getDataList()
     },
     // 删除条件搜索栏目
     removeSearchCondition (index) {
       this.searchConditions.splice(index, 1)
       this.searchCount--
     },
-    handleDetail (id) {
-      this.$nextTick(() => {
-      })
+    handleDetail (id, paySchoolYear) {
+      // this.$nextTick(() => {
+      //
+      // })
+      window.open(`#/finance-tuitionExpenseInfo?index=${id}&payYear=${paySchoolYear}`, '_blank')
+      console.log(id,paySchoolYear)
     },
     getDeptTreeList () {
       this.$http({
@@ -317,15 +292,36 @@ export default {
     // 获取数据列表
     getDataList () {
       this.dataListLoading = true
+      var stuNameOption = null
+      var idNumberOption = null
+      var schoolNumberOption = null
+      var residenceTypeNameOption = null
+      var isArrearageOption = null
+      var derateTypeOption = null
+      var yearOption = null
+      if (this.searchConditions != null && this.searchConditions.length >= 0) {
+        stuNameOption = this.searchConditions.filter(condition => condition.option === 'stuName')
+        idNumberOption = this.searchConditions.filter(condition => condition.option === 'idNumber')
+        schoolNumberOption = this.searchConditions.filter(condition => condition.option === 'schoolNumber')
+        residenceTypeNameOption = this.searchConditions.filter(condition => condition.option === 'residenceTypeName')
+        isArrearageOption = this.searchConditions.filter(condition => condition.option === 'isArrearage')
+        derateTypeOption = this.searchConditions.filter(condition => condition.option === 'derateType')
+        yearOption = this.searchConditions.filter(condition => condition.option === 'year')
+      }
       this.$http({
         url: this.$http.adornUrl('/generator/feeschoolsundry/list'),
         method: 'get',
         params: this.$http.adornParams({
           'page': this.pageIndex,
           'limit': this.pageSize,
-          'key': this.dataForm.key,
-          'year': this.year,
-          'deptId': this.deptId
+          'year': yearOption.length === 0 ? null : yearOption[0].value,
+          'deptId': this.deptId,
+          'stuName': stuNameOption.length === 0 ? null : stuNameOption[0].value,
+          'idNumber': idNumberOption.length === 0 ? null : idNumberOption[0].value,
+          'residenceTypeName': residenceTypeNameOption.length === 0 ? null : residenceTypeNameOption[0].value,
+          'schoolNumber': schoolNumberOption.length === 0 ? null : schoolNumberOption[0].value,
+          'isArrearage': isArrearageOption.length === 0 ? null : isArrearageOption[0].value,
+          'derateType': derateTypeOption.length === 0 ? null : derateTypeOption[0].value
         })
       }).then(({data}) => {
         if (data.code === 500) {
@@ -340,32 +336,12 @@ export default {
         }
         this.dataListLoading = false
       })
-      this.getDeptTreeList()
     },
     getDeptsByPid (data, node, item) {
       this.deptId = data.id
       this.pageIndex = 1
       this.pageSize = 20
-      this.$http({
-        url: this.$http.adornUrl('/generator/feeschoolsundry/list'),
-        method: 'get',
-        params: this.$http.adornParams({
-          'page': this.pageIndex,
-          'limit': this.pageSize,
-          'key': this.dataForm.key,
-          'year': this.year,
-          'deptId': data.id
-        })
-      }).then(({data}) => {
-        if (data && data.code === 0) {
-          this.dataList = data.page.list
-          this.totalPage = data.page.totalCount
-        } else {
-          this.dataList = []
-          this.totalPage = 0
-        }
-        this.dataListLoading = false
-      })
+      this.getDataList()
     },
     // 每页数
     sizeChangeHandle (val) {
@@ -409,12 +385,29 @@ export default {
       })
     },
     handleExport (id) {
-      var ids = id ? [id] : this.dataListSelections.map(item => {
-        return item.id
-      })
       this.outVisiable = true
+      var stuNameOption = null
+      var idNumberOption = null
+      var schoolNumberOption = null
+      var residenceTypeNameOption = null
+      var isArrearageOption = null
+      var derateTypeOption = null
+      var yearOption = null
+      if (this.searchConditions != null && this.searchConditions.length >= 0) {
+        stuNameOption = this.searchConditions.filter(condition => condition.option === 'stuName')
+        idNumberOption = this.searchConditions.filter(condition => condition.option === 'idNumber')
+        schoolNumberOption = this.searchConditions.filter(condition => condition.option === 'schoolNumber')
+        residenceTypeNameOption = this.searchConditions.filter(condition => condition.option === 'residenceTypeName')
+        isArrearageOption = this.searchConditions.filter(condition => condition.option === 'isArrearage')
+        derateTypeOption = this.searchConditions.filter(condition => condition.option === 'derateType')
+        yearOption = this.searchConditions.filter(condition => condition.option === 'year')
+      }
       this.$nextTick(() => {
-        this.$refs.outDialog.init(this.$http.adornData(ids, false))
+        this.$refs.outDialog.init(this.pageSize, this.pageIndex, yearOption.length === 0 ? null : yearOption[0].value,
+          this.deptId, stuNameOption.length === 0 ? null : stuNameOption[0].value, idNumberOption.length === 0 ? null : idNumberOption[0].value,
+          residenceTypeNameOption.length === 0 ? null : residenceTypeNameOption[0].value, schoolNumberOption.length === 0 ? null : schoolNumberOption[0].value,
+          isArrearageOption.length === 0 ? null : isArrearageOption[0].value, derateTypeOption.length === 0 ? null : derateTypeOption[0].value
+        )
       })
     },
     // 删除

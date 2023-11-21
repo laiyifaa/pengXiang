@@ -26,13 +26,14 @@
             <span v-if="filterText" v-html="node.label.replace(new RegExp(filterText,'g'),`<font style='color:lightseagreen'>${filterText}</font>`)" />
         </span>
         </el-tree>
+
       </el-col>
       <el-col :span="21">
     <el-row style="margin-top: 20px; margin-left: -20px">
       <el-col :span="9" style="text-align:left;margin-left: 20px">
         <el-button type="primary" icon="el-icon-refresh" @click="getData"></el-button>
         <el-button type="success" @click="ifPass()" style="background-color: darkgreen" icon="el-icon-check" :disabled="dataListSelections.length <= 0">通过</el-button>
-         <el-button type="success" @click="handleEdit(null,null,false)" style="background-color: green"  >新增</el-button>
+         <el-button type="success" @click="handleEdit(null,null,0)" style="background-color: green"  >新增</el-button>
         <el-button type="success" @click="handleImport">导入</el-button>
         <enroll-stu-import v-if="importVisiable" ref="dialog"></enroll-stu-import>
         <el-button type="success" @click="handleExport">导出</el-button>
@@ -88,7 +89,7 @@
             <el-button
               size="mini"
               type="primary"
-              @click="handleEdit(scope.$index, scope.row,true)">编辑
+              @click="handleEdit(scope.$index, scope.row,1)">编辑
             </el-button>
             <el-button
               size="mini"
@@ -236,21 +237,26 @@ export default {
       this.searchCount--
     },
     handleDetail (val) {
-      this.$router.push({
+      window.open(`#/student-enrollStuListDetail?stuId=${val}`, '_blank')
+      /* this.$router.push({
         name: 'enrollStuListDetail',
         params: {
           stuId: val
         }
-      })
+      }) */
     },
     handleEdit (index, row, isEdit) {
-      this.$router.push({
+      if(isEdit == 0){
+        window.open(`#/student-enrollStuEdit?isEdit=${isEdit}`, '_blank')
+      }
+      window.open(`#/student-enrollStuEdit?stuId=${row.id}&isEdit=${isEdit}`, '_blank')
+     /* this.$router.push({
         name: 'enrollStuEdit',
         params: {
           stuId: isEdit ? row.id : null,
           isEdit: isEdit
         }
-      })
+      }) */
     },
     handleSearch () {
       this.getData()
@@ -362,7 +368,6 @@ export default {
     return {
       treeList: [],
       filterText: '',
-
       defaultProps: {
         children: 'children',
         label: 'label'

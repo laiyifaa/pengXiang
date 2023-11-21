@@ -147,7 +147,6 @@ export default {
       this.searchCount--
     },
     handleDetail (scope) {
-      console.log(this.tableData)
       this.selectedIdNumber = scope.row.idNumber
       this.$router.push({
         name: 'workDetail',

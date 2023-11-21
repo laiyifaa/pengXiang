@@ -169,9 +169,7 @@
   </el-dialog>
 
 
-  <div class="footer-container">
-    <el-button type="primary" class="custom-button" @click="returnBack">返回</el-button>
-  </div>
+
 </div>
 
 </template>
@@ -225,15 +223,15 @@ export default {
     }
   },
   created () {
-    this.Info = this.$route.params.Info
-    if(this.$route.params.idNumber!=null){
+    this.Info =JSON.parse(decodeURIComponent(this.$route.query.Info))
+    if(this.$route.query.idNumber!=null){
       this.idNumberIsNull=true
     this.$http({
       url: this.$http.adornUrl('/stu/getVisitList'),
       method: 'get'
     }).then(
       response => {
-        this.visit = response.data.visitList.filter(item => item.idNumber === this.$route.params.idNumber)
+        this.visit = response.data.visitList.filter(item => item.idNumber === this.$route.query.idNumber)
         this.visit.forEach(function (value, index, array) {
           if (array[index].secondEmployDate === null) {
             array[index].secondEmployDate = ''
@@ -243,7 +241,7 @@ export default {
       this.$message.error(error)
       })
     }else {
-      idNumberIsNull=false
+      this.idNumberIsNull=false
     }
   },
   methods: {
