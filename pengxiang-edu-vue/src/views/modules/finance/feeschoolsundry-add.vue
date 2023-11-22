@@ -11,13 +11,13 @@
         <el-input v-model="dataForm.idNumber" placeholder="身份证号码" ></el-input>
       </el-form-item>
 
-<!--      <el-form-item label="缴费日期" prop="paySchoolDate">-->
-<!--        <el-date-picker-->
-<!--          v-model="dataForm.paySchoolDate"-->
-<!--          type="date"-->
-<!--          placeholder="选择日期时间">-->
-<!--        </el-date-picker>-->
-<!--    </el-form-item>-->
+      <el-form-item label="缴费日期" prop="paySchoolDate">
+        <el-date-picker
+          v-model="dataForm.paySchoolDate"
+          type="datetime"
+          placeholder="选择日期时间">
+        </el-date-picker>
+    </el-form-item>
 <!--      <el-form-item label="缴费日期" prop="paySchoolYear">-->
 <!--        <el-input v-model="dataForm.paySchoolDate" placeholder="缴费日期" ></el-input>-->
 <!--      </el-form-item>-->
@@ -130,6 +130,8 @@
 </template>
 
 <script>
+  import moment from 'moment'
+
   export default {
     data () {
       return {
@@ -310,6 +312,7 @@
       },
       // 表单提交
       dataFormSubmit () {
+        console.log(this.dataForm.paySchoolDate)
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
@@ -372,6 +375,7 @@
                   }
                 })
               } else {
+
                 this.$message.error(data.msg)
               }
             })

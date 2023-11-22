@@ -162,7 +162,7 @@
 <!--              <router-link :to="{name:'tuitionExpenseInfo',params:{index:scope.row.id}}">-->
                 <el-button
                   type="text"
-                  @click="handleDetail(scope.row.id,scope.row.paySchoolYear)">详情</el-button>
+                  @click="handleDetail(scope.row.id,scope.row.paySchoolYear,scope.row.paySchoolDate)">详情</el-button>
 <!--              </router-link>-->
 <!--              <router-link :to="{name:'tuitionExpenseEdit',params:{index:scope.row.id}}">-->
 <!--                <el-button-->
@@ -272,11 +272,12 @@ export default {
       this.searchConditions.splice(index, 1)
       this.searchCount--
     },
-    handleDetail (id, paySchoolYear) {
+    handleDetail (id, paySchoolYear,payDate) {
+      console.log(this.dataList)
       // this.$nextTick(() => {
       //
       // })
-      window.open(`#/finance-tuitionExpenseInfo?index=${id}&payYear=${paySchoolYear}`, '_blank')
+      window.open(`#/finance-tuitionExpenseInfo?index=${id}&payYear=${paySchoolYear}&payDate=${payDate}`, '_blank')
       console.log(id,paySchoolYear)
     },
     getDeptTreeList () {

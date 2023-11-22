@@ -608,7 +608,6 @@
         type="success"
         @click="save()">确认
       </el-button>
-    <el-button type="info" @click="returnBack">返回</el-button>
     </el-row>
   </div>
 </template>

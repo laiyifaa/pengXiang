@@ -47,7 +47,7 @@
               </div>
               <div style="margin-bottom: 20px">
                 <e-desc-item label="缴费学年"> {{ FeeInfo.paySchoolYear }} </e-desc-item>
-                <e-desc-item label="缴费日期"> {{ FeeInfo.paySchoolDate }} </e-desc-item>
+                <e-desc-item label="缴费日期"> {{ formatDate(FeeInfo.paySchoolDate)  }} </e-desc-item>
                 <e-desc-item label="应缴培训费" color="#"  > {{ FeeInfo.payTrainFee }} </e-desc-item>
                 <e-desc-item label="实缴培训费" color="#" > {{ FeeInfo.trainFee }} </e-desc-item>
                 <e-desc-item label="应缴服装费" color="#" > {{ FeeInfo.payClothesFee }} </e-desc-item>
@@ -84,12 +84,14 @@
 <script>
 import EDesc from '../other/EDesc'
 import EDescItem from '../other/EDescItem'
+import moment from 'moment'
 const cityOptions = ['学生详情', '贫困情况', '缴费信息', '评定信息', '就业信息', '实习信息']
 export default {
   components: {
     EDesc, EDescItem
   },
   data () {
+
     return {
       FeeInfoList: [],
       formLabelWidth: '50px',
@@ -112,13 +114,23 @@ export default {
     this.getDataList()
   },
   methods: {
+    formatDate(value){
+      if(value){
+        return moment(value).format('YY-MM-DD HH:mm:ss')
+      } else {
+        return null
+      }
+    },
     getDataList () {
-      this.$http.get(this.$http.adornUrl(`/generator/feeschoolsundry/sInfo/${this.$route.query.index}/${this.$route.query.payYear}`)).then(({data}) => {
+      console.log(this.$route.query.index)
+      console.log( this.$route.query.payYear)
+      this.$http.get(this.$http.adornUrl(`/generator/feeschoolsundry/sInfo/${this.$route.query.index}/${this.$route.query.payYear}/${this.$route.query.payDate}`)).then(({data}) => {
         if (data && data.code === 0) {
           this.info = data.infoMap.stuInfo
           this.FeeInfo = data.infoMap.feeInfo
         }
       })
+      console.log(this.info)
     }
   }
 }

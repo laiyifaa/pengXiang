@@ -143,39 +143,47 @@
         <template slot="title">
           <span style="text-align: center; font-weight: bold; font-size: 16px;">缴费信息</span>
         </template>
-        <el-tabs type="border-card">
-          <el-tab-pane v-for="(item, index) in info.feeList" :key="index" :label="display( item.paySchoolYear)">
-            <e-desc margin='0 12px' label-width='150px' column="4" >
-              <e-desc-item  label="缴费（学年）-（学期）"> {{item.paySchoolYear}} </e-desc-item>
-              <e-desc-item label="缴费学年"> {{item.paySchoolDate}} </e-desc-item>
-              <e-desc-item label="减免类型">  {{item.derateType === 1 ? '贫困生':'非贫困生'}}</e-desc-item>
-              <e-desc-item label="应缴培训费" color="#"  > {{ item.payTrainFee }} </e-desc-item>
-              <e-desc-item label="实缴培训费" color="#" > {{item.trainFee}} </e-desc-item>
-              <e-desc-item label="应缴服装费" color="#" > {{item.payClothesFee}} </e-desc-item>
-              <e-desc-item label="实缴服装费" color="#" > {{item.clothesFee}} </e-desc-item>
-              <e-desc-item label="应缴教材费" color="#" > {{item.payBookFee}} </e-desc-item>
-              <e-desc-item label="实缴教材费" color="#" > {{item.bookFee}} </e-desc-item>
-              <e-desc-item label="应缴住宿费" color="#" > {{item.payHotelFee}} </e-desc-item>
-              <e-desc-item label="实缴住宿费" color="#" > {{item.hotelFee}} </e-desc-item>
-              <e-desc-item label="应缴被褥费" color="#" > {{item.payBedFee}} </e-desc-item>
-              <e-desc-item label="实缴被褥费" color="#" > {{item.bedFee}} </e-desc-item>
-              <e-desc-item label="应缴证书费" color="#" > {{item.payCertificateFee}} </e-desc-item>
-              <e-desc-item label="实缴证书费" color="#" > {{item.certificateFee}} </e-desc-item>
-              <e-desc-item label="应缴国防教育费" color="#" > {{item.payDefenseEduFee}} </e-desc-item>
-              <e-desc-item label="实缴国防教育费" color="#" > {{item.defenseEduFee}} </e-desc-item>
-              <e-desc-item label="应缴体检费" color="#" > {{item.payBodyExamFee}} </e-desc-item>
-              <e-desc-item label="实缴体检费" color="#" > {{item.bodyExamFee}} </e-desc-item>
-              <e-desc-item label="减免金额" color="#"> {{ item.derateMoney }} </e-desc-item>
-              <e-desc-item label="减免备注" color="#"> {{ item.derateDetail }} </e-desc-item>
-              <e-desc-item label="返费时间" color="#"> {{item.returnFeeTime}} </e-desc-item>
-              <e-desc-item label="应返费金额" color="#"> {{item.needReturnFeeNum}} </e-desc-item>
-              <e-desc-item label="返费金额" color="#"> {{ item.factReturnFeeNum }} </e-desc-item>
-              <e-desc-item label="返费账户" color="#"> {{ item.account }} </e-desc-item>
-              <e-desc-item label="返费账号" color="#"> {{item.accountNumber}} </e-desc-item>
-              <e-desc-item label="返费开户行" color="#"> {{item.depositBank}} </e-desc-item>
-            </e-desc>
-          </el-tab-pane>
-        </el-tabs>
+
+          <el-tabs>
+            <el-tab-pane v-for="(item,index) in info.feeList" :key="index" :label="display(item[0].paySchoolYear)" @click="handleClick((item))">
+              <el-tabs type="border-card">
+                <el-tab-pane v-for="(item, index) in item" :key="index" :label="displaySecond(index)">
+                  <e-desc margin='0 12px' label-width='150px' column="4" >
+                    <e-desc-item  label="缴费（学年-学期）"> {{item.paySchoolYear}} </e-desc-item>
+                    <e-desc-item label="缴费日期"> {{ formatDate (item.paySchoolDate)}} </e-desc-item>
+                    <e-desc-item label="减免类型">  {{item.derateType === 1 ? '贫困生':'非贫困生'}}</e-desc-item>
+                    <e-desc-item label="应缴培训费" color="#"  > {{ item.payTrainFee }} </e-desc-item>
+                    <e-desc-item label="实缴培训费" color="#" > {{item.trainFee}} </e-desc-item>
+                    <e-desc-item label="应缴服装费" color="#" > {{item.payClothesFee}} </e-desc-item>
+                    <e-desc-item label="实缴服装费" color="#" > {{item.clothesFee}} </e-desc-item>
+                    <e-desc-item label="应缴教材费" color="#" > {{item.payBookFee}} </e-desc-item>
+                    <e-desc-item label="实缴教材费" color="#" > {{item.bookFee}} </e-desc-item>
+                    <e-desc-item label="应缴住宿费" color="#" > {{item.payHotelFee}} </e-desc-item>
+                    <e-desc-item label="实缴住宿费" color="#" > {{item.hotelFee}} </e-desc-item>
+                    <e-desc-item label="应缴被褥费" color="#" > {{item.payBedFee}} </e-desc-item>
+                    <e-desc-item label="实缴被褥费" color="#" > {{item.bedFee}} </e-desc-item>
+                    <e-desc-item label="应缴证书费" color="#" > {{item.payCertificateFee}} </e-desc-item>
+                    <e-desc-item label="实缴证书费" color="#" > {{item.certificateFee}} </e-desc-item>
+                    <e-desc-item label="应缴国防教育费" color="#" > {{item.payDefenseEduFee}} </e-desc-item>
+                    <e-desc-item label="实缴国防教育费" color="#" > {{item.defenseEduFee}} </e-desc-item>
+                    <e-desc-item label="应缴体检费" color="#" > {{item.payBodyExamFee}} </e-desc-item>
+                    <e-desc-item label="实缴体检费" color="#" > {{item.bodyExamFee}} </e-desc-item>
+                    <e-desc-item label="减免金额" color="#"> {{ item.derateMoney }} </e-desc-item>
+                    <e-desc-item label="减免备注" color="#"> {{ item.derateDetail }} </e-desc-item>
+                    <e-desc-item label="返费时间" color="#"> {{item.returnFeeTime}} </e-desc-item>
+                    <e-desc-item label="应返费金额" color="#"> {{item.needReturnFeeNum}} </e-desc-item>
+                    <e-desc-item label="返费金额" color="#"> {{ item.factReturnFeeNum }} </e-desc-item>
+                    <e-desc-item label="返费账户" color="#"> {{ item.account }} </e-desc-item>
+                    <e-desc-item label="返费账号" color="#"> {{item.accountNumber}} </e-desc-item>
+                    <e-desc-item label="返费开户行" color="#"> {{item.depositBank}} </e-desc-item>
+                  </e-desc>
+
+
+                </el-tab-pane>
+              </el-tabs>
+            </el-tab-pane>
+          </el-tabs>
+
       </el-collapse-item>
     </el-collapse>
 
@@ -350,10 +358,6 @@
         </el-tabs>
       </el-collapse-item>
     </el-collapse>
-
-
-
-
     <div>
       <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
       <div style="margin: 15px 0;"></div>
@@ -362,7 +366,6 @@
       </el-checkbox-group>
     </div>
     <el-button type="primary" @click="open" style="margin-left:50%">信息导出</el-button>
-    <button class="custom-button" @click="returnBack">返回</button>
   </div>
 </template>
 
@@ -370,6 +373,7 @@
 <script>
 import EDesc from '../other/EDesc'
 import EDescItem from '../other/EDescItem'
+import moment from 'moment'
 
 const cityOptions = ['学生详情', '贫困情况', '缴费信息', '评定信息', '就业信息', '实习信息', '退费信息', '欠费信息', '证书信息']
 export default {
@@ -378,6 +382,7 @@ export default {
   },
   data () {
     return {
+      feeTime: [],
       activeCollapse: ['1'],
       changeList: [],
       htmlTitle: '学生信息',
@@ -426,8 +431,22 @@ export default {
     }
   },
   methods: {
+    formatDate (value) {
+      if (value) {
+        return moment(value).format('YY-MM-DD HH:mm:ss')
+      } else {
+        return null
+      }
+    },
+    handleClick (item) {
+      this.feeTime = item
+    },
+    displaySecond (index) {
+      let x = index + 1
+      return `第${x}次缴费`
+    },
     display (item) {
-      let data=String(item)
+      let data = String(item)
       if (data.includes('-')) {
         const [x, y] = data.split('-')
         return `第${x}学年第${y}学期`
@@ -484,6 +503,7 @@ export default {
         }
         if (data && data.code === 0) {
           this.info = data.detail
+          this.feeTime = data.detail.feeList[1]
           this.info.feeList.forEach(function (value, index, array) {
             if (array[index].paySchoolDate != null) {
               array[index].paySchoolDate = array[index].paySchoolDate.substring(0, 10)
@@ -492,7 +512,6 @@ export default {
               array[index].returnFeeTime = array[index].returnFeeTime.substring(0, 10)
             }
           })
-
         } else {
           this.$message.error(data.msg)
         }
@@ -515,7 +534,7 @@ export default {
       })
     },
     returnBack () {
-      this.$router.go(-1)
+      console.log(this.feeTime)
     },
     handleChange () {
     },

@@ -45,9 +45,7 @@
       </el-collapse-item>
     </el-collapse>
 
-    <el-row style="padding: 40px;text-align: center;" >
-        <el-button type="info" @click = "returnBack">返回</el-button>
-    </el-row>
+
   </div>
 
 </template>
