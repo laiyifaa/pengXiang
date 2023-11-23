@@ -4,6 +4,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
 import io.renren.modules.edu.service.EduCertificateService;
+
 import io.renren.modules.edu.vo.CertificateVo;
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,7 +62,6 @@ public class CertificateExcelVoListener implements ReadListener<CertificateVo> {
     private void saveData() {
         /*log.info("{}条数据，开始存储数据库！", cachedDataList.size());*/
         eduCertificateService.importByList(cachedDataList);
-
     }
 
 }

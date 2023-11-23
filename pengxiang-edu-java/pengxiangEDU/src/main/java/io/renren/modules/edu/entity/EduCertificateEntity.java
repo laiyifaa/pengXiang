@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.renren.modules.edu.excel.DateConverter;
 import lombok.Data;
 
 /**
@@ -46,8 +45,8 @@ public class EduCertificateEntity extends BaseEntity  implements Serializable {
 	/**
 	 * 错补证信息（无，已补发/未补发）
 	 */
-	@ExcelProperty("错补证信息")
-	private String information;
+	@ExcelProperty("错补证信息(0无 1已补发 2未补发)")
+	private Integer information;
 
 	/***
 	 *考证时间
@@ -72,12 +71,12 @@ public class EduCertificateEntity extends BaseEntity  implements Serializable {
 	/**
 	 * 1 必考 0 选考
 	 */
-	@ExcelProperty("证书类型")
+	@ExcelProperty("证书类型(1必考 0选考)")
 	private Integer type;
 	/**
 	 * 考证状态 1已考 0未考
 	 */
-	@ExcelProperty("考证状态")
+	@ExcelProperty("考证状态(1已考 0未考)")
 	private Integer status;
 
 }

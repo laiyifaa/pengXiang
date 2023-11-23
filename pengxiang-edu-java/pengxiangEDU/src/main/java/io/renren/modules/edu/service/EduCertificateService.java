@@ -22,7 +22,7 @@ public interface EduCertificateService extends IService<EduCertificateEntity> {
 
 
 
-    List<CertificateVo> queryExport(Query query, EduCertificateEntity key, Long deptId);
+    List<CertificateVo> queryExport(Query query, CertificateVo key, Long deptId);
 
     PageUtils queryPage(IPage<CertificateVo> page, EduCertificateEntity key, Long deptId);
 

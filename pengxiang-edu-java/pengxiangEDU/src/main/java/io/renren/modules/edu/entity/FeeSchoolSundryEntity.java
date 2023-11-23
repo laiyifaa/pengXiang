@@ -10,7 +10,10 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.math.BigDecimal;
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * 学杂费收支管理表
@@ -44,12 +47,13 @@ public class FeeSchoolSundryEntity extends BaseEntity implements Serializable {
 	/**
 	 * 缴费日期
 	 */
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private Date paySchoolDate;
 	/**
 	 * 缴费学年
 	 */
-	private Integer paySchoolYear;
-
+	private String paySchoolYear;
 
 	/**
 	 * 实缴培训费

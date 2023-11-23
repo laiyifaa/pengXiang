@@ -1,11 +1,19 @@
 package io.renren.modules.edu.controller;
 
 import java.io.IOException;
+
+import java.sql.Date;
+import java.util.ArrayList;
+
 import java.util.List;
+
 
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.renren.modules.edu.dao.StuChangeDao;
+import io.renren.modules.edu.entity.StuStatusChangeInfoEntity;
 import io.renren.modules.edu.entity.constant.CLASS_TYPE;
 import io.renren.modules.edu.entity.constant.CURRENT_STATUS;
 import io.renren.modules.edu.entity.constant.RESIDENCE_TYPE;
@@ -15,6 +23,7 @@ import io.renren.modules.edu.excel.StuBaseInfoListener;
 import io.renren.modules.edu.utils.Query;
 import io.renren.modules.edu.vo.StuDetailVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +46,8 @@ import javax.servlet.http.HttpServletResponse;
 public class StuBaseInfoController {
     @Autowired
     private StuBaseInfoService stuBaseInfoService;
+    @Autowired
+    private StuChangeDao stuChangeDao;
 
 
     @PostMapping("/upload")
@@ -99,6 +110,30 @@ public class StuBaseInfoController {
 
         setListOrExport(record,classTypeName);
         PageUtils page = stuBaseInfoService.selectStuBaseInfo(Query.getPage(query), record, deptId,null);
+        return R.ok().put("page", page);
+    }
+    @GetMapping("/timeList")
+    ////@RequiresPermissions("stubaseinfo:list")
+    public R timeList(@Nullable StuBaseInfoEntity record,
+                  @Nullable @RequestParam("deptId") Long deptId,
+                  @Nullable @RequestParam("classTypeName") String classTypeName, @RequestParam("start") Date start,
+                  @RequestParam("end") Date end,
+                  Query query) {
+        /**
+         * service method add SysUser used to check deptId
+         */
+        QueryWrapper<StuStatusChangeInfoEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.between("create_time", start, end);
+        List<StuStatusChangeInfoEntity> stuChangeList = stuChangeDao.selectList(queryWrapper);
+
+        List<Long> stuIdList = new ArrayList<>();
+        for (StuStatusChangeInfoEntity stuChange : stuChangeList) {
+            stuIdList.add(stuChange.getStuId());
+        }
+        if(stuIdList.size() == 0)
+            stuIdList.add(-1L);
+        setListOrExport(record,classTypeName);
+        PageUtils page = stuBaseInfoService.selectStuBaseInfo(Query.getPage(query), record, deptId,stuIdList);
         return R.ok().put("page", page);
     }
 

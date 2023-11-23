@@ -37,9 +37,7 @@ public class SearchController {
             @RequestBody() List<SearchAllDto> searchConditions
     ){
 
-
         List<Long> list = searchService.search(searchConditions);
-        System.out.println(list);
         PageUtils result = stuBaseInfoService.selectStuBaseInfo(Query.getPage(query), null, null, list);
         if (list == null){
             result.setList(new ArrayList<>());

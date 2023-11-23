@@ -22,6 +22,7 @@ public interface EduCertificateDao extends BaseMapper<EduCertificateEntity> {
 
     Integer deleteByIds(@Param("idList")List<Long> idList );
 
+    void deleteByStuIds(@Param("stuIdList") List<Long>stuIdList);
 
     List<CertificateVo> selectCertificateVoInfo(IPage<CertificateVo> page, EduCertificateEntity key, @Param("deptId") Long deptId,@Param("deptIdList")List<Long> deptIdList);
 

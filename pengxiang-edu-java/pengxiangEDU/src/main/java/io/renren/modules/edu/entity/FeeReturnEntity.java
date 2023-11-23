@@ -104,6 +104,8 @@ public class FeeReturnEntity extends BaseEntity  implements Serializable {
 	private String depositBank;
 
 
+	private String remark;
+
 	@TableField(fill = FieldFill.INSERT)
 	@ExcelIgnore
 	private Boolean isDeleted;

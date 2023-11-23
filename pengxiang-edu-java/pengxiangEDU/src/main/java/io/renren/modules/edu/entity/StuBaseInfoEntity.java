@@ -175,7 +175,7 @@ public class StuBaseInfoEntity extends BaseEntity implements Serializable {
 
 	/**
 	 * 学籍状态
-	 * 0 在册在籍、1 在册不在籍、2 在籍退学、3 非在册非在籍、4 提前入学
+	 * 0 1 2 3 已注册、未注册、注册前退学、注册后退学
 	 */
 	private Integer schoolRollStatus;
 
@@ -224,7 +224,7 @@ public class StuBaseInfoEntity extends BaseEntity implements Serializable {
 
 
 	/**
-	 * 当前状态：0在校、1实习、2就业、3请假、4休学、5退学、6毕业
+	 * 当前状态：0在校、1实习、2就业、3请假、4休学、5退学、6毕业、7未报到
 	 */
 	private Integer currentStatus;
 

@@ -7,8 +7,10 @@ import io.renren.common.utils.PageUtils;
 import io.renren.modules.edu.dto.FeeSchoolSundryDto;
 import io.renren.modules.edu.dto.StuKeyWordDto;
 import io.renren.modules.edu.entity.FeeSchoolSundryEntity;
+import io.renren.modules.edu.utils.Query;
 import io.renren.modules.edu.vo.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,16 +23,23 @@ import java.util.Map;
  */
 public interface FeeSchoolSundryService extends IService<FeeSchoolSundryEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+   /* PageUtils queryPage(Map<String, Object> params);*/
 
     Integer saveOrUpdateFeeSchoolSundry(FeeSchoolSundryDto dto);
 
-    PageUtils queryPageInConditions(SearchConditionVo searchConditionVo);
+    /*PageUtils queryPageInConditions(SearchConditionVo searchConditionVo);*/
 
     Map<String, Object> getStuBaseInfoAndFeeSundry(Long id);
 
+    Map<String, Object> getSingleStuBaseInfoAndFeeSundry(Long id, String payYea, Date payDate);
+
     void importByList(List<FeeSundryImportVo> cachedDataList, AnalysisContext context) ;
 
-    PageUtils selectStuFeeSundryPage(IPage<FeeSchoolSundryVo> page, Integer year, Long deptId, StuKeyWordDto key);
+    PageUtils selectStuFeeSundryPage(IPage<FeeSchoolSundryVo> page, Integer year, Long deptId, StuKeyWordDto key
+    ,String isArrearage,String derateType);
+
+
+    List<FeeSundryExportVo> queryExport(Query query, Integer year, Long deptId, StuKeyWordDto key
+            , String isArrearage, String derateType);
 }
 

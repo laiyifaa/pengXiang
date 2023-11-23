@@ -31,6 +31,7 @@ import java.util.Map;
 public class EmployController {
     @Autowired
     private EmployService employService;
+
     @RequestMapping("/getEmployList")
     public R getEmployList(int pageNum,int pageSize){
         SysUserEntity sysUser = (SysUserEntity)SecurityUtils.getSubject().getPrincipal();

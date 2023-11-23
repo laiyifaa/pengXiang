@@ -147,7 +147,7 @@ public class FeeSchoolSundryVo extends FeeSchoolSundryEntity {
 
     /**
      * 学籍状态
-     * 0 在册在籍、1 在册不在籍、2 在籍退学、3 非在册非在籍、4 提前入学
+     * 0 已注册、未注册、注册前退学、注册后退学
      */
     private Integer schoolRollStatus;
 
@@ -277,7 +277,7 @@ public class FeeSchoolSundryVo extends FeeSchoolSundryEntity {
     /**
      * 缴费学年
      */
-    private Integer paySchoolYear;
+    private String paySchoolYear;
     /**
      * 实缴培训费
      */

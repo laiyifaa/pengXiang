@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -19,7 +20,7 @@ public class StuDetailVo {
     /**
      * 学杂费
      */
-    private List<FeeSchoolSundryEntity> feeList;
+    private Map<String,List<FeeSchoolSundryEntity>>  feeList;
     /**
      * 就业
      */
@@ -50,6 +51,11 @@ public class StuDetailVo {
      * 欠费
      */
     private List<FeeArrearageEntity> feeArrearageList;
+
+    /**
+     * 招生
+     */
+    private StuTempEntity tempInfo;
 
 
 }

@@ -97,7 +97,7 @@ public class FeeSundryImportVo {
      * 缴费学年
      */
     @ExcelProperty("缴费学年")
-    private Integer paySchoolYear;
+    private String paySchoolYear;
     /**
      * 应缴培训费
      */

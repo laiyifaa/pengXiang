@@ -1,11 +1,10 @@
 package io.renren.modules.edu.entity.constant;
 
 public enum SCHOOL_ROLL_STATUS {
-    IN_ROLL_IN_REGISTER(0, "在册在籍"),
-    IN_ROLL_NOT_IN_REGISTER(1, "在册不在籍"),
-    IN_ROLL_WITHDRAWN(2, "在籍退学"),
-    NOT_IN_ROLL_NOT_IN_REGISTER(3, "非在册非在籍"),
-    EARLY_ENROLLMENT(4, "提前入学");
+    IN_ROLL_IN_REGISTER(0, "已注册"),
+    IN_ROLL_NOT_IN_REGISTER(1, "未注册"),
+    IN_ROLL_WITHDRAWN(2, "注册前退学"),
+    NOT_IN_ROLL_NOT_IN_REGISTER(3, "注册后退学");
 
     private final int value;
     private final String description;

@@ -3,6 +3,7 @@ package io.renren.modules.edu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import io.renren.common.utils.PageUtils;
+import io.renren.modules.edu.dto.StuKeyWordDto;
 import io.renren.modules.edu.entity.StuTempEntity;
 import io.renren.modules.edu.utils.Query;
 import io.renren.modules.edu.vo.StuTempVo;
@@ -31,6 +32,13 @@ public interface StuTempService extends IService<StuTempEntity> {
     void saveTemp(StuTempVo temp) throws Exception;
 
     void pass(Long[] ids) throws Exception;
+
+    /**
+     * 查询所有学生的关键词信息
+     * @return
+     */
+    List<StuKeyWordDto> listAllKey( List<String>keyList,  Integer keyType);
+
 
 }
 

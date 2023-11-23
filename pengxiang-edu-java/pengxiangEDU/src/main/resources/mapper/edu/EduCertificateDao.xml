@@ -12,7 +12,18 @@
         </foreach>
     </update>
 
-    <select id="selectCertificateVoInfo" resultType="io.renren.modules.edu.vo.CertificateVo">
+    <delete id="deleteByStuIds" parameterType="java.util.List" >
+        DELETE FROM  edu_certificate
+        <where>
+            <if test="null != stuIdList and stuIdList.size >0 ">
+                AND stu_id IN
+                <foreach collection="stuIdList" item="stuId" open="(" separator="," close=")">
+                    #{stuId}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+     <select id="selectCertificateVoInfo" resultType="io.renren.modules.edu.vo.CertificateVo">
 
         SELECT base.stu_id AS stuId,
                base.stu_name AS stuName,
@@ -60,8 +71,8 @@
             </if>
             <if test="null != deptIdList and deptIdList.size >0 ">
                 AND base.class_id IN
-                <foreach collection="deptIdList" item="deptId" open="(" separator="," close=")">
-                    #{deptId}
+                <foreach collection="deptIdList" item="dId" open="(" separator="," close=")">
+                    #{dId}
                 </foreach>
             </if>
         </where>
@@ -70,7 +81,7 @@
     <insert id="batchInsert" parameterType="java.util.List">
         INSERT INTO edu_certificate ( stu_id, certificate_name, information, exam_time, issue_time, remarks, type, STATUS, create_time, update_time, create_by, update_by, is_deleted )
         VALUES
-        <foreach collection="stuList" item="item" separator=",">
+        <foreach collection="cList" item="certificate" separator=",">
             (#{certificate.stuId},
             #{certificate.certificateName},
             #{certificate.information},

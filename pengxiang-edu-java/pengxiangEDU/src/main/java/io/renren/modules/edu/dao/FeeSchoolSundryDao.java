@@ -20,8 +20,15 @@ import java.util.List;
 @Mapper
 public interface FeeSchoolSundryDao extends BaseMapper<FeeSchoolSundryEntity> {
 
-    List<FeeSchoolSundryVo> selectFeeSundryVo(IPage<FeeSchoolSundryVo> page, @Param("academyId") Long academyId, @Param("year") Integer year, @Param("deptId") Long deptId, @Param("key") StuKeyWordDto key);
-    List<FeeSchoolSundryVo> selectFeeSundryVo2( @Param("academyId") Long academyId, @Param("year") Integer year, @Param("deptId") Long deptId, @Param("key") StuKeyWordDto key);
+    List<FeeSchoolSundryVo> selectFeeSundryVo(IPage<FeeSchoolSundryVo> page
+                                                , @Param("academyId") Long academyId,
+                                               @Param("deptIdList") List<Long>deptIdList,
+                                               @Param("year") Integer year,
+                                               @Param("deptId") Long deptId,
+                                               @Param("key") StuKeyWordDto key,
+                                              @Param("arrearage")Integer arrearage,
+                                              @Param("derateType")String derateType,
+                                              @Param("residenceType") Integer residenceType);
 
     List<Long> getIdList();
 }

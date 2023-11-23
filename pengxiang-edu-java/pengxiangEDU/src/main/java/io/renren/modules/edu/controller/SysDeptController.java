@@ -36,6 +36,7 @@ public class SysDeptController {
     @Autowired
     private SysUserService sysUserService;
 
+
     /**
      * 自定义分页
      */
@@ -80,8 +81,8 @@ public class SysDeptController {
     @RequestMapping("/update")
 //  //@RequiresPermissions("sysdept:update")
     public R update(@RequestBody SysDeptEntity sysDept) {
+        sysDept.setIsDeleted(false);
         sysDeptService.updateDept(sysDept);
-
         return R.ok();
     }
 
@@ -91,6 +92,7 @@ public class SysDeptController {
     @RequestMapping("/delete")
 //  //@RequiresPermissions("sysdept:delete")
     public R delete(@RequestBody Long[] deptIds) {
+
         sysDeptService.removeByIds(Arrays.asList(deptIds));
 
         return R.ok();

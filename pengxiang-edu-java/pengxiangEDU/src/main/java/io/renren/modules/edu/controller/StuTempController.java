@@ -68,7 +68,8 @@ public class StuTempController {
                        @Nullable  StuTempEntity record,
                        @Nullable @RequestParam("isAll") Boolean isAll,
                        @Nullable @RequestParam("classTypeName") String classTypeName,
-                       @Nullable @RequestParam("statusName") String statusName){
+                       @Nullable @RequestParam("statusName") String statusName,
+                       @Nullable @RequestParam("stuName")String stuName){
         try {
             if(null != classTypeName && CLASS_TYPE.isContain(classTypeName)){
                 record.setClassType(CLASS_TYPE.getValue(classTypeName));
@@ -81,6 +82,7 @@ public class StuTempController {
             if(null != statusName && STUTEMP_STATUS.isContain(statusName)){
                 record.setStatus(STUTEMP_STATUS.getValue(statusName));
             }
+            record.setStuName(stuName);
             response.setHeader("Content-disposition","attachment;filename=" + fileName +".xlsx");
             if(isAll){
                 list = stuTempService.queryExport(null,null,null);
@@ -107,7 +109,8 @@ public class StuTempController {
                   @Nullable @RequestParam("deptId")Long deptId,
                   @Nullable  StuTempEntity record,
                   @Nullable @RequestParam("classTypeName") String classTypeName,
-                  @Nullable @RequestParam("statusName") String statusName){
+                  @Nullable @RequestParam("statusName") String statusName,
+                  @Nullable @RequestParam("stuName") String stuName){
         SysUserEntity sysUser = (SysUserEntity)SecurityUtils.getSubject().getPrincipal();
         if(null == deptId || deptId < 0){
             Long academyId = sysUser.getAcademyId();
@@ -119,6 +122,7 @@ public class StuTempController {
         if(null != statusName && STUTEMP_STATUS.isContain(statusName)){
             record.setStatus(STUTEMP_STATUS.getValue(statusName));
         }
+        record.setStuName(stuName);
         PageUtils page = stuTempService.queryPage(query, record,deptId);
         return R.ok().put("page", page);
     }

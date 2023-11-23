@@ -10,7 +10,6 @@ import io.renren.modules.edu.excel.CertificateExcelVoListener;
 import io.renren.modules.edu.excel.EmptyDataException;
 import io.renren.modules.edu.utils.Query;
 import io.renren.modules.edu.vo.CertificateDetailVo;
-import io.renren.modules.edu.vo.CertificateExcelVo;
 import io.renren.modules.edu.vo.CertificateVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ public class EduCertificateController {
     public void export(HttpServletResponse response,
                        @Nullable Query query,
                        @Nullable @RequestParam("deptId")Long deptId,
-                       @Nullable  EduCertificateEntity record,
+                       @Nullable  CertificateVo record,
                        @Nullable @RequestParam("isAll") Boolean isAll){
         try {
             List<CertificateVo> list = null;
@@ -72,7 +71,7 @@ public class EduCertificateController {
             }else {
                 list = eduCertificateService.queryExport(query, record, deptId);
             }
-            EasyExcel.write(response.getOutputStream()).head(CertificateExcelVo.class)
+            EasyExcel.write(response.getOutputStream()).head(CertificateVo.class)
                     .excelType(ExcelTypeEnum.XLSX)
                     .sheet("证书列表")
                     .doWrite(list);
@@ -91,7 +90,6 @@ public class EduCertificateController {
                   @Nullable @RequestParam("deptId")Long deptId,
                   @Nullable  CertificateVo record){
         /*PageUtils page = eduCertificateService.queryPage(params);*/
-
         /**
          * sysUser 在service 方法里
          */

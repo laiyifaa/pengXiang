@@ -403,9 +403,9 @@
       <if test="null != isExcel  ">
           ,
           (case bi.current_status  WHEN  0  THEN '在校'  WHEN 1 THEN '实习' WHEN 2 THEN '就业' WHEN 3 THEN '请假' WHEN 4 THEN '休学'
-          WHEN 5 THEN '退学' WHEN 6 THEN '毕业' ElSE ''	END )  currentStatusName,
-          (case bi.residence_type  WHEN  0  THEN '非农户口'  WHEN 1 THEN '农业户口' ElSE ''	END )  residenceTypeName,
-          (case bi.school_roll_status  WHEN  0  THEN '在册在籍'  WHEN 1 THEN '在册不在籍' WHEN 2 THEN '在籍退学' WHEN 3 THEN '非在册非在籍' WHEN 4 THEN '提前入学' ElSE ''	END )  schoolRollStatusName
+          WHEN 5 THEN '退学' WHEN 6 THEN '毕业' WHEN 7 THEN '未报到' ElSE ''	END )  currentStatusName,
+          (case bi.residence_type  WHEN  0  THEN '城市 '  WHEN 1 THEN '农村'  WHEN 2 THEN '县城'  WHEN 3 THEN '县镇' ElSE ''	END )  residenceTypeName,
+          (case bi.school_roll_status  WHEN  0  THEN '已注册'  WHEN 1 THEN '未注册' WHEN 2 THEN '注册前退学' WHEN 3 THEN '注册后退学'  ElSE ''	END )  schoolRollStatusName
       </if>
       from stu_base_info bi
       left join sys_dept academy on bi.academy_id = academy.dept_id

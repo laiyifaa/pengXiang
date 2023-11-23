@@ -1,8 +1,12 @@
 package io.renren.modules.edu.entity.constant;
 
 public enum RESIDENCE_TYPE {
-    NON_AGRICULTURAL(0, "非农户口"),
-    AGRICULTURAL(1, "农业户口");
+
+    CITY(0, "城市"),
+    AGRICULTURAL(1, "农村"),
+    COUNTY_TOWN(2,"县城"),
+    COUNTY(3,"县镇");
+
 
     private final int value;
     private final String description;
@@ -33,6 +37,13 @@ public enum RESIDENCE_TYPE {
         return description;
     }
 
+    public static String getDescriptionByValue(Integer inputValue){
+        for(RESIDENCE_TYPE type : RESIDENCE_TYPE.values()){
+            if(type.value == inputValue )
+                return type.description;
+        }
+        return "";
+    }
     public static Integer getValue(String inputDescription) {
         for (RESIDENCE_TYPE type : RESIDENCE_TYPE.values()) {
             if (type.getDescription().equalsIgnoreCase(inputDescription)) {

@@ -45,7 +45,10 @@
         SELECT temp.*,
                academy.`name` academyName,
                major.`name` majorName,
-               grade.`name` gradeName
+               grade.`name` gradeName,
+        (case temp.current_status  WHEN  0  THEN '在校'  WHEN 1 THEN '实习' WHEN 2 THEN '就业' WHEN 3 THEN '请假' WHEN 4 THEN '休学'  WHEN 5 THEN '退学' WHEN 6 THEN '毕业' WHEN 7 THEN '未报到' ElSE ''	END )  currentStatusName,
+        (case temp.residence_type  WHEN  0  THEN '城市 '  WHEN 1 THEN '农村'  WHEN 2 THEN '县城'  WHEN 3 THEN '县镇' ElSE ''	END )  residenceTypeName,
+        (case temp.status WHEN 0 THEN '未参加面试' WHEN 1 THEN '通过面试' WHEN 2 THEN '未通过面试' ELSE '' END)      statusName
         FROM stu_temp temp
                  left join sys_dept academy on temp.academy_id = academy.dept_id
                  left join sys_dept major on temp.major_id = major.dept_id
@@ -81,6 +84,9 @@
                 </if>
                 <if test="null != record.admissionSeason">
                     AND temp.admission_season like   concat('%',#{record.admissionSeason},'%')
+                </if>
+                <if test="null != record.stuName">
+                    AND temp.stu_name like concat('%',#{record.stuName},'%')
                 </if>
             </if>
         </where>
@@ -121,7 +127,7 @@
         INSERT INTO stu_temp (stu_name, id_number, academy_id, major_id, grade_id, class_type, schooling_length,
         status, id_number_type, birthday, gender, nation, phone, native_place, political_status, edu_before,
         skill_before, school_before, residence_type, email, admission_season, enroll_teacher, enroll_teacher_dept,
-        enroll_teacher_phone, create_time, update_time, create_by, update_by, is_deleted)
+        enroll_teacher_phone,current_status, create_time, update_time, create_by, update_by, is_deleted)
         VALUES
         <foreach collection="stuList" item="item" separator=",">
             (
@@ -131,8 +137,77 @@
             #{item.politicalStatus}, #{item.phone}, #{item.skillBefore},
             #{item.eduBefore}, #{item.schoolBefore}, #{item.residenceType}, #{item.email}, #{item.admissionSeason},
             #{item.enrollTeacher}, #{item.enrollTeacherDept},
-            #{item.enrollTeacherPhone}, #{item.createTime}, #{item.updateTime}, #{item.createBy}, #{item.updateBy},
+            #{item.enrollTeacherPhone}, #{item.currentStatus},
+             #{item.createTime}, #{item.updateTime}, #{item.createBy}, #{item.updateBy},
             #{item.isDeleted})
         </foreach>
     </insert>
+
+
+
+    <update id="batchUpdateByStudent" parameterType="java.util.List">
+        <foreach collection="stuList" item="student" separator=";" index="index">
+            UPDATE stu_temp
+            <set>
+                <if test="null != student.academyId">
+                    academy_id = #{student.academyId},
+                </if>
+                <if test="null != student.schoolNumber and student.schoolNumber != ''">
+                    school_number = #{student.schoolNumber},
+                </if>
+                <if test="null != student.stuName and student.stuName != ''">     stu_name = #{student.stuName},</if>
+
+                <if test="null != student.birthday and student.birthday != ''">
+                    birthday = #{student.birthday},</if>
+                <if test="null != student.gender and student.gender != ''">
+                    gender = #{student.gender},</if>
+                <if test="null != student.nation and student.nation != ''">
+                    nation = #{student.nation},</if>
+                <if test="null != student.nativePlace and student.nativePlace != ''">
+                    native_place = #{student.nativePlace},</if>
+                <if test="null != student.politicalStatus and student.politicalStatus != ''">
+                    political_status = #{student.politicalStatus},</if>
+                <if test="null != student.phone and student.phone != ''">
+                    phone = #{student.phone},</if>
+                <if test="null != student.eduBefore and student.eduBefore != ''">
+                    edu_before = #{student.eduBefore},</if>
+                <if test="null != student.skillBefore and student.skillBefore != ''">
+                    skill_before = #{student.skillBefore},</if>
+                <if test="null != student.schoolBefore and student.schoolBefore != ''">
+                    school_before = #{student.schoolBefore},</if>
+                <if test="null != student.residenceType and student.residenceType != ''">
+                    residence_type = #{student.residenceType},</if>
+                <if test="null != student.email and student.email != ''">
+                    email = #{student.email},</if>
+                <if test="null != student.schoolingLength and student.schoolingLength != ''">
+                    schooling_length = #{student.schoolingLength},</if>
+                <if test="null != student.gradeId ">
+                    grade_id = #{student.gradeId},</if>
+                <if test="null != student.majorId ">
+                    major_id = #{student.majorId},</if>
+                <if test="null != student.admissionSeason and student.admissionSeason != ''">
+                    admission_season = #{student.admissionSeason},</if>
+
+                <if test="null != student.currentStatus ">
+                    current_status = #{student.currentStatus},</if>
+                <if test="null != student.createTime ">
+                    create_time = #{student.createTime},</if>
+                <if test="null != student.updateTime ">
+                    update_time = #{student.updateTime},</if>
+                <if test="null != student.createBy ">
+                    create_by = #{student.createBy},</if>
+                <if test="null != student.updateBy ">
+                    update_by = #{student.updateBy},</if>
+                <if test="null != student.isDeleted ">
+                    is_deleted = #{student.isDeleted}</if>
+            </set>
+            <where>
+                1 = 1
+                <if test="null != student.idNumber">
+                    And id_number = #{student.idNumber}
+                </if>
+            </where>
+        </foreach>
+    </update>
+
 </mapper>

@@ -139,7 +139,6 @@ public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEnt
         wrapper.eq("id_number",dto.getIdNumber());
         List<StuBaseInfoEntity> students = stuBaseInfoService.list(wrapper);
         if(students.size()==1){
-
             int year = getSchoolYearInfoByDate(new Date());
             Integer feeYear = dto.getReturnSchoolYear();
 
@@ -150,20 +149,16 @@ public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEnt
             QueryWrapper<FeeReturnEntity> feeWrapper = new QueryWrapper<>();
             feeWrapper.eq("return_school_year", feeYear);
             feeWrapper.eq("stu_id",students.get(0).getStuId());
-            FeeReturnEntity entity = baseMapper.selectOne(feeWrapper);
-            if(entity==null){
-                //不存在，可以插入记录
-                FeeReturnEntity save = new FeeReturnEntity();
-                BeanUtils.copyProperties(dto,save);
-                save.setStuId(students.get(0).getStuId());
-                save.setAcademyId(students.get(0).getAcademyId());
-                save.setIsDeleted(false);
-                this.baseMapper.insert(save);
-                return 1;
-            }else {
-                //已经存在，报错
-                return -1;
-            }
+            List<FeeReturnEntity> entity = baseMapper.selectList(feeWrapper);
+
+            //不存在，可以插入记录
+            FeeReturnEntity save = new FeeReturnEntity();
+            BeanUtils.copyProperties(dto,save);
+            save.setStuId(students.get(0).getStuId());
+            save.setAcademyId(students.get(0).getAcademyId());
+            save.setIsDeleted(false);
+            this.baseMapper.insert(save);
+            return 1;
         }else {
             //存在多条或不存在学生记录，建议检查学生信息录入是否有误
             return -2;

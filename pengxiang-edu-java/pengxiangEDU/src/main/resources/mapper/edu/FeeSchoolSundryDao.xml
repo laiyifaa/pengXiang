@@ -47,69 +47,31 @@
         <result property="updateBy" column="update_by"/>
         <result property="isDeleted" column="is_deleted"/>
     </resultMap>
+
     <select id="selectFeeSundryVo" resultType="io.renren.modules.edu.vo.FeeSchoolSundryVo">
-
-        select fss.*,
-            sd1.name academyName,
-            sd2.name majorName,
-            sd3.name gradeName,
-            sd4.name className,
-            sbi.*,
-            sbi.schooling_length schoolingLength
-
-
-
-        from fee_school_sundry fss
-        left join stu_base_info sbi on sbi.stu_id = fss.stu_id
-
-        <if test="academyId!=-1">
-            and sbi.academy_id = #{academyId}
-        </if>
-        <if test="key.idNumber!=null">
-             and sbi.id_number = #{key.idNumber}
-        </if>
-        <if test="key.schoolNumber!=null">
-            and sbi.school_number = #{key.schoolNumber}
-        </if>
-        <if test="key.stuName!=null">
-            and sbi.stu_name = #{key.stuName}
-        </if>
-        <if test="deptId!=null">
-            and
-            (
-                sbi.academy_id = #{deptId} or
-                 sbi.major_id = #{deptId} or
-                 sbi.grade_id = #{deptId} or
-                 sbi.class_id = #{deptId}
-            )
-        </if>
-        left join sys_dept sd1 on sbi.academy_id = sd1.dept_id
-        left join sys_dept sd2 on sbi.major_id = sd2.dept_id
-        left join sys_dept sd3 on sbi.grade_id = sd3.dept_id
-        left join sys_dept sd4 on sbi.class_id = sd4.dept_id
-        where fss.is_deleted = 0 and sbi.stu_id = fss.stu_id
-        <if test="year!=null">
-            and fss.pay_school_year = #{year}
-        </if>
-
-    </select>
-
-
-    <select id="selectFeeSundryVo2" resultType="io.renren.modules.edu.vo.FeeSchoolSundryVo">
 
         select fss.*,
         sd1.name academyName,
         sd2.name majorName,
         sd3.name gradeName,
         sd4.name className,
-        sbi.*,
-        sbi.schooling_length schoolingLength
-
-
+        sbi.school_number schoolNumber,
+        sbi.stu_name stuName,
+        sbi.gender,
+        sbi.phone,
+        sbi.head_teacher headTeacher,
+        sbi.head_teacher_phone headTeacherPhone,
+        sbi.schooling_length schoolingLength,
+        sbi.schooling_length schoolingLength,
+        (case fss.is_arrearage  WHEN 1 THEN '已欠费' WHEN 0 THEN '未欠费' ELSE  '' END )
 
         from fee_school_sundry fss
         left join stu_base_info sbi on sbi.stu_id = fss.stu_id
-
+        left join sys_dept sd1 on sbi.academy_id = sd1.dept_id
+        left join sys_dept sd2 on sbi.major_id = sd2.dept_id
+        left join sys_dept sd3 on sbi.grade_id = sd3.dept_id
+        left join sys_dept sd4 on sbi.class_id = sd4.dept_id
+        where 1 = 1 and fss.is_deleted = 0 and sbi.is_deleted = 0
         <if test="academyId!=-1">
             and sbi.academy_id = #{academyId}
         </if>
@@ -119,8 +81,14 @@
         <if test="key.schoolNumber!=null">
             and sbi.school_number = #{key.schoolNumber}
         </if>
+        <if test="null != residenceType">
+            AND sbi.residence_type = #{residenceType}
+        </if>
         <if test="key.stuName!=null">
             and sbi.stu_name = #{key.stuName}
+        </if>
+        <if test="null != derateType and '' != derateType">
+            and fss.derate_type like  concat('%',#{derateType},'%')
         </if>
         <if test="deptId!=null">
             and
@@ -131,13 +99,17 @@
             sbi.class_id = #{deptId}
             )
         </if>
-        left join sys_dept sd1 on sbi.academy_id = sd1.dept_id
-        left join sys_dept sd2 on sbi.major_id = sd2.dept_id
-        left join sys_dept sd3 on sbi.grade_id = sd3.dept_id
-        left join sys_dept sd4 on sbi.class_id = sd4.dept_id
-        where fss.is_deleted = 0 and sbi.stu_id = fss.stu_id
+        <if test="null != deptIdList and deptIdList.size >0 ">
+            AND sbi.class_id IN
+            <foreach collection="deptIdList" item="deptId" open="(" separator="," close=")">
+                #{deptId}
+            </foreach>
+        </if>
         <if test="year!=null">
             and fss.pay_school_year = #{year}
+        </if>
+        <if test="null != arrearage">
+            and fss.is_arrearage = #{arrearage}
         </if>
 
     </select>

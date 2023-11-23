@@ -10,11 +10,14 @@ import io.renren.modules.edu.entity.constant.CURRENT_STATUS;
 import io.renren.modules.edu.entity.constant.RESIDENCE_TYPE;
 import io.renren.modules.edu.entity.constant.SCHOOL_ROLL_STATUS;
 import io.renren.modules.edu.service.EduCertificateService;
+
+import io.renren.modules.edu.utils.ExcelUtils;
 import io.renren.modules.edu.utils.Query;
 import io.renren.modules.edu.vo.*;
 import io.renren.modules.sys.dao.SysUserDao;
 import io.renren.modules.sys.entity.SysUserEntity;
 import org.apache.shiro.SecurityUtils;
+
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -115,8 +118,18 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
         /**
          * 学杂费
          */
+        TreeMap<String,List<FeeSchoolSundryEntity>> treeMap=new TreeMap<>();
+
         List<FeeSchoolSundryEntity> feeList = feeSchoolSundryDao.selectList(new QueryWrapper<FeeSchoolSundryEntity>().eq("stu_id", stuId).eq("is_deleted", 0));
-        detailVo.setFeeList(feeList);
+        TreeSet<String> set=new TreeSet<>();
+        for(FeeSchoolSundryEntity f:feeList){
+           set.add(f.getPaySchoolYear());
+        }
+        for (String paySchoolYear : set) {
+            List<FeeSchoolSundryEntity> List = feeSchoolSundryDao.selectList(new QueryWrapper<FeeSchoolSundryEntity>().eq("stu_id", stuId).eq("is_deleted", 0).eq("pay_school_year", paySchoolYear).orderByAsc("pay_school_date"));
+            treeMap.put(paySchoolYear, List);
+        }
+        detailVo.setFeeList(treeMap);
         /**
          * 回访
          */
@@ -153,7 +166,11 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
          */
         List<FeeReturnEntity> feeReturnList = feeReturnDao.selectList(new QueryWrapper<FeeReturnEntity>().eq("stu_id",stuId).eq("is_deleted", 0));
         detailVo.setFeeReturnList(feeReturnList);
-
+        /**
+         * 招生
+         */
+        StuTempEntity tempEntity = stuTempDao.selectOne(new QueryWrapper<StuTempEntity>().eq("id_number", baseInfo.getIdNumber()).eq("is_deleted", 0));
+        detailVo.setTempInfo(tempEntity);
         return detailVo;
     }
 
@@ -167,36 +184,45 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
         Map<String, DeptdescriptionDto> deptDescMap = deptDescList.stream().collect(Collectors.toMap(DeptdescriptionDto::getDescription, Function.identity()));
         //来自excel的身份证列表
         Set<String> cacheIdNumberSet = new LinkedHashSet<>(cachedDataList.size());
+        List<Integer> repeatStuIdList = new LinkedList<>();
         for(int i = 0;i<cachedDataList.size();++i){
             StuBaseInfoEntity entity = cachedDataList.get(i);
             if(cacheIdNumberSet.contains(entity.getIdNumber())){
-                throw new RuntimeException("第"+(i+2)+"行学生身份证与之前重复");
+                repeatStuIdList.add(i + 2);
             }
             cacheIdNumberSet.add(entity.getIdNumber());
+        }
+        if(repeatStuIdList.size() > 0){
+            throw new RuntimeException(getRepeatError(repeatStuIdList));
         }
         List<String> cacheIdNumberList = new ArrayList<>(cacheIdNumberSet);
 
         //2023-09-12 要求进行先招生后学管
         List<StuKeyWordDto> tempStudentList = stuTempDao.listAllKey(cacheIdNumberList, 1);
         Set<String> tempStudentIdSet = tempStudentList.stream().map(StuKeyWordDto::getIdNumber).collect(Collectors.toSet());
-
+        List<Integer> errorStuList = new ArrayList<>(cachedDataList.size() / 4);
         for(int i = 0; i < cachedDataList.size();++i){
             StuBaseInfoEntity entity = cachedDataList.get(i);
             if(!tempStudentIdSet.contains(entity.getIdNumber())){
-                throw new RuntimeException("第"+(i+2)+"行学生尚未进行招生录入或与招生登记的身份证号码存在出入");
+                errorStuList.add(i + 2);
             }
         }
-
+        if(errorStuList.size() > 0){
+            throw new RuntimeException(getCheckTempError(errorStuList));
+        }
         //查询数据库 是否有这些 身份证(关键词)
         List<StuKeyWordDto> oldStudentList = stuBaseInfoDao.listAllKey(cacheIdNumberList, 1);
         Set<String> oldIdNumberSet = oldStudentList.stream().map(StuKeyWordDto::getIdNumber).collect(Collectors.toSet());
         //新身份证则为 要add  老身份证则为update
         List<StuBaseInfoEntity> updateStudentList = new LinkedList<>();
         List<StuBaseInfoEntity> addStudentList = new LinkedList<>();
-          for(StuBaseInfoEntity entity : cachedDataList){
+        errorStuList = new ArrayList<>(cachedDataList.size() / 4);
+          for(int i = 0;i<cachedDataList.size();++i){
+              StuBaseInfoEntity entity = cachedDataList.get(i);
              Boolean aBoolean = setExcelStuBaseInfo(entity,deptDescMap);
              if(!aBoolean){
-                 throw new RuntimeException("院校、专业、年级、班级填写有误");
+                 errorStuList.add(i + 2);
+                 continue;
              }
               if(oldIdNumberSet.contains(entity.getIdNumber())){
                 entity.setIsDeleted(false);
@@ -205,8 +231,12 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
                  addStudentList.add(entity);
             }
          }
+        if(errorStuList.size() > 0){
+            throw new RuntimeException(getIdNumberError(errorStuList));
+        }
         if(null != updateStudentList && !updateStudentList.isEmpty()){
             stuBaseInfoDao.updateBatch(updateStudentList);
+            stuTempDao.batchUpdateByStudent(updateStudentList);
         }
         if(null != addStudentList && !addStudentList.isEmpty()){
             stuBaseInfoDao.insertBatch(addStudentList);
@@ -263,6 +293,9 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
             list.add(temp);
             this.baseMapper.insertBatch(list);
         }else {
+            List<StuBaseInfoEntity> list = new LinkedList<>();
+            list.add(temp);
+            stuTempDao.batchUpdateByStudent(list);
             this.baseMapper.updateById(temp);
         }
     }
@@ -290,5 +323,22 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
         if(baseInfo.getStuId() == null && stuBaseInfoDao.selectStuBaseInfo(null,null,record,null,null,null,null,null).size()>0){
             throw new Exception("该名学生证件号系统中已存在");
         }
+    }
+
+    private String getIdNumberError(List<Integer> errorStuList) {
+        StringBuilder ans = ExcelUtils.getPreError(errorStuList);
+        ans.append("行学生院校、专业、年级填写有误");
+        return ans.toString();
+    }
+
+    private String getRepeatError(List<Integer> repeatStuIdList) {
+        StringBuilder ans = ExcelUtils.getPreError(repeatStuIdList);
+        ans.append("行学生身份证与之前重复");
+        return ans.toString();
+    }
+    private String getCheckTempError(List<Integer> list){
+        StringBuilder ans = ExcelUtils.getPreError(list);
+        ans.append("行学生尚未进行招生录入或与招生登记的身份证号码存在出入");
+        return ans.toString();
     }
 }

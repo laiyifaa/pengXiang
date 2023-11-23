@@ -27,14 +27,10 @@
                        :total="total" style="text-align:right;margin-right: 60px"> </el-pagination>
       </el-dialog>
     </div>
-  <el-row :gutter="20">
-    <el-col :span="6">
+  <el-row :gutter="50">
+    <el-col :span="25">
       <el-button type="primary" icon="el-icon-plus" style="width: 90px; padding-left: 1px;" @click="addSearchCondition">查询条件</el-button>
-    </el-col>
-    <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
-  </el-row>
-    <el-col :span="20" style="margin-top: 20px">
-      时间段选择(默认关)：
+<!--      时间段选择(默认关)：
       <el-date-picker v-model="start" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
                       @change="dateChange" style="width: 140px;height: 25px">
       </el-date-picker>
@@ -46,8 +42,11 @@
         v-model="value"
         active-color="#13ce66"
         inactive-color="#ff4949">
-      </el-switch>
-    </el-col>//不完全，只设定了样式
+      </el-switch>-->
+    </el-col>
+   <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+  </el-row>
+
     <el-row>
       <div v-for="(condition, index) in searchConditions" :key="index" style="margin-left: 10px;margin-top: 20px; display: flex; align-items: center;">
         <el-cascader

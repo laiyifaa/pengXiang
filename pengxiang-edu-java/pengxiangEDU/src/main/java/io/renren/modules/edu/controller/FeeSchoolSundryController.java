@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,7 +90,51 @@ public class FeeSchoolSundryController {
         }
         return R.ok();
     }
-    @RequestMapping("/export")
+
+
+
+    @GetMapping("/export")
+    public void export(HttpServletResponse response,
+                       @Nullable Integer year,
+                       @Nullable Long deptId,
+                       @Nullable Query query,
+                       @Nullable  StuKeyWordDto key,
+                       @Nullable @RequestParam("isArrearage") String isArrearage,
+                       @Nullable @RequestParam("derateType") String derateType,
+                       @Nullable @RequestParam("isAll") Boolean isAll) {
+        List<FeeSundryExportVo>  list = null;
+        try {
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+            response.setCharacterEncoding("utf-8");
+            String fileName = "feeExport";
+            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+            if (isAll) {
+                list = feeSchoolSundryService.queryExport(null,year,deptId,key,isArrearage,derateType);
+            } else {
+                list = feeSchoolSundryService.queryExport(query, year, deptId,key,isArrearage,derateType);
+            }
+            EasyExcel.write(response.getOutputStream()).head(FeeSundryExportVo.class)
+                    .excelType(ExcelTypeEnum.XLSX)
+                    .sheet("测试数据")
+                    .doWrite(list);
+        } catch (IOException e) {
+
+        }
+    }
+    @RequestMapping("/list")
+    public R list(@Nullable Integer year,
+                  @Nullable Long deptId,
+                  Query query,
+                  @Nullable  StuKeyWordDto key,
+                  @Nullable @RequestParam("isArrearage") String isArrearage,
+                  @Nullable @RequestParam("derateType") String derateType
+    ) {
+        PageUtils page = feeSchoolSundryService.selectStuFeeSundryPage(Query.getPage(query),year,
+                deptId,key,isArrearage,derateType);
+        return R.ok().put("page", page);
+    }
+
+    /*@RequestMapping("/export")
     public void export(@RequestBody Long[] ids, HttpServletResponse response){
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
         String jsonStr = redis.get("feeList"+user.getUserId());
@@ -171,16 +216,16 @@ public class FeeSchoolSundryController {
         } catch (IOException e) {
             // 如果需要，处理异常
         }
-    }
+    }*/
 
-    @PostMapping("/search")
+   /* @PostMapping("/search")
     // @RequiresPermissions("generator:feearrearage:list")
     public R list(@RequestBody SearchConditionVo searchConditionVo){
         PageUtils page = feeSchoolSundryService.queryPageInConditions(searchConditionVo);
 
         return R.ok().put("page", page);
     }
-
+*/
 
     @RequestMapping("/qMoneyHandle")
     public R qMoneyHandle(@RequestBody Long[] ids){
@@ -190,7 +235,7 @@ public class FeeSchoolSundryController {
             FeeSchoolSundryEntity byId = feeSchoolSundryService.getById(id);
             byId.setIsArrearage(1);
             BeanUtils.copyProperties(byId,feeArrearageEntity);
-            feeArrearageEntity.setYear(byId.getPaySchoolYear());
+            feeArrearageEntity.setYear(Integer.parseInt(byId.getPaySchoolYear().split("-")[0]));
             feeArrearageEntity.setTrainFee(byId.getTrainFee().subtract(byId.getPayTrainFee()).multiply(b));
             feeArrearageEntity.setBookFee(byId.getBookFee().subtract(byId.getPayBookFee()).multiply(b));
             feeArrearageEntity.setHotelFee(byId.getHotelFee().subtract(byId.getPayHotelFee()).multiply(b));
@@ -208,7 +253,7 @@ public class FeeSchoolSundryController {
                             add(byId.getBedFee().subtract(byId.getPayBedFee()).add(byId.getInsuranceFee().subtract(byId.getPayInsuranceFee()).
                                     add(byId.getPublicFee().subtract(byId.getPayPublicFee()).add(byId.getCertificateFee().subtract(byId.getPayCertificateFee())
                                     .add(byId.getDefenseEduFee().subtract(byId.getPayDefenseEduFee())
-                                    .add(byId.getBodyExamFee().subtract(byId.getPayBodyExamFee())))))))
+                                    .add(byId.getBodyExamFee().subtract(byId.getPayBodyExamFee())).add(byId.getDerateMoney()))))))
                     ))).multiply(b));
             LambdaQueryWrapper<FeeArrearageEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
             lambdaQueryWrapper.eq(FeeArrearageEntity::getYear,byId.getPaySchoolYear());
@@ -238,9 +283,11 @@ public class FeeSchoolSundryController {
             LambdaQueryWrapper<FeeReturnEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
             lambdaQueryWrapper.eq(FeeReturnEntity::getStuId,byId.getStuId());
             FeeReturnEntity one = feeReturnService.getOne(lambdaQueryWrapper);
-            one.setIsDeleted(true);
+            if(null != one){
+                one.setIsDeleted(true);
 
-            feeReturnService.updateById(one);
+                feeReturnService.updateById(one);
+            }
             feeSchoolSundryService.updateById(byId);
         }
         //feeSchoolSundryService.removeByIds(Arrays.asList(ids));
@@ -262,15 +309,6 @@ public class FeeSchoolSundryController {
         return R.ok();
     }
 
-    @RequestMapping("/list")
-    public R list(@Nullable Integer year,
-                  @Nullable Long deptId,
-                  Query query,
-                  @Nullable  StuKeyWordDto key
-                  ) {
-        PageUtils page = feeSchoolSundryService.selectStuFeeSundryPage(Query.getPage(query),year,deptId,key);
-        return R.ok().put("page", page);
-    }
 
     @GetMapping("/getImg")
     public void getImg(HttpServletResponse response,@RequestParam("stuId")Long stuId){
@@ -347,6 +385,19 @@ public class FeeSchoolSundryController {
 //        res.put("feeInfo",sundryEntity);
         return R.ok().put("infoMap",infoMap);
     }
+    @RequestMapping("/sInfo/{id}/{payYear}/{payDate}")
+    public R info(@PathVariable("id") Long id,@PathVariable("payYear") String payYear,@PathVariable("payDate") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")Date payDate) {
+        /**
+         * 返回基本信息
+         * 返回学杂费信息列表
+         */
+        Map<String, Object> infoMap = feeSchoolSundryService.getSingleStuBaseInfoAndFeeSundry(id,payYear,payDate);
+//        res.put("stuInfo",vos.get(0));
+//        res.put("feeInfo",sundryEntity);
+        return R.ok().put("infoMap",infoMap);
+    }
+
+
 
 
     private String getImageContentType(String imageName) {

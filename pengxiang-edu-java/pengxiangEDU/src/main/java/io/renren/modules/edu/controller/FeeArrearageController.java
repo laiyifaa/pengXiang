@@ -74,6 +74,7 @@ public class FeeArrearageController {
             Long stuId = byId.getStuId();
             LambdaQueryWrapper<FeeSchoolSundryEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
             lambdaQueryWrapper.eq(FeeSchoolSundryEntity::getStuId,stuId);
+            lambdaQueryWrapper.eq(FeeSchoolSundryEntity::getPaySchoolYear,byId.getYear());
             FeeSchoolSundryEntity byId1 = feeSchoolSundryService.getOne(lambdaQueryWrapper);
             byId1.setIsArrearage(0);
             feeSchoolSundryService.updateById(byId1);

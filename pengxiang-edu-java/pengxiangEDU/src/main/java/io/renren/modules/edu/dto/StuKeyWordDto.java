@@ -13,6 +13,9 @@ public class StuKeyWordDto {
     private String idNumber;
     private String schoolNumber;
     private String stuName;
+    private String residenceTypeName;
+
+
 
 
 }

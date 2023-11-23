@@ -110,7 +110,7 @@ public class StuTempEntity  implements Serializable {
 	@ExcelProperty("毕业学校")
 	private String schoolBefore;
 	/**
-	 * 户口性质 0非农户口 1农业户口
+	 * 户口性质 0城市 1农村 2县城 3县镇
 	 */
 	private Integer residenceType;
 	/**
@@ -138,6 +138,14 @@ public class StuTempEntity  implements Serializable {
 	 */
 	@ExcelProperty("招生老师电话")
 	private String enrollTeacherPhone;
+
+
+	/**
+	 * 当前状态：0在校、1实习、2就业、3请假、4休学、5退学、6毕业、7未报到
+	 */
+	private Integer currentStatus;
+
+
 	/**
 	 *
 	 */

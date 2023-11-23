@@ -21,6 +21,7 @@
         <result property="certificateFee" column="certificate_fee"/>
         <result property="defenseEduFee" column="defense_edu_fee"/>
         <result property="bodyExamFee" column="body_exam_fee"/>
+        <result property="remark" column="remark"/>
         <result property="account" column="account"/>
         <result property="accountNumber" column="account_number"/>
         <result property="depositBank" column="deposit_bank"/>

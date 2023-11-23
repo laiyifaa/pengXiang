@@ -2,7 +2,6 @@ package io.renren.modules.edu.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.mchange.v1.identicator.IdList;
 import io.renren.modules.edu.dao.FieldsDao;
 import io.renren.modules.edu.dao.StuEmployDao;
 import io.renren.modules.edu.dao.StuEmployVistDao;
@@ -12,16 +11,13 @@ import io.renren.modules.edu.dto.SearchListDto;
 import io.renren.modules.edu.entity.*;
 import io.renren.modules.edu.service.*;
 import io.renren.modules.edu.utils.DateUtils;
-import lombok.Data;
-import lombok.Lombok;
-import lombok.ToString;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -78,14 +74,16 @@ public class SearchServiceImpl implements SearchService {
         QueryWrapper<FeeArrearageEntity> FeeArrearageQueryWrapper = new QueryWrapper<>();
         QueryWrapper<EduCertificateEntity> EduCertificateQueryWrapper = new QueryWrapper<>();
         QueryWrapper<StuEmployVistEntity> stuEmployVistEntityQueryWrapper = new QueryWrapper<>();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd ");
+        StuBaseInfoqueryWrapper.eq("is_deleted",0);
+        StuTempqueryWrapper.eq("is_deleted",0);
+        EduCertificateQueryWrapper.eq("is_deleted",0);
+        FeeSchoolSundryQueryWrapper.eq("is_deleted",0);
+        EduCertificateQueryWrapper.eq("is_deleted",0);
         for (SearchAllDto searchAllDto : list) {
             if (searchAllDto.getItem().getInputType() == 2){
-
                 String value = searchAllDto.getValue();
                 String s = DateUtils.dealDateFormat(value);
                 searchAllDto.setValue(s);
-                System.out.println(s);
             }
             if (searchAllDto.getSearchType() == 0){
                 if (searchAllDto.getItem().getPlateType()==1){

@@ -26,6 +26,7 @@ public class StuTempVo extends StuTempEntity {
   private String statusName;
   @ExcelProperty("户口性质")
   private String residenceTypeName;
-
+  @ExcelProperty("当前状态")
+  private String currentStatusName;
 
 }

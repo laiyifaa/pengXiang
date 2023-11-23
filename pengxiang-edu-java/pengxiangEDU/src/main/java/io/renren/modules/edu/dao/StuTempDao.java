@@ -3,6 +3,7 @@ package io.renren.modules.edu.dao;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.renren.modules.edu.dto.IdNumberDto;
 import io.renren.modules.edu.dto.StuKeyWordDto;
+import io.renren.modules.edu.entity.StuBaseInfoEntity;
 import io.renren.modules.edu.entity.StuTempEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.renren.modules.edu.vo.StuTempVo;
@@ -37,5 +38,7 @@ public interface StuTempDao extends BaseMapper<StuTempEntity> {
 	List<StuKeyWordDto> listAllKey(@Param("keyList") List<String>keyList, @Param("keyType") Integer keyType);
 
 	void batchInsert(@Param("stuList") List<StuTempEntity>   stuList);
+
+	void batchUpdateByStudent(@Param("stuList")List<StuBaseInfoEntity> stuList);
 
 }

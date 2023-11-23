@@ -2,6 +2,7 @@ package io.renren.modules.edu.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.renren.modules.edu.dao.StuBaseInfoDao;
+import io.renren.modules.edu.dto.StuKeyWordDto;
 import io.renren.modules.edu.entity.StuBaseInfoEntity;
 import io.renren.modules.edu.entity.constant.CERTIFICATE_TYPE;
 import io.renren.modules.edu.utils.Query;
@@ -12,9 +13,9 @@ import io.renren.modules.sys.entity.SysUserEntity;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.renren.common.utils.PageUtils;
@@ -37,14 +38,15 @@ public class EduCertificateServiceImpl extends ServiceImpl<EduCertificateDao, Ed
     private SysUserDao sysUserDao;
 
     @Override
-    public List<CertificateVo> queryExport(Query query, EduCertificateEntity key, Long deptId) {
- /*       SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
-        if(null == deptId || deptId <= 0){
-            Long academyId = user.getAcademyId();
-            deptId = academyId == -1 ? null : academyId;
-        }*/
-        /*this.baseMapper.selectCertificateVoInfo(page, key, deptId)*/
-        return null;
+    public List<CertificateVo> queryExport(Query query, CertificateVo key, Long deptId) {
+
+        SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+        List<Long> deptIdList = sysUserDao.queryDeptIdList(user.getUserId());
+        List<CertificateVo> exportList = baseMapper.selectCertificateVoInfo(null == query ? null : Query.getPage(query),
+                key,
+                deptId,
+                null != deptIdList && deptIdList.size() > 0 ? deptIdList : null);
+        return exportList;
     }
 
     @Override
@@ -66,8 +68,35 @@ public class EduCertificateServiceImpl extends ServiceImpl<EduCertificateDao, Ed
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void importByList(List<CertificateVo> cachedDataList) {
-
+        if(null == cachedDataList || cachedDataList.isEmpty())
+            return;
+        SysUserEntity userEntity = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+        //涉及到的学生全删全增
+        Set<String> cacheIdNumberSet = new LinkedHashSet<>(cachedDataList.size());
+        for( int i = 0;i<cachedDataList.size();++i){
+            CertificateVo entity = cachedDataList.get(i);
+            if(!cacheIdNumberSet.contains(entity.getIdNumber())){
+                cacheIdNumberSet.add(entity.getIdNumber());
+            }
+        }
+        List<String> cacheIdNumberList = cacheIdNumberSet.stream().collect(Collectors.toList());
+        List<StuKeyWordDto> dbStudentList = stuBaseInfoDao.listAllKey(cacheIdNumberList, 1);
+        Map<String, Long> dbStudentMap = dbStudentList.stream().collect(Collectors.toMap(StuKeyWordDto::getIdNumber, StuKeyWordDto::getStuId));
+        List<EduCertificateEntity> addList = new ArrayList<>(dbStudentList.size() * 2);
+        for(int i = 0; i < cachedDataList.size();++i){
+            CertificateVo entity = cachedDataList.get(i);
+            if(dbStudentMap.containsKey(entity.getIdNumber())){
+                entity.setStuId(dbStudentMap.get(entity.getIdNumber()));
+                entity.setIsDeleted(false);
+                entity.setCreateTime(new Date());
+                entity.setUpdateTime(new Date());
+                entity.setCreateBy(userEntity.getUserId());
+                addList.add(entity);
+            }
+        }
+        this.baseMapper.batchInsert(addList);
     }
 
     @Override
@@ -116,4 +145,5 @@ public class EduCertificateServiceImpl extends ServiceImpl<EduCertificateDao, Ed
             throw new Exception();
         this.baseMapper.updateById(temp);
     }
+
 }

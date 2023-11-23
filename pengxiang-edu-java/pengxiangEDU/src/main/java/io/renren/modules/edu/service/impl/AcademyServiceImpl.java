@@ -61,18 +61,20 @@ public class AcademyServiceImpl extends ServiceImpl<AcademyDao, AcademyEntity> i
   public int saveAcademy(AcademyEntity academy) {
     String academyInfo = academy.getAcademyInfo();
     QueryWrapper<SysDeptEntity> queryWrapper = new QueryWrapper<>();
-    queryWrapper.eq("name", academyInfo);
+    queryWrapper.eq("name", academyInfo).eq("is_deleted",0);
     SysDeptEntity sysDeptEntity = deptDao.selectOne(queryWrapper);
     if (sysDeptEntity == null) {
       //没有重名的学院，开始添加
       List<AcademyEntity> academyList = new LinkedList<>();
       academyList.add(academy);
+      academy.setIsDeleted(false);
       baseMapper.batchInsert(academyList);
       SysDeptEntity deptToSave = new SysDeptEntity();
       deptToSave.setDeptType(0);
       deptToSave.setName(academyInfo);
       deptToSave.setPid(-1L);
       deptToSave.setDescription(academyInfo);
+      deptToSave.setIsDeleted(false);
 //      deptToSave.setDeptSort(999);
 //      deptToSave.setSubCount(0);
       List<SysDeptEntity> deptList = new LinkedList<>();
