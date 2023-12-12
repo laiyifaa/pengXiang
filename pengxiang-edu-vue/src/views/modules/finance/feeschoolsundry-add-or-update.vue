@@ -49,11 +49,8 @@
     <el-form-item label="减免备注" prop="derateDetail">
       <el-input v-model="dataForm.derateDetail" placeholder="减免备注">
 
-
-
-
       </el-input>
-      <el-upload
+<!--      <el-upload
         ref="imgUpload"
         :on-success="imgSuccess"
         :on-remove="imgRemove"
@@ -62,7 +59,7 @@
         :action="upLoadUrl"
         multiple>
         <el-button type="text">上传图片</el-button>
-      </el-upload>
+      </el-upload>-->
 
     </el-form-item>
     <el-form-item label="返费时间" prop="returnFeeTime">
@@ -123,9 +120,9 @@
 </template>
 
 <script>
-  import StuFeeImport from "./stuFeeImport.vue";
+  import StuFeeImport from './stuFeeImport.vue'
 
-  export default {
+export default {
     components: {StuFeeImport},
     data () {
       return {

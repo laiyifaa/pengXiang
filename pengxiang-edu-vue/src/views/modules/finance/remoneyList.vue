@@ -151,12 +151,13 @@ export default {
     handleDetail (scope) {
       // 获取所点击行的学号属性
       this.selectedIdNumber = scope.row.schoolNumber
-      this.$router.push({
-        name: 'remoneyDetail',
-        params: {
-          schoolNumber: this.selectedIdNumber
-        }
-      })
+      // this.$router.push({
+      //   name: 'remoneyDetail',
+      //   params: {
+      //     schoolNumber: this.selectedIdNumber
+      //   }
+      // })
+      window.open(`#/remoneyDetail?schoolNumber=${this.selectedIdNumber}`, '_blank')
     },
     handleEdit (scope) {
       this.selectedIdNumber = scope.row.schoolNumber

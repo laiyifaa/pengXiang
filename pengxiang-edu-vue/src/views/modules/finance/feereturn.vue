@@ -65,14 +65,12 @@
         <el-switch
           v-model="value"
           active-color="#13ce66"
-          inactive-color="#ff4949">
+          inactive-color="#ccc">
         </el-switch>
       </el-col>
-
     </el-row>
     <!--        <el-button  type="primary" @click="addOrUpdateHandle()">新增</el-button>-->
     <!--        <el-button  type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
-
         <el-table
           :data="dataList"
           border
@@ -116,29 +114,9 @@
             width="110" align="center">
           </el-table-column>
           <el-table-column
-            prop="returnMoneyTime"
-            label="退费时间"
-            width="80" align="center">
-          </el-table-column>
-          <el-table-column
-            prop="returnSchoolYear"
-            label="退费学年"
-            width="80" align="center">
-          </el-table-column>
-          <el-table-column
-            prop="account"
-            label="退费账户"
-            width="80" align="center">
-          </el-table-column>
-          <el-table-column
-            prop="accountNumber"
-            label="退费账号"
-            width="80" align="center">
-          </el-table-column>
-          <el-table-column
-            prop="depositBank"
-            label="退费开户行"
-            width="80" align="center">
+            prop="returnFeeTime"
+            label="退费次数"
+            width="100" align="center">
           </el-table-column>
           <el-table-column
             prop="returnFeeNum"
@@ -148,7 +126,7 @@
           <el-table-column
             prop="remark"
             label="退费备注"
-            width="80" align="center">
+            width="400" align="center">
           </el-table-column>
           <el-table-column
             fixed="right"
@@ -157,12 +135,10 @@
             width="150"
             label="操作">
             <template slot-scope="scope">
-              <router-link :to="{name:'remoneyDetail',params:{index:scope.row.id}}">
                 <el-button
                   type="text"
-                  @click="handleDetail(scope.row.id)">详情</el-button>
-              </router-link>
-              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">编辑</el-button>
+                  @click="handleDetail(scope.row.stuId)">详情</el-button>
+              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.stuId)">编辑</el-button>
               <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
@@ -182,6 +158,8 @@
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
     <Add v-if="addVisible" ref="Add" @refreshDataList="getDataList"></Add>
+
+
   </div>
 </template>
 
@@ -314,8 +292,7 @@ export default {
       this.searchCount--
     },
     handleDetail (id) {
-      this.$nextTick(() => {
-      })
+      window.open(`#/finance-remoneyDetail?index=${id}`, '_blank')
     },
     getDeptTreeList () {
       this.$http({

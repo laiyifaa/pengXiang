@@ -27,21 +27,20 @@
       <e-desc-item label="政治面貌">{{ info.politicalStatus}}</e-desc-item>
       <e-desc-item label="入学日期">{{ info.admissionDate}}</e-desc-item>
       <e-desc-item label="注册学籍日期">{{ info.registerDate}}</e-desc-item>
-
-
-
     </e-desc>
+
+
 
       <!-- 退费详情 -->
       <el-collapse v-model="money" @change="handleChange" >
       <el-collapse-item name="1">
         <template slot="title">
           <span style="text-align: center; font-weight: bold; font-size: 16px;">学生退费详情</span>
-
         </template>
-
+        <el-tabs type="border-card">
+        <el-tab-pane v-for="(info, index) in detailInfo" :key="index" :label="displaySecond(index,info)">
       <e-desc margin='0 12px' label-width='100px' >
-     <e-desc-item label="退费时间">{{ info.returnMoneyTime }}</e-desc-item>
+      <e-desc-item label="退费时间">{{ info.returnMoneyTime }}</e-desc-item>
       <e-desc-item label="退费学年">{{ info.returnSchoolYear}}</e-desc-item>
       <e-desc-item label="退费金额">{{ info.returnFeeNum}}</e-desc-item>
       <e-desc-item label="退培训费">{{ info.trainFee}}</e-desc-item>
@@ -57,14 +56,13 @@
       <e-desc-item label="退费账户">{{ info.account}}</e-desc-item>
       <e-desc-item label="退费账号">{{ info.accountNumber}}</e-desc-item>
       <e-desc-item label="退费开户行">{{ info.depositBank}}</e-desc-item>
-      <e-desc-item label="应收合计">{{ info.returnFeeNum}}</e-desc-item>
-
-    </e-desc>
-
+      </e-desc>
+        </el-tab-pane>
+        </el-tabs>
   </el-collapse-item>
     </el-collapse>
      <el-row style="padding: 40px;text-align: center;" >
-     <el-button type="primary" @click="returnBack">返回</el-button>
+<!--     <el-button type="primary" @click="returnBack">返回</el-button>-->
      </el-row>
   </div>
 
@@ -83,6 +81,7 @@ export default {
       imageUrl: '',
       formLabelWidth: '50px',
       info: {},
+      detailInfo: [],
       money: ['1']
     }
   },
@@ -91,10 +90,22 @@ export default {
     this.getDataList()
   },
   methods: {
+    displaySecond (index, item) {
+      console.log(index)
+      console.log(item)
+      if (item == null || item.id == null) {
+        return '合计'
+      } else {
+        let x = index + 1
+        return `第${x}次退费`
+      }
+    },
     getDataList () {
-      this.$http.get(this.$http.adornUrl(`/generator/feereturn/info/${this.$route.params.index}`)).then(({data}) => {
+      this.$http.get(this.$http.adornUrl(`/generator/feereturn/info/${this.$route.query.index}`)).then(({data}) => {
         if (data && data.code === 0) {
-          this.info = data.returnFeeDto
+          this.info = data.returnFeeDto.stuBaseInfoEntity
+          this.detailInfo = data.returnFeeDto.list
+          console.log(data.returnFeeDto)
         }
       })
     },

@@ -186,7 +186,7 @@ export default {
   },
   data () {
     return {
-      idNumberIsNull:'',
+      idNumberIsNull: '',
       dialogVisible: false,
       isFormModified2: false,
       isFormModified: false,
@@ -218,18 +218,18 @@ export default {
     }
   },
   computed: {
-    canSecond() {
-      return this.item.isSecondEmploy === 0; // 如果isSecondEmploy为0，则禁用二次就业分配时间的选择框
+    canSecond () {
+      return this.item.isSecondEmploy === 0 // 如果isSecondEmploy为0，则禁用二次就业分配时间的选择框
     }
   },
   created () {
-    this.Info =JSON.parse(decodeURIComponent(this.$route.query.Info))
-    if(this.$route.query.idNumber!=null){
-      this.idNumberIsNull=true
-    this.$http({
-      url: this.$http.adornUrl('/stu/getVisitList'),
-      method: 'get'
-    }).then(
+    this.Info = JSON.parse(decodeURIComponent(this.$route.query.Info))
+    if (this.$route.query.idNumber != null) {
+      this.idNumberIsNull = true
+      this.$http({
+        url: this.$http.adornUrl('/stu/getVisitList'),
+        method: 'get'
+      }).then(
       response => {
         this.visit = response.data.visitList.filter(item => item.idNumber === this.$route.query.idNumber)
         this.visit.forEach(function (value, index, array) {
@@ -238,10 +238,10 @@ export default {
           }
         })
       }).catch(error => {
-      this.$message.error(error)
+        this.$message.error(error)
       })
-    }else {
-      this.idNumberIsNull=false
+    } else {
+      this.idNumberIsNull = false
     }
   },
   methods: {
@@ -267,14 +267,14 @@ export default {
       }
     },
     submitForm () {
-      if(this.item.visitDate!=''&&this.item.employOrg!=''){
-        console.log(this.item. secondEmployDate)
-        this.item.visitDate = new Date(this.item.visitDate).toISOString().slice(0, 10) + " 00:00:00";
-        if(null != this.item.secondEmployDate  && ''!= this.item.secondEmployDate ){
-          this.item.secondEmployDate=new Date (this.item.secondEmployDate).toISOString().slice(0, 10) + " 00:00:00";
+      if (this.item.visitDate != '' && this.item.employOrg != '') {
+        console.log(this.item.secondEmployDate)
+        this.item.visitDate = new Date(this.item.visitDate).toISOString().slice(0, 10) + ' 00:00:00'
+        if (this.item.secondEmployDate != null && this.item.secondEmployDate != '') {
+          this.item.secondEmployDate = new Date(this.item.secondEmployDate).toISOString().slice(0, 10) + ' 00:00:00'
         }
         this.selectedTab = this.savedTab
-        this.$confirm('确定要为身份证为：'+this.$route.params.idNumber+'       的学生添加回访记录吗？', '警告', {
+        this.$confirm('确定要为身份证为：' + this.$route.params.idNumber + '       的学生添加回访记录吗？', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -295,7 +295,7 @@ export default {
         }).catch(() => {
 
         })
-      }else {
+      } else {
         this.$message.error('请填入必填信息')
       }
     },
@@ -303,9 +303,7 @@ export default {
       this.isFormModified2 = true
     },
     submitVisitForm (item) {
-
-      if(item.visitDate!=''&&item.employOrg!=''){
-
+      if (item.visitDate != '' && item.employOrg != '') {
         if (this.isFormModified2) {
           this.$confirm('确认提交吗？', '提示', {
             confirmButtonText: '确定',
@@ -331,17 +329,15 @@ export default {
             type: 'warning'
           })
         }
-      }else {
+      } else {
         this.$message.error('请填入必填信息')
       }
-
     },
     handleInputChange () {
       this.isFormModified = true
     },
     submitInfoForm () {
-
-      if(this.Info.leaveDate!=''&&this.Info.leaveDate!=null&&this.Info.employOrg!=''&&this.Info.employOrg!=null){
+      if (this.Info.leaveDate != '' && this.Info.leaveDate != null && this.Info.employOrg != '' && this.Info.employOrg != null) {
         if (this.isFormModified) {
           this.$confirm('确认提交吗？', '提示', {
             confirmButtonText: '确定',
@@ -368,10 +364,9 @@ export default {
             type: 'warning'
           })
         }
-      }else {
+      } else {
         this.$message.error('请填入必填信息')
       }
-
     },
     returnBack () {
       this.$router.go(-1)

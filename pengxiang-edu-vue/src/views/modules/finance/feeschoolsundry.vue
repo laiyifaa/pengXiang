@@ -36,7 +36,7 @@
         <stu-fee-import v-if="importVisiable" ref="dialog"></stu-fee-import>
         <stu-fee-attachment v-if="attachmentVisiable" ref="attachmentDialog"></stu-fee-attachment>
         <el-button  type="primary" @click="addHandle()">新增</el-button>
-        <el-button  type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+<!--        <el-button  type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
 
         <!--        <el-button type="success" @click="handleExport">导出</el-button>-->
         <!--        <student-out v-if="Visiableee" ref="dialoggg"></student-out>-->
@@ -52,7 +52,6 @@
               <el-option label="身份证号" value="idNumber"></el-option>
               <el-option label="户口性质" value="residenceTypeName"></el-option>
               <el-option label="是否欠费" value="isArrearage"></el-option>
-              <el-option label="缴费学年" value="year"></el-option>
               <el-option label="减免类型" value="derateType"></el-option>
             </el-select>
             <el-input v-model="condition.value" placeholder="请输入" style="width: 200px;" clearable></el-input>
@@ -92,20 +91,15 @@
             label="性别"
             width="50" align="center">
           </el-table-column>
-<!--          <el-table-column
-            prop="nativePlace"
-            label="籍贯"
-            width="140" align="center">
-          </el-table-column>-->
           <el-table-column
             prop="majorName"
             label="专业"
-            width="80" align="center">
+            width="100" align="center">
           </el-table-column>
           <el-table-column
             prop="gradeName"
             label="年级"
-            width="70" align="center">
+            width="80" align="center">
           </el-table-column>
           <el-table-column
             prop="className"
@@ -115,29 +109,29 @@
           <el-table-column
             prop="phone"
             label="联系电话"
-            width="130" align="center">
+            width="150" align="center">
           </el-table-column>
           <el-table-column
             prop="headTeacher"
             label="班主任"
-            width="80" align="center">
+            width="100" align="center">
           </el-table-column>
           <el-table-column
             prop="headTeacherPhone"
             label="班主任电话"
-            width="80" align="center">
+            width="100" align="center">
           </el-table-column>
-          <el-table-column
+<!--          <el-table-column
             prop="paySchoolYear"
             label="缴费学年-学期"
             width="110" align="center">
-          </el-table-column>
-          <el-table-column
+          </el-table-column>-->
+<!--          <el-table-column
             prop="paySchoolDate"
             label="缴费日期"
             width="80" align="center">
-          </el-table-column>
-          <el-table-column
+          </el-table-column>-->
+<!--          <el-table-column
             prop="ifQMoney"
             label="是否欠费"
             width="80" align="center">
@@ -148,29 +142,29 @@
             align="center"
             width="80"
             label="欠费操作">
-            <template slot-scope="scope" >
-              <el-button  type="text" size="small" @click="qMoneyHandle(scope.row.id)" >点击欠费</el-button>
-            </template>
-          </el-table-column>
+&lt;!&ndash;            <template slot-scope="scope" >&ndash;&gt;
+&lt;!&ndash;              <el-button  type="text" size="small" @click="qMoneyHandle(scope.row.id)" >点击欠费</el-button>&ndash;&gt;
+&lt;!&ndash;            </template>&ndash;&gt;
+          </el-table-column>-->
           <el-table-column
             fixed="right"
             header-align="center"
             align="center"
-            width="200"
+            width="250"
             label="操作">
             <template slot-scope="scope">
 <!--              <router-link :to="{name:'tuitionExpenseInfo',params:{index:scope.row.id}}">-->
                 <el-button
                   type="text"
-                  @click="handleDetail(scope.row.id,scope.row.paySchoolYear,scope.row.paySchoolDate)">详情</el-button>
+                  @click="handleDetail(scope.row.stuId)">详情</el-button>
 <!--              </router-link>-->
 <!--              <router-link :to="{name:'tuitionExpenseEdit',params:{index:scope.row.id}}">-->
 <!--                <el-button-->
 <!--                  type="text"-->
 <!--                  @click="handleEdit(scope.row.id)">修改</el-button>-->
 <!--              </router-link>-->
-              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">编辑</el-button>
-              <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.stuId)">编辑</el-button>
+<!--              <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>-->
               <el-button type="text" size="small" @click="handleAttachment(scope.row.stuId)">附件</el-button>
 
             </template>
@@ -272,13 +266,9 @@ export default {
       this.searchConditions.splice(index, 1)
       this.searchCount--
     },
-    handleDetail (id, paySchoolYear,payDate) {
-      console.log(this.dataList)
-      // this.$nextTick(() => {
-      //
-      // })
-      window.open(`#/finance-tuitionExpenseInfo?index=${id}&payYear=${paySchoolYear}&payDate=${payDate}`, '_blank')
-      console.log(id,paySchoolYear)
+    handleDetail (id) {
+     /* window.open(`#/finance-tuitionExpenseInfo?index=${id}&payYear=${paySchoolYear}&payDate=${payDate}`, '_blank')   2023-11-29 cel 多条记录归一不再带入缴费日期和学期 */
+      window.open(`#/finance-tuitionExpenseInfo?index=${id}`, '_blank')
     },
     getDeptTreeList () {
       this.$http({
@@ -299,7 +289,6 @@ export default {
       var residenceTypeNameOption = null
       var isArrearageOption = null
       var derateTypeOption = null
-      var yearOption = null
       if (this.searchConditions != null && this.searchConditions.length >= 0) {
         stuNameOption = this.searchConditions.filter(condition => condition.option === 'stuName')
         idNumberOption = this.searchConditions.filter(condition => condition.option === 'idNumber')
@@ -307,7 +296,6 @@ export default {
         residenceTypeNameOption = this.searchConditions.filter(condition => condition.option === 'residenceTypeName')
         isArrearageOption = this.searchConditions.filter(condition => condition.option === 'isArrearage')
         derateTypeOption = this.searchConditions.filter(condition => condition.option === 'derateType')
-        yearOption = this.searchConditions.filter(condition => condition.option === 'year')
       }
       this.$http({
         url: this.$http.adornUrl('/generator/feeschoolsundry/list'),
@@ -315,7 +303,6 @@ export default {
         params: this.$http.adornParams({
           'page': this.pageIndex,
           'limit': this.pageSize,
-          'year': yearOption.length === 0 ? null : yearOption[0].value,
           'deptId': this.deptId,
           'stuName': stuNameOption.length === 0 ? null : stuNameOption[0].value,
           'idNumber': idNumberOption.length === 0 ? null : idNumberOption[0].value,
@@ -361,10 +348,11 @@ export default {
     },
     // 新增 / 修改
     addOrUpdateHandle (id) {
-      this.addOrUpdateVisible = true
+/*      this.addOrUpdateVisible = true
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id)
-      })
+      }) */
+      window.open(`#/finance-tuitionExpenseEdit?index=${id}`, '_blank')
     },
     // 新增
     addHandle (id) {
@@ -393,7 +381,6 @@ export default {
       var residenceTypeNameOption = null
       var isArrearageOption = null
       var derateTypeOption = null
-      var yearOption = null
       if (this.searchConditions != null && this.searchConditions.length >= 0) {
         stuNameOption = this.searchConditions.filter(condition => condition.option === 'stuName')
         idNumberOption = this.searchConditions.filter(condition => condition.option === 'idNumber')
@@ -401,10 +388,9 @@ export default {
         residenceTypeNameOption = this.searchConditions.filter(condition => condition.option === 'residenceTypeName')
         isArrearageOption = this.searchConditions.filter(condition => condition.option === 'isArrearage')
         derateTypeOption = this.searchConditions.filter(condition => condition.option === 'derateType')
-        yearOption = this.searchConditions.filter(condition => condition.option === 'year')
       }
       this.$nextTick(() => {
-        this.$refs.outDialog.init(this.pageSize, this.pageIndex, yearOption.length === 0 ? null : yearOption[0].value,
+        this.$refs.outDialog.init(this.pageSize, this.pageIndex,
           this.deptId, stuNameOption.length === 0 ? null : stuNameOption[0].value, idNumberOption.length === 0 ? null : idNumberOption[0].value,
           residenceTypeNameOption.length === 0 ? null : residenceTypeNameOption[0].value, schoolNumberOption.length === 0 ? null : schoolNumberOption[0].value,
           isArrearageOption.length === 0 ? null : isArrearageOption[0].value, derateTypeOption.length === 0 ? null : derateTypeOption[0].value
@@ -423,35 +409,6 @@ export default {
       }).then(() => {
         this.$http({
           url: this.$http.adornUrl('/generator/feeschoolsundry/delete'),
-          method: 'post',
-          data: this.$http.adornData(ids, false)
-        }).then(({data}) => {
-          if (data && data.code === 0) {
-            this.$message({
-              message: '操作成功',
-              type: 'success',
-              duration: 1500,
-              onClose: () => {
-                this.getDataList()
-              }
-            })
-          } else {
-            this.$message.error(data.msg)
-          }
-        })
-      })
-    },
-    qMoneyHandle (id) {
-      var ids = id ? [id] : this.dataListSelections.map(item => {
-        return item.id
-      })
-      this.$confirm(`确定进行[${id ? '欠费' : '批量欠费'}]操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$http({
-          url: this.$http.adornUrl('/generator/feeschoolsundry/qMoneyHandle'),
           method: 'post',
           data: this.$http.adornData(ids, false)
         }).then(({data}) => {

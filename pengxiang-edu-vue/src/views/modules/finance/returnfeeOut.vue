@@ -4,18 +4,14 @@
   <el-dialog title="导出" :visible.sync="outVisible" width="50%">
     <div>
       <el-row :gutter="20">
-        <el-col :span="12"><div class="grid-content bg-purple">
-          <div class="bcolor2" ><u>导出所选</u></div><br>
-          <el-row style="position: relative;left: 170px;">
-            <el-button type="success" @click="handleExport()">Excel导出</el-button>
+        <el-col :span="20">
+          <div  class="grid-content bg-purple">
+
+          <el-row style="position: relative;left: 400px;">
+            <el-button size="medium" type="success" @click="handleExportAll()">Excel导出</el-button>
           </el-row>
         </div>
         </el-col>
-        <el-col :span="12"><div class="grid-content bg-purple"><div class="bcolor2" ><u>导出所有</u></div><br>
-          <el-row style="position: relative;left: 170px;">
-            <el-button type="success" @click="handleExportAll()">Excel导出</el-button>
-          </el-row>
-        </div></el-col>
       </el-row>
     </div>
   </el-dialog>
@@ -139,24 +135,13 @@
       margin-bottom: 0;
     }
   }
-  .el-col {
-    border-radius: 4px;
-  }
-  .bg-purple-dark {
+
+    .bg-purple {
     background: white;
   }
-  .bg-purple {
-    background: white;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
+
+    .grid-content {
     border-radius: 4px;
     min-height: 36px;
-  }
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
   }
     </style>

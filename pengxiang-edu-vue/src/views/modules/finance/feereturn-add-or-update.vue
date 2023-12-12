@@ -3,76 +3,72 @@
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
+<!--    <el-tabs type="border-card">-->
+<!--      <el-tab-pane v-for="(info, index) in allFeeInfo" @click="giveTheDate(info)" :key="index" :label="displaySecond(index)">-->
+<!--      </el-tab-pane>-->
+<!--    </el-tabs>-->
+    <el-button size="medium" style="margin-bottom: 20px;margin-left: 20px" v-for="(info, index) in allFeeInfo" @click="giveTheDate(info)" :key="index">{{ displaySecond(index) }}</el-button>
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-<!--    <el-form-item label="学生id" prop="stuId">-->
-<!--      <el-input v-model="dataForm.stuId" placeholder="学生id"></el-input>-->
-<!--    </el-form-item>-->
-<!--    <el-form-item label="院校id" prop="academyId">-->
-<!--      <el-input v-model="dataForm.academyId" placeholder="院校id"></el-input>-->
-<!--    </el-form-item>-->
-<!--    <el-form-item label="" prop="deptId">-->
-<!--      <el-input v-model="dataForm.deptId" placeholder=""></el-input>-->
-<!--    </el-form-item>-->
-    <el-form-item label="退费学年" prop="returnSchoolYear">
-      <el-input v-model="dataForm.returnSchoolYear" placeholder="退费学年"></el-input>
-    </el-form-item>
-    <el-form-item label="退费金额" prop="returnFeeNum">
-      <el-input v-model="dataForm.returnFeeNum" placeholder="退费金额"></el-input>
-    </el-form-item>
-    <el-form-item label="退培训费" prop="trainFee">
-      <el-input v-model="dataForm.trainFee" placeholder="退培训费"></el-input>
-    </el-form-item>
-    <el-form-item label="退服装费" prop="clothesFee">
-      <el-input v-model="dataForm.clothesFee" placeholder="退服装费"></el-input>
-    </el-form-item>
-    <el-form-item label="退教材费" prop="bookFee">
-      <el-input v-model="dataForm.bookFee" placeholder="退教材费"></el-input>
-    </el-form-item>
-    <el-form-item label="退住宿费" prop="hotelFee">
-      <el-input v-model="dataForm.hotelFee" placeholder="退住宿费"></el-input>
-    </el-form-item>
-    <el-form-item label="退被褥费" prop="bedFee">
-      <el-input v-model="dataForm.bedFee" placeholder="退被褥费"></el-input>
-    </el-form-item>
-    <el-form-item label="退保险费" prop="insuranceFee">
-      <el-input v-model="dataForm.insuranceFee" placeholder="退保险费"></el-input>
-    </el-form-item>
-    <el-form-item label="退公物押金" prop="publicFee">
-      <el-input v-model="dataForm.publicFee" placeholder="退公物押金"></el-input>
-    </el-form-item>
-    <el-form-item label="退证书费" prop="certificateFee">
-      <el-input v-model="dataForm.certificateFee" placeholder="退证书费"></el-input>
-    </el-form-item>
-    <el-form-item label="退国防教育费" prop="defenseEduFee">
-      <el-input v-model="dataForm.defenseEduFee" placeholder="退国防教育费"></el-input>
-    </el-form-item>
-    <el-form-item label="退体检费" prop="bodyExamFee">
-      <el-input v-model="dataForm.bodyExamFee" placeholder="退体检费"></el-input>
-    </el-form-item>
-    <el-form-item label="退费账户" prop="account">
-      <el-input v-model="dataForm.account" placeholder="退费账户"></el-input>
-    </el-form-item>
-    <el-form-item label="退费账号" prop="accountNumber">
-      <el-input v-model="dataForm.accountNumber" placeholder="退费账号"></el-input>
-    </el-form-item>
-    <el-form-item label="退费开户行" prop="depositBank">
-      <el-input v-model="dataForm.depositBank" placeholder="退费开户行"></el-input>
-    </el-form-item>
-<!--    <el-form-item label="创建(退费)时间" prop="createTime">-->
-<!--      <el-input v-model="dataForm.createTime" placeholder="创建(退费)时间"></el-input>-->
-<!--    </el-form-item>-->
-<!--    <el-form-item label="更新时间" prop="updateTime">-->
-<!--      <el-input v-model="dataForm.updateTime" placeholder="更新时间"></el-input>-->
-<!--    </el-form-item>-->
-<!--    <el-form-item label="创建人" prop="createBy">-->
-<!--      <el-input v-model="dataForm.createBy" placeholder="创建人"></el-input>-->
-<!--    </el-form-item>-->
-<!--    <el-form-item label="修改人" prop="updateBy">-->
-<!--      <el-input v-model="dataForm.updateBy" placeholder="修改人"></el-input>-->
-<!--    </el-form-item>-->
-<!--    <el-form-item label="是否删除" prop="isDeleted">-->
-<!--      <el-input v-model="dataForm.isDeleted" placeholder="是否删除"></el-input>-->
-<!--    </el-form-item>-->
+      <el-form-item label="退费学年" prop="returnSchoolYear">
+        <el-input v-model="dataForm.returnSchoolYear" placeholder="退费学年"></el-input>
+      </el-form-item>
+      <el-form-item label="退费金额" prop="returnFeeNum">
+        <el-input v-model="dataForm.returnFeeNum" placeholder="退费金额"></el-input>
+      </el-form-item>
+      <el-form-item label="退培训费" prop="trainFee">
+        <el-input v-model="dataForm.trainFee" placeholder="退培训费"></el-input>
+      </el-form-item>
+      <el-form-item label="退服装费" prop="clothesFee">
+        <el-input v-model="dataForm.clothesFee" placeholder="退服装费"></el-input>
+      </el-form-item>
+      <el-form-item label="退教材费" prop="bookFee">
+        <el-input v-model="dataForm.bookFee" placeholder="退教材费"></el-input>
+      </el-form-item>
+      <el-form-item label="退住宿费" prop="hotelFee">
+        <el-input v-model="dataForm.hotelFee" placeholder="退住宿费"></el-input>
+      </el-form-item>
+      <el-form-item label="退被褥费" prop="bedFee">
+        <el-input v-model="dataForm.bedFee" placeholder="退被褥费"></el-input>
+      </el-form-item>
+      <el-form-item label="退保险费" prop="insuranceFee">
+        <el-input v-model="dataForm.insuranceFee" placeholder="退保险费"></el-input>
+      </el-form-item>
+      <el-form-item label="退公物押金" prop="publicFee">
+        <el-input v-model="dataForm.publicFee" placeholder="退公物押金"></el-input>
+      </el-form-item>
+      <el-form-item label="退证书费" prop="certificateFee">
+        <el-input v-model="dataForm.certificateFee" placeholder="退证书费"></el-input>
+      </el-form-item>
+      <el-form-item label="退国防教育费" prop="defenseEduFee">
+        <el-input v-model="dataForm.defenseEduFee" placeholder="退国防教育费"></el-input>
+      </el-form-item>
+      <el-form-item label="退体检费" prop="bodyExamFee">
+        <el-input v-model="dataForm.bodyExamFee" placeholder="退体检费"></el-input>
+      </el-form-item>
+      <el-form-item label="退费账户" prop="account">
+        <el-input v-model="dataForm.account" placeholder="退费账户"></el-input>
+      </el-form-item>
+      <el-form-item label="退费账号" prop="accountNumber">
+        <el-input v-model="dataForm.accountNumber" placeholder="退费账号"></el-input>
+      </el-form-item>
+      <el-form-item label="退费开户行" prop="depositBank">
+        <el-input v-model="dataForm.depositBank" placeholder="退费开户行"></el-input>
+      </el-form-item>
+      <!--    <el-form-item label="创建(退费)时间" prop="createTime">-->
+      <!--      <el-input v-model="dataForm.createTime" placeholder="创建(退费)时间"></el-input>-->
+      <!--    </el-form-item>-->
+      <!--    <el-form-item label="更新时间" prop="updateTime">-->
+      <!--      <el-input v-model="dataForm.updateTime" placeholder="更新时间"></el-input>-->
+      <!--    </el-form-item>-->
+      <!--    <el-form-item label="创建人" prop="createBy">-->
+      <!--      <el-input v-model="dataForm.createBy" placeholder="创建人"></el-input>-->
+      <!--    </el-form-item>-->
+      <!--    <el-form-item label="修改人" prop="updateBy">-->
+      <!--      <el-input v-model="dataForm.updateBy" placeholder="修改人"></el-input>-->
+      <!--    </el-form-item>-->
+      <!--    <el-form-item label="是否删除" prop="isDeleted">-->
+      <!--      <el-input v-model="dataForm.isDeleted" placeholder="是否删除"></el-input>-->
+      <!--    </el-form-item>-->
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -86,6 +82,7 @@
     data () {
       return {
         visible: false,
+        allFeeInfo: {},
         dataForm: {
           id: 0,
           stuId: '',
@@ -186,44 +183,58 @@
       }
     },
     methods: {
+      displaySecond (index) {
+        let x = index + 1
+        return `第${x}次退费`
+      },
+      giveTheDate (info) {
+
+        this.dataForm = { ...info }
+
+      },
       init (id) {
-        this.dataForm.id = id || 0
         this.visible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
-          if (this.dataForm.id) {
-            this.$http({
-              url: this.$http.adornUrl(`/generator/feereturn/infoOne/${this.dataForm.id}`),
-              method: 'get',
-              params: this.$http.adornParams()
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.dataForm.stuId = data.feeReturn.stuId
-                this.dataForm.academyId = data.feeReturn.academyId
-                this.dataForm.deptId = data.feeReturn.deptId
-                this.dataForm.returnSchoolYear = data.feeReturn.returnSchoolYear
-                this.dataForm.returnFeeNum = data.feeReturn.returnFeeNum
-                this.dataForm.trainFee = data.feeReturn.trainFee
-                this.dataForm.clothesFee = data.feeReturn.clothesFee
-                this.dataForm.bookFee = data.feeReturn.bookFee
-                this.dataForm.hotelFee = data.feeReturn.hotelFee
-                this.dataForm.bedFee = data.feeReturn.bedFee
-                this.dataForm.insuranceFee = data.feeReturn.insuranceFee
-                this.dataForm.publicFee = data.feeReturn.publicFee
-                this.dataForm.certificateFee = data.feeReturn.certificateFee
-                this.dataForm.defenseEduFee = data.feeReturn.defenseEduFee
-                this.dataForm.bodyExamFee = data.feeReturn.bodyExamFee
-                this.dataForm.account = data.feeReturn.account
-                this.dataForm.accountNumber = data.feeReturn.accountNumber
-                this.dataForm.depositBank = data.feeReturn.depositBank
-                this.dataForm.createTime = data.feeReturn.createTime
-                this.dataForm.updateTime = data.feeReturn.updateTime
-                this.dataForm.createBy = data.feeReturn.createBy
-                this.dataForm.updateBy = data.feeReturn.updateBy
-                this.dataForm.isDeleted = data.feeReturn.isDeleted
-              }
-            })
-          }
+          this.$http({
+            url: this.$http.adornUrl(`/generator/feereturn/infoOne/${id}`),
+            method: 'get'
+          }).then(({data}) => {
+            this.allFeeInfo = data.feeReturn
+            this.dataForm=data.feeReturn[0]
+          })
+          // if (this.dataForm.id) {
+          //   this.$http({
+          //     url: this.$http.adornUrl(`/generator/feereturn/infoOne/${this.dataForm.id}`),
+          //     method: 'get',
+          //     params: this.$http.adornParams()
+          //   }).then(({data}) => {
+          //     if (data && data.code === 0) {
+          //       this.dataForm.stuId = data.feeReturn.stuId
+          //       this.dataForm.academyId = data.feeReturn.academyId
+          //       this.dataForm.deptId = data.feeReturn.deptId
+          //       this.dataForm.returnSchoolYear = data.feeReturn.returnSchoolYear
+          //       this.dataForm.returnFeeNum = data.feeReturn.returnFeeNum
+          //       this.dataForm.trainFee = data.feeReturn.trainFee
+          //       this.dataForm.clothesFee = data.feeReturn.clothesFee
+          //       this.dataForm.bookFee = data.feeReturn.bookFee
+          //       this.dataForm.hotelFee = data.feeReturn.hotelFee
+          //       this.dataForm.bedFee = data.feeReturn.bedFee
+          //       this.dataForm.insuranceFee = data.feeReturn.insuranceFee
+          //       this.dataForm.publicFee = data.feeReturn.publicFee
+          //       this.dataForm.certificateFee = data.feeReturn.certificateFee
+          //       this.dataForm.defenseEduFee = data.feeReturn.defenseEduFee
+          //       this.dataForm.bodyExamFee = data.feeReturn.bodyExamFee
+          //       this.dataForm.account = data.feeReturn.account
+          //       this.dataForm.accountNumber = data.feeReturn.accountNumber
+          //       this.dataForm.depositBank = data.feeReturn.depositBank
+          //       this.dataForm.createTime = data.feeReturn.createTime
+          //       this.dataForm.updateTime = data.feeReturn.updateTime
+          //       this.dataForm.createBy = data.feeReturn.createBy
+          //       this.dataForm.updateBy = data.feeReturn.updateBy
+          //       this.dataForm.isDeleted = data.feeReturn.isDeleted
+          //     }
+          //   })
         })
       },
       // 表单提交

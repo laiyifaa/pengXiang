@@ -112,7 +112,7 @@
 
      <el-row style="padding: 40px;text-align: center;" >
 
-     <el-button type="primary" @click="returnBack">返回</el-button>
+<!--     <el-button type="primary" @click="returnBack">返回</el-button>-->
 
      </el-row>
     </div>

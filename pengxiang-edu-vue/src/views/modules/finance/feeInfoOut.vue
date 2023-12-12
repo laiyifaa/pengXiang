@@ -47,11 +47,10 @@
           },
           methods: {
           // 3.定义一个init函数，通过设置detailVisible值为true来让弹窗弹出，这个函数会在父组件的方法中被调用
-            init (pageSize, pageIndex, year, deptId, stuName, idNumber, residenceTypeName, schoolNumber, isArrearage, derateType) {
+            init (pageSize, pageIndex, deptId, stuName, idNumber, residenceTypeName, schoolNumber, isArrearage, derateType) {
               this.outVisible = true
               this.pageSize = pageSize
               this.pageIndex = pageIndex
-              this.year = year
               this.derateType = derateType
               this.deptId = deptId
               this.stuName = stuName
@@ -73,7 +72,6 @@
                     {
                       'page': this.pageIndex,
                       'limit': this.pageSize,
-                      'year': this.year,
                       'deptId': this.deptId,
                       'stuName': this.stuName,
                       'idNumber': this.idNumber,

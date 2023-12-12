@@ -143,11 +143,10 @@
         <template slot="title">
           <span style="text-align: center; font-weight: bold; font-size: 16px;">缴费信息</span>
         </template>
-
           <el-tabs>
             <el-tab-pane v-for="(item,index) in info.feeList" :key="index" :label="display(item[0].paySchoolYear)" @click="handleClick((item))">
               <el-tabs type="border-card">
-                <el-tab-pane v-for="(item, index) in item" :key="index" :label="displaySecond(index)">
+                <el-tab-pane v-for="(item, index) in item" :key="index" :label="displaySecond(index,item)">
                   <e-desc margin='0 12px' label-width='150px' column="4" >
                     <e-desc-item  label="缴费（学年-学期）"> {{item.paySchoolYear}} </e-desc-item>
                     <e-desc-item label="缴费日期"> {{ formatDate (item.paySchoolDate)}} </e-desc-item>
@@ -177,8 +176,6 @@
                     <e-desc-item label="返费账号" color="#"> {{item.accountNumber}} </e-desc-item>
                     <e-desc-item label="返费开户行" color="#"> {{item.depositBank}} </e-desc-item>
                   </e-desc>
-
-
                 </el-tab-pane>
               </el-tabs>
             </el-tab-pane>
@@ -354,18 +351,19 @@
                 <e-desc-item label="备注">{{ item.remarks}}</e-desc-item>
               </e-desc>
             </el-tab-pane>
+            </el-tab-pane>
           </el-tabs>
         </el-tabs>
       </el-collapse-item>
     </el-collapse>
-    <div>
-      <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-      <div style="margin: 15px 0;"></div>
-      <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
-        <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
-      </el-checkbox-group>
-    </div>
-    <el-button type="primary" @click="open" style="margin-left:50%">信息导出</el-button>
+<!--    <div>-->
+<!--      <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>-->
+<!--      <div style="margin: 15px 0;"></div>-->
+<!--      <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">-->
+<!--        <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>-->
+<!--      </el-checkbox-group>-->
+<!--    </div>-->
+<!--    <el-bu                                tton type="primary" @click="open" style="margin-left:50%">信息导出</el-button>-->
   </div>
 </template>
 
@@ -441,9 +439,13 @@ export default {
     handleClick (item) {
       this.feeTime = item
     },
-    displaySecond (index) {
-      let x = index + 1
-      return `第${x}次缴费`
+    displaySecond (index, item) {
+      if (item == null || item.id == null) {
+        return '合计'
+      } else {
+        let x = index + 1
+        return `第${x}次缴费`
+      }
     },
     display (item) {
       let data = String(item)
@@ -527,14 +529,12 @@ export default {
       }).then(({data}) => {
         if (data && data.code === 0) {
           this.changeList = data.changeList
-          console.log(this.changeList)
         } else {
           this.$message.error('获取学籍变更记录出错啦')
         }
       })
     },
     returnBack () {
-      console.log(this.feeTime)
     },
     handleChange () {
     },

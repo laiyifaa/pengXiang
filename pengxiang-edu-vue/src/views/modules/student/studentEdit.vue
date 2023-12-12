@@ -697,7 +697,7 @@ export default {
         if (data && data.code === 0) {
           this.changeList = data.changeList
         } else {
-          this.$message.error("获取学籍变更记录出错啦")
+          this.$message.error('获取学籍变更记录出错啦')
         }
       })
     },
@@ -980,8 +980,7 @@ export default {
   },
   mounted () {
     var flag = this.$route.query.isEdit
-    if (flag == 1) {
-      window.alert(123)
+    if (flag === 1) {
       // this.id = this.$route.params.stuId
       this.id = this.$route.query.stuId
       this.getData()
