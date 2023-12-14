@@ -28,7 +28,8 @@ public interface FeeSchoolSundryDao extends BaseMapper<FeeSchoolSundryEntity> {
                                                @Param("key") StuKeyWordDto key,
                                               @Param("arrearage")Integer arrearage,
                                               @Param("derateType")String derateType,
-                                              @Param("residenceType") Integer residenceType);
+                                              @Param("residenceType") Integer residenceType,
+                                              @Param("isExcel")Integer isExcel);
 
     List<Long> getIdList();
 }

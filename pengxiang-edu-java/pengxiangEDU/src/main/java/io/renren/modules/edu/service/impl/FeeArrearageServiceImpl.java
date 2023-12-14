@@ -174,9 +174,8 @@ public class FeeArrearageServiceImpl extends ServiceImpl<FeeArrearageDao, FeeArr
     }
 
     @Override
-    public qMoneyAndInfoListDto getoneInfo(Long id) {
-        qMoneyAndInfoListDto oneListDto = feeArrearageDao.getOneListDto(id);
-
+    public List<qMoneyAndInfoListDto> getoneInfo(Long id) {
+      List<qMoneyAndInfoListDto>  oneListDto = feeArrearageDao.getOneListDto(id);
         return oneListDto;
 
     }
@@ -184,7 +183,6 @@ public class FeeArrearageServiceImpl extends ServiceImpl<FeeArrearageDao, FeeArr
     @Override
     public List<FeeArrearageEntity> getOneQmoneyListDto(Long stuId) {
         List<FeeArrearageEntity> oneQmoneyListDto = feeArrearageDao.getOneQmoneyListDto(stuId);
-
         return oneQmoneyListDto;
     }
 

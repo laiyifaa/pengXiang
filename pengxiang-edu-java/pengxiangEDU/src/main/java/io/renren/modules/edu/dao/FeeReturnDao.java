@@ -26,5 +26,8 @@ public interface FeeReturnDao extends BaseMapper<FeeReturnEntity> {
     List<ReturnFeeDto> selectReturnFeeDto(IPage<ReturnFeeDto> page, @Param("academyId") Long academyId, @Param("deptId") Long deptId);
     List<ReturnFeeDto> selectReturnFeeDto2( @Param("academyId") Long academyId, @Param("deptId") Long deptId);
 
+    FeeReturnEntity selectSum(@Param("stuId") Long stuId );
     List<Long> getIdList();
+
+    List<ReturnFeeDto> selectAll();
 }

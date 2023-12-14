@@ -27,6 +27,7 @@ public class FeeSundryImportVo {
     @ExcelProperty("院校名称")
     @TableField(exist = false)
     private String academyName;
+
     /**
      * 学号
      */

@@ -25,7 +25,7 @@ public interface FeeArrearageService extends IService<FeeArrearageEntity> {
 
     PageUtils queryPageInConditions(SearchConditionVo searchConditionVo);
 
-    qMoneyAndInfoListDto getoneInfo(Long id);
+    List<qMoneyAndInfoListDto> getoneInfo(Long id);
 
     List<FeeArrearageEntity> getOneQmoneyListDto(Long stuId);
 

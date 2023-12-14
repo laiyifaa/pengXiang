@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.renren.common.utils.RedisUtils;
+import io.renren.modules.edu.dao.StuBaseInfoDao;
 import io.renren.modules.edu.dto.FeeSchoolSundryDto;
 import io.renren.modules.edu.dto.ReturnFeeDto;
 import io.renren.modules.edu.dto.StuKeyWordDto;
@@ -57,6 +58,7 @@ public class FeeReturnController {
     FeeReturnService feeReturnService;
     @Autowired
     RedisUtils redis;
+
 //    @RequestMapping("/getList")
 //    public R getList(){
 //       return R.ok().put("list",feeReturnService.getlist()) ;
@@ -125,7 +127,7 @@ public class FeeReturnController {
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
         String jsonStr = null; // 从 Redis 中获取 JSON 字符串
         jsonStr = redis.get("returnFeeList"+user.getUserId());
-        List<ReturnFeeDto> collect = JSON.parseArray(jsonStr, ReturnFeeDto.class);
+        List<ReturnFeeDto> collect = feeReturnService.exportAll();
         List<returnFeeExportVo> list = new ArrayList<>();
         for (ReturnFeeDto dto : collect) {
             returnFeeExportVo exportVo = new returnFeeExportVo();
@@ -159,7 +161,6 @@ public class FeeReturnController {
     // @RequiresPermissions("generator:feearrearage:list")
     public R list(@RequestBody SearchConditionVo searchConditionVo){
         PageUtils page = feeReturnService.queryPageInConditions(searchConditionVo);
-
         return R.ok().put("page", page);
     }
 
@@ -176,28 +177,28 @@ public class FeeReturnController {
      * 单个信息
      */
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
+    public R info(@PathVariable("id") Long stuId) throws Exception {
         //FeeArrearageEntity feeArrearage = feeArrearageService.getById(id);
-
-        SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
-
-        String jsonStr = null; // 从 Redis 中获取 JSON 字符串
-        jsonStr = redis.get("returnFeeList"+user.getUserId());
-        List<ReturnFeeDto> collect = JSON.parseArray(jsonStr, ReturnFeeDto.class);
-
-        for (ReturnFeeDto returnFeeDto : collect) {
-            if (returnFeeDto.getId().equals(id)){
-                return R.ok().put("returnFeeDto", returnFeeDto);
-            }
-        }
-        return R.error("联系管理员！");
+//
+//        SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+//        String jsonStr = null; // 从 Redis 中获取 JSON 字符串
+//        jsonStr = redis.get("returnFeeList"+user.getUserId());
+//        List<ReturnFeeDto> collect = JSON.parseArray(jsonStr, ReturnFeeDto.class);
+//
+//        for (ReturnFeeDto returnFeeDto : collect) {
+//            if (returnFeeDto.getId().equals(id)){
+//                return R.ok().put("returnFeeDto", returnFeeDto);
+//            }
+//        }
+        return R.ok().put("returnFeeDto", feeReturnService.getVo(stuId));
     }
 
     @RequestMapping("/infoOne/{id}")
     public R infoOne(@PathVariable("id") Long id){
-        FeeReturnEntity feeReturnEntity = feeReturnService.getById(id);
-
-        return R.ok().put("feeReturn", feeReturnEntity);
+//        FeeReturnEntity feeReturnEntity = feeReturnService.getById(id);
+//
+//        return R.ok().put("feeReturn", feeReturnEntity);
+        return R.ok().put("feeReturn", feeReturnService.getIds(id));
     }
 
     @RequestMapping("/update")

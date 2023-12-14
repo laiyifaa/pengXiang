@@ -80,6 +80,9 @@ public class FeeSchoolSundryListener implements ReadListener<FeeSundryImportVo> 
         if(StringUtils.isEmpty(data.getIdNumber())){
             throw new EmptyDataException("证件号字段为空，第 " + (context.readRowHolder().getRowIndex() + 1) + " 行数据异常！");
         }
+        if(StringUtils.isEmpty(data.getPaySchoolYear())){
+            throw new EmptyDataException("缴费学年字段为空，第 " + (context.readRowHolder().getRowIndex() + 1) + " 行数据异常！");
+        }
         if(StringUtils.isEmpty(data.getStuName())){
             throw new EmptyDataException("姓名字段为空，第 " + (context.readRowHolder().getRowIndex() + 1) + " 行数据异常！");
         }

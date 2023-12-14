@@ -4,11 +4,7 @@ spring:
         druid:
             driver-class-name: com.mysql.cj.jdbc.Driver
             #driver-class-name: com.mysql.jdbc.Driver
-            url: jdbc:mysql://116.62.10.46:3377/pengxiangedu?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true
-           # url: jdbc:mysql://111.229.11.46:3377/pengxiangedu_new?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-           #username: root
-           #password: Zstulab@315
-            #url: jdbc:mysql://111.229.11.46/pengxiangedu?characterEncoding=utf8
+            url: jdbc:mysql://localhost:3377/pengxiangedu?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true
             username: root
             password: pengXiangEdu_lab317
             initial-size: 10

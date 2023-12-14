@@ -92,16 +92,14 @@
     </select>
 
     <select id="selectReturnFeeDto2" resultType="io.renren.modules.edu.dto.ReturnFeeDto">
-
         select fss.*,
         sd1.name academyName,
         sd2.name majorName,
         sd3.name gradeName,
         sd4.name className,
         sbi.*
-        from fee_return fss
+        from ( SELECT *, SUM( return_fee_num ) AS returnFeeSum, COUNT( stu_id ) AS returnFeeTime FROM fee_return GROUP BY stu_id )  fss
         left join stu_base_info sbi on sbi.stu_id = fss.stu_id
-
         <if test="academyId!=-1">
             and sbi.academy_id = #{academyId}
         </if>
@@ -119,8 +117,46 @@
         left join sys_dept sd3 on sbi.grade_id = sd3.dept_id
         left join sys_dept sd4 on sbi.class_id = sd4.dept_id
         where fss.is_deleted = 0 and sbi.stu_id = fss.stu_id
-
     </select>
+
+    <select id="selectAll" resultType="io.renren.modules.edu.dto.ReturnFeeDto">
+        select fss.*,
+        sd1.name academyName,
+        sd2.name majorName,
+        sd3.name gradeName,
+        sd4.name className,
+        sbi.*
+        from fee_return  fss
+        left join stu_base_info sbi on sbi.stu_id = fss.stu_id
+        left join sys_dept sd1 on sbi.academy_id = sd1.dept_id
+        left join sys_dept sd2 on sbi.major_id = sd2.dept_id
+        left join sys_dept sd3 on sbi.grade_id = sd3.dept_id
+        left join sys_dept sd4 on sbi.class_id = sd4.dept_id
+        where fss.is_deleted = 0 and sbi.stu_id = fss.stu_id
+    </select>
+
+
+
+
+    <select id="selectSum" resultType="io.renren.modules.edu.entity.FeeReturnEntity">
+        SELECT
+            SUM( return_fee_num ) AS return_fee_num,
+            SUM( train_fee ) AS train_fee,
+            SUM( clothes_fee ) AS clothes_fee,
+            SUM( book_fee ) AS book_fee,
+            SUM( hotel_fee ) AS hotel_fee,
+            SUM( bed_fee ) AS bed_fee,
+            SUM( insurance_fee ) AS insurance_fee,
+            SUM( public_fee ) AS public_fee,
+            SUM( certificate_fee ) AS certificate_fee,
+            SUM( defense_edu_fee ) AS defense_edu_fee,
+            SUM( body_exam_fee ) AS body_exam_fee
+        FROM
+            fee_return
+        WHERE
+            stu_id = #{stuId}
+    </select>
+
 
     <select id="getIdList" resultType="java.lang.Long">
         SELECT stu_id

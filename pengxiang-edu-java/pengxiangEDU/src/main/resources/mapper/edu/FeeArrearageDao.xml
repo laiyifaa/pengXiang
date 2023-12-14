@@ -30,9 +30,12 @@
 
     <select id="qMoneyAndInfoListDto" resultType="io.renren.modules.edu.dto.qMoneyAndInfoListDto">
 
-        SELECT DISTINCT a.*, b.*
+        SELECT DISTINCT a.*, b.*,SUM(a.fee_num) AS feeNumSum
         FROM fee_arrearage AS a
                  INNER JOIN stu_base_info AS b ON a.stu_id = b.stu_id
+        WHERE a.is_deleted!=1
+        Group By a.stu_id
+
     </select>
 
     <select id="getOneListDto" resultType="io.renren.modules.edu.dto.qMoneyAndInfoListDto">
@@ -40,7 +43,7 @@
         SELECT DISTINCT a.*, b.*
         FROM fee_arrearage AS a
                  INNER JOIN stu_base_info AS b ON a.stu_id = b.stu_id
-                 where id = #{id}
+                 where a.stu_id = #{id} AND a.is_deleted != 1
     </select>
 
     <select id="getOneQmoneyListDto" resultType="io.renren.modules.edu.entity.FeeArrearageEntity">
@@ -63,8 +66,8 @@
                 SUM(body_exam_fee) as bodyExamFeeNum,
                 SUM(fee_num) as FeeNumNum
         FROM fee_arrearage
-        WHERE stu_id = #{stuId}
-        ORDER BY year;
+        WHERE stu_id = #{stuId} AND is_deleted != 1
+--         ORDER BY year;
     </select>
 
 </mapper>

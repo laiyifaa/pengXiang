@@ -19,7 +19,7 @@ import java.util.List;
 @Mapper
 public interface FeeArrearageDao extends BaseMapper<FeeArrearageEntity> {
 	List<qMoneyAndInfoListDto> qMoneyAndInfoListDto();
-	qMoneyAndInfoListDto getOneListDto(@Param("id")Long id);
+	List<qMoneyAndInfoListDto> getOneListDto(@Param("id")Long id);
 	List<FeeArrearageEntity> getOneQmoneyListDto(@Param("stuId")Long stuId);
 	FeeArrearageSumDto getOneQmoneyNum(@Param("stuId")Long stuId);
 }

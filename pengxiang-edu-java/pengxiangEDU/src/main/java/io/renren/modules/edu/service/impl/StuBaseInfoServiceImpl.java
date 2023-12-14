@@ -11,6 +11,7 @@ import io.renren.modules.edu.entity.constant.RESIDENCE_TYPE;
 import io.renren.modules.edu.entity.constant.SCHOOL_ROLL_STATUS;
 import io.renren.modules.edu.service.EduCertificateService;
 
+import io.renren.modules.edu.service.FeeSchoolSundryService;
 import io.renren.modules.edu.utils.ExcelUtils;
 import io.renren.modules.edu.utils.Query;
 import io.renren.modules.edu.vo.*;
@@ -18,6 +19,7 @@ import io.renren.modules.sys.dao.SysUserDao;
 import io.renren.modules.sys.entity.SysUserEntity;
 import org.apache.shiro.SecurityUtils;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -65,6 +67,9 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
 
     @Resource
     private StuTempDao stuTempDao;
+
+    @Autowired
+    private FeeSchoolSundryService feeSchoolSundryService;
 
     @Override
     public List<StuBaseInfoEntity> queryExport(Query query, StuBaseInfoEntity record, Long deptId) {
@@ -118,18 +123,7 @@ public class StuBaseInfoServiceImpl extends ServiceImpl<StuBaseInfoDao, StuBaseI
         /**
          * 学杂费
          */
-        TreeMap<String,List<FeeSchoolSundryEntity>> treeMap=new TreeMap<>();
-
-        List<FeeSchoolSundryEntity> feeList = feeSchoolSundryDao.selectList(new QueryWrapper<FeeSchoolSundryEntity>().eq("stu_id", stuId).eq("is_deleted", 0));
-        TreeSet<String> set=new TreeSet<>();
-        for(FeeSchoolSundryEntity f:feeList){
-           set.add(f.getPaySchoolYear());
-        }
-        for (String paySchoolYear : set) {
-            List<FeeSchoolSundryEntity> List = feeSchoolSundryDao.selectList(new QueryWrapper<FeeSchoolSundryEntity>().eq("stu_id", stuId).eq("is_deleted", 0).eq("pay_school_year", paySchoolYear).orderByAsc("pay_school_date"));
-            treeMap.put(paySchoolYear, List);
-        }
-        detailVo.setFeeList(treeMap);
+        detailVo.setFeeList(feeSchoolSundryService.getFeeByStuId(stuId));
         /**
          * 回访
          */

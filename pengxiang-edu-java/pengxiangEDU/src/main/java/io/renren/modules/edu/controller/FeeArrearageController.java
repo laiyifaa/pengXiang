@@ -75,9 +75,11 @@ public class FeeArrearageController {
             LambdaQueryWrapper<FeeSchoolSundryEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
             lambdaQueryWrapper.eq(FeeSchoolSundryEntity::getStuId,stuId);
             lambdaQueryWrapper.eq(FeeSchoolSundryEntity::getPaySchoolYear,byId.getYear());
-            FeeSchoolSundryEntity byId1 = feeSchoolSundryService.getOne(lambdaQueryWrapper);
-            byId1.setIsArrearage(0);
-            feeSchoolSundryService.updateById(byId1);
+            List<FeeSchoolSundryEntity> byId2 = feeSchoolSundryService.list(lambdaQueryWrapper);
+           for(FeeSchoolSundryEntity byId1:byId2){
+               byId1.setIsArrearage(0);
+               feeSchoolSundryService.updateById(byId1);
+           }
             feeArrearageService.updateById(byId);
         }
         return R.ok();
@@ -89,7 +91,6 @@ public class FeeArrearageController {
     // @RequiresPermissions("generator:feearrearage:list")
     public R list(@RequestBody SearchConditionVo searchConditionVo){
         PageUtils page = feeArrearageService.queryPageInConditions(searchConditionVo);
-
         return R.ok().put("page", page);
     }
 
@@ -108,38 +109,39 @@ public class FeeArrearageController {
     public R info(@PathVariable("id") Long id){
 		//FeeArrearageEntity feeArrearage = feeArrearageService.getById(id);
 
-        qMoneyAndInfoListDto getone = feeArrearageService.getoneInfo(id);
+        List<qMoneyAndInfoListDto> getone = feeArrearageService.getoneInfo(id);
         return R.ok().put("feeArrearage", getone);
     }
 
     /**
      * 欠费信息
      */
-    @RequestMapping("/qMoneyinfo/{id}")
-    //  @RequiresPermissions("generator:feearrearage:info")
-    public R qMoneyinfo(@PathVariable("id") Long id){
-
-        LambdaQueryWrapper<FeeArrearageEntity> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(FeeArrearageEntity::getId,id);
-        FeeArrearageEntity getone = feeArrearageService.getOne(queryWrapper);
-        List<FeeArrearageEntity> list = feeArrearageService.getOneQmoneyListDto(getone.getStuId());
-
-        if (list.get(0).getYear() == 2){
-            list.add(0,new FeeArrearageEntity());
-        }else if (list.get(0).getYear() == 3){
-            list.add(0,new FeeArrearageEntity());
-            list.add(0,new FeeArrearageEntity());
-        }
-        FeeArrearageEntity feeArrearageEntity = new FeeArrearageEntity();
-        return R.ok().put("qMoneyinfo", list);
-    }
+//    @RequestMapping("/qMoneyinfo/{id}")
+//    //  @RequiresPermissions("generator:feearrearage:info")
+//    public R qMoneyinfo(@PathVariable("id") Long id){
+//
+//        LambdaQueryWrapper<FeeArrearageEntity> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(FeeArrearageEntity::getId,id);
+//        FeeArrearageEntity getone = feeArrearageService.getOne(queryWrapper);
+//        List<FeeArrearageEntity> list = feeArrearageService.getOneQmoneyListDto(getone.getStuId());
+//
+//        if (list.get(0).getYear() == 2){
+//            list.add(0,new FeeArrearageEntity());
+//        }else if (list.get(0).getYear() == 3){
+//            list.add(0,new FeeArrearageEntity());
+//            list.add(0,new FeeArrearageEntity());
+//        }
+//        FeeArrearageEntity feeArrearageEntity = new FeeArrearageEntity();
+//        return R.ok().put("qMoneyinfo", list);
+//    }
     @RequestMapping("/qMoneySum/{id}")
     //  @RequiresPermissions("generator:feearrearage:info")
     public R qMoneySum(@PathVariable("id") Long id){
-        LambdaQueryWrapper<FeeArrearageEntity> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(FeeArrearageEntity::getId,id);
-        FeeArrearageEntity getone = feeArrearageService.getOne(queryWrapper);
-        FeeArrearageSumDto oneQmoneyNum = feeArrearageDao.getOneQmoneyNum(getone.getStuId());
+//        LambdaQueryWrapper<FeeArrearageEntity> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(FeeArrearageEntity::getId,id);
+//        FeeArrearageEntity getone = feeArrearageService.getOne(queryWrapper);
+//        FeeArrearageSumDto oneQmoneyNum = feeArrearageDao.getOneQmoneyNum(getone.getStuId());
+        FeeArrearageSumDto oneQmoneyNum = feeArrearageDao.getOneQmoneyNum(id);
         return R.ok().put("qMoneyNum", oneQmoneyNum);
     }
     /**

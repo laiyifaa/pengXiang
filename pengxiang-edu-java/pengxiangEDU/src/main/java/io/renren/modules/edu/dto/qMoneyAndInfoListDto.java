@@ -81,6 +81,10 @@ public class qMoneyAndInfoListDto extends StuBaseInfoEntity implements Serializa
      */
     private BigDecimal feeNum;
     /**
+     * 欠费总计
+     */
+    private BigDecimal feeNumSum;
+    /**
      * 创建时间
      */
     private Date createTime;

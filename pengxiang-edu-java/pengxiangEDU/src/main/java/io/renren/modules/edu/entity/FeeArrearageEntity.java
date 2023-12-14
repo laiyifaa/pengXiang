@@ -43,7 +43,7 @@ public class FeeArrearageEntity implements Serializable {
 	/**
 	 * 年份
 	 */
-	private Integer year;
+	private String year;
 	/**
 	 * 欠培训费
 	 */

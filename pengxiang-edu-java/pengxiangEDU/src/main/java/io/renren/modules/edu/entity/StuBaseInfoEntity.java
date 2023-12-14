@@ -236,17 +236,17 @@ public class StuBaseInfoEntity extends BaseEntity implements Serializable {
 	 *
 	 */
 	@ExcelProperty("宿舍楼号")
-	private Integer dormNum;
+	private String dormNum;
 	/**
 	 *
 	 */
 	@ExcelProperty("房间号")
-	private Integer roomNum;
+	private String roomNum;
 	/**
 	 *
 	 */
 	@ExcelProperty("床位号")
-	private Integer bedNum;
+	private String bedNum;
 	/**
 	 * 入住日期
 	 */

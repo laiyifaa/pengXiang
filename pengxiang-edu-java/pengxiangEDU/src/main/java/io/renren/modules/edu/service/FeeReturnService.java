@@ -30,5 +30,12 @@ public interface FeeReturnService  extends IService<FeeReturnEntity>{
 
      void importByList(List<returnFeeImportVo> cachedDataList, AnalysisContext context) ;
      PageUtils queryPageInConditions(SearchConditionVo searchConditionVo);
+
+     ReFeeDetailVo getVo(Long stuId) throws Exception;
+
+     List<FeeReturnEntity> getIds(Long stuId);
+
+     List<ReturnFeeDto> exportAll();
+
 }
 

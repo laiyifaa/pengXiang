@@ -1,16 +1,12 @@
 package io.renren.modules.edu.service.impl;
 
-import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.renren.common.utils.RedisUtils;
-import io.renren.modules.edu.dao.FeeSchoolSundryDao;
 import io.renren.modules.edu.dao.StuBaseInfoDao;
 import io.renren.modules.edu.dao.SysDeptDao;
 import io.renren.modules.edu.dto.ReturnFeeDto;
-import io.renren.modules.edu.dto.StuKeyWordDto;
 import io.renren.modules.edu.entity.*;
 import io.renren.modules.edu.excel.EmptyDataException;
 import io.renren.modules.edu.service.StuBaseInfoService;
@@ -21,10 +17,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,15 +28,11 @@ import io.renren.common.utils.Query;
 
 import io.renren.modules.edu.dao.FeeReturnDao;
 import io.renren.modules.edu.service.FeeReturnService;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 
 
 @Service("feeReturnService")
 public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEntity> implements FeeReturnService {
+
 
     @Autowired
     FeeReturnDao feeReturnDao;
@@ -60,36 +48,6 @@ public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEnt
     RedisUtils redis;
     @Override
     public List<ReturnFeeDto> getlist() {
-//        List<FeeReturnEntity> feeReturnEntities=feeReturnDao.selectList(null);
-//        List<StuBaseInfoEntity> stuBaseInfoEntityList=stuBaseInfoDao.listAll();
-//        List<SysDeptEntity> sysDeptEntities=sysDeptDao.listAll();
-//        HashMap<Long,String> D_maps=new HashMap<>();
-//        for(SysDeptEntity sysDeptEntity:sysDeptEntities){
-//            D_maps.put(sysDeptEntity.getDeptId(),sysDeptEntity.getName());
-//        }
-//        HashMap<String,Object> B_maps=new HashMap<>();
-//        for(StuBaseInfoEntity stuBaseInfoEntity: stuBaseInfoEntityList)
-//        {
-//            B_maps.put(stuBaseInfoEntity.getSchoolNumber(),stuBaseInfoEntity);
-//        }
-//
-//        List<ReturnFeeDto> returnFeeDtoList=new ArrayList<>();
-//        for(FeeReturnEntity feeReturn:feeReturnEntities){
-//           ReturnFeeDto returnFeeDto=new ReturnFeeDto();
-//            Date createTime = feeReturn.getCreateTime();
-//            Instant instant = createTime.toInstant();
-//            LocalDate localDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
-//            returnFeeDto.setRealTime(localDate);
-//           returnFeeDto.setFeeReturnEntity(feeReturn);
-//           StuBaseInfoEntity stuBaseInfoEntity= (StuBaseInfoEntity) B_maps.get(feeReturn.getStuId());
-//           returnFeeDto.setStuBaseInfoEntity(stuBaseInfoEntity);
-//           returnFeeDto.setSchoolNumber(stuBaseInfoEntity.getSchoolNumber());
-//           returnFeeDto.setSchool(D_maps.get(stuBaseInfoEntity.getAcademyId()));
-//           returnFeeDto.setMajor(D_maps.get(stuBaseInfoEntity.getMajorId()));
-//           returnFeeDto.setGrade(D_maps.get(stuBaseInfoEntity.getGradeId()));
-//           returnFeeDtoList.add(returnFeeDto);
-//        }
-//        return returnFeeDtoList;
         return null;
     }
 
@@ -100,6 +58,7 @@ public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEnt
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
         Long academyId = user.getAcademyId();
         List<ReturnFeeDto> records = feeReturnDao.selectReturnFeeDto(page, academyId, deptId);
+
         List<ReturnFeeDto> allRecords = feeReturnDao.selectReturnFeeDto2(academyId, deptId);
 
 
@@ -197,12 +156,7 @@ public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEnt
             if(cacheIdNumberList.contains(entity.getIdNumber())){
                 LambdaQueryWrapper<FeeReturnEntity> queryWrapper = new LambdaQueryWrapper<>();
                 if (idList.contains(entity.getStuId())){
-                    queryWrapper.eq(FeeReturnEntity::getStuId,entity.getStuId());
-                    FeeReturnEntity feeReturnEntity = feeReturnDao.selectOne(queryWrapper);
-                    entity.setId(feeReturnEntity.getId());
-                    FeeReturnEntity feeReturnEntity1 = new FeeReturnEntity();
-                    BeanUtils.copyProperties(entity,feeReturnEntity1);
-                    feeReturnDao.updateById(feeReturnEntity1);
+                    //just do nothing
                 }else {
                     LambdaQueryWrapper<StuBaseInfoEntity> queryWrapper2 = new LambdaQueryWrapper<>();
                     queryWrapper2.eq(StuBaseInfoEntity::getStuId,entity.getStuId());
@@ -211,7 +165,6 @@ public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEnt
                     feeReturnService.save(feeReturnEntity1);
                 }
             }
-
         }
     }
 
@@ -282,6 +235,27 @@ public class FeeReturnServiceImpl extends ServiceImpl<FeeReturnDao, FeeReturnEnt
         page.setRecords(collect);
         return new PageUtils(page);
     }
+
+    @Override
+    public ReFeeDetailVo getVo(Long stuId) throws Exception {
+        ReFeeDetailVo vo=new ReFeeDetailVo();
+        vo.setStuBaseInfoEntity(stuBaseInfoService.getBaseInfoById(stuId));
+        vo.setList(feeReturnDao.selectList(new QueryWrapper<FeeReturnEntity>().eq("stu_id",stuId)));
+        vo.getList().add(feeReturnDao.selectSum(stuId));
+        return vo;
+    }
+
+    @Override
+    public List<FeeReturnEntity> getIds(Long stuId) {
+        return feeReturnDao.selectList(new QueryWrapper<FeeReturnEntity>().eq("stu_id",stuId));
+    }
+
+    @Override
+    public List<ReturnFeeDto> exportAll() {
+
+        return feeReturnDao.selectAll();
+    }
+
     @Override
     public int update(FeeReturnEntity feeReturn) {
         return  feeReturnDao.updateById(feeReturn);

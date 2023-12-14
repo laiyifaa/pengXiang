@@ -62,30 +62,47 @@
         sbi.head_teacher headTeacher,
         sbi.head_teacher_phone headTeacherPhone,
         sbi.schooling_length schoolingLength,
-        sbi.schooling_length schoolingLength,
+        sbi.id_number idNumber,
         (case fss.is_arrearage  WHEN 1 THEN '已欠费' WHEN 0 THEN '未欠费' ELSE  '' END )
-
         from fee_school_sundry fss
         left join stu_base_info sbi on sbi.stu_id = fss.stu_id
         left join sys_dept sd1 on sbi.academy_id = sd1.dept_id
         left join sys_dept sd2 on sbi.major_id = sd2.dept_id
         left join sys_dept sd3 on sbi.grade_id = sd3.dept_id
         left join sys_dept sd4 on sbi.class_id = sd4.dept_id
-        where 1 = 1 and fss.is_deleted = 0 and sbi.is_deleted = 0
+        <if test="null == isExcel  ">
+            LEFT JOIN
+            (
+            SELECT
+            MAX(fss.id) AS id  -- 使用 MAX 或 MIN 函数选择唯一的 fee_school_sundry 记录
+            FROM
+            fee_school_sundry fss
+            WHERE
+            fss.is_deleted = 0
+            GROUP BY
+            fss.stu_id
+            ) max_ids ON fss.id = max_ids.id
+
+        </if>
+        where 1 = 1
+          <if  test="null == isExcel">
+        and   max_ids.id IS NOT NULL
+          </if>
+          and fss.is_deleted = 0 and sbi.is_deleted = 0
         <if test="academyId!=-1">
             and sbi.academy_id = #{academyId}
         </if>
         <if test="key.idNumber!=null">
-            and sbi.id_number = #{key.idNumber}
+            and sbi.id_number like  concat('%',#{key.idNumber},'%')
         </if>
         <if test="key.schoolNumber!=null">
-            and sbi.school_number = #{key.schoolNumber}
+            and sbi.school_number like  concat('%',#{key.schoolNumber},'%')
         </if>
         <if test="null != residenceType">
             AND sbi.residence_type = #{residenceType}
         </if>
         <if test="key.stuName!=null">
-            and sbi.stu_name = #{key.stuName}
+            and sbi.stu_name like  concat('%',#{key.stuName},'%')
         </if>
         <if test="null != derateType and '' != derateType">
             and fss.derate_type like  concat('%',#{derateType},'%')
@@ -118,6 +135,7 @@
         SELECT stu_id
         from
             fee_school_sundry
+        where is_deleted = 0
     </select>
 
 </mapper>

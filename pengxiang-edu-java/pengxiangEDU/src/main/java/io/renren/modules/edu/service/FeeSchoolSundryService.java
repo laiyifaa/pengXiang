@@ -13,6 +13,7 @@ import io.renren.modules.edu.vo.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 学杂费收支管理表
@@ -23,15 +24,13 @@ import java.util.Map;
  */
 public interface FeeSchoolSundryService extends IService<FeeSchoolSundryEntity> {
 
-   /* PageUtils queryPage(Map<String, Object> params);*/
 
     Integer saveOrUpdateFeeSchoolSundry(FeeSchoolSundryDto dto);
 
-    /*PageUtils queryPageInConditions(SearchConditionVo searchConditionVo);*/
 
-    Map<String, Object> getStuBaseInfoAndFeeSundry(Long id);
+    /*Map<String, Object> getStuBaseInfoAndFeeSundry(Long id);*/
 
-    Map<String, Object> getSingleStuBaseInfoAndFeeSundry(Long id, String payYea, Date payDate);
+    Map<String, Object> getSingleStuBaseInfoAndFeeSundry(Long stuId, String payYea, Date payDate);
 
     void importByList(List<FeeSundryImportVo> cachedDataList, AnalysisContext context) ;
 
@@ -41,5 +40,11 @@ public interface FeeSchoolSundryService extends IService<FeeSchoolSundryEntity> 
 
     List<FeeSundryExportVo> queryExport(Query query, Integer year, Long deptId, StuKeyWordDto key
             , String isArrearage, String derateType);
+
+    /**
+     * 年份的形式
+     * @return
+     */
+    TreeMap<String,List<FeeSchoolSundryEntity>> getFeeByStuId(Long stuId);
 }
 

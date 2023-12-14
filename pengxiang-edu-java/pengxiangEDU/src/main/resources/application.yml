@@ -12,7 +12,7 @@ server:
 spring:
   # 环境 dev|test|prod
   profiles:
-    active: prod
+    active: dev
   # jackson时间格式化
   jackson:
     time-zone: GMT+8
@@ -26,7 +26,7 @@ spring:
   redis:
     open: true  # 是否开启redis缓存  true开启   false关闭
     database: 0
-    host: 116.62.10.46
+    host: localhost
     port: 6379
     password: 123456   # 密码（默认为空）
     timeout: 6000ms  # 连接超时时长（毫秒）

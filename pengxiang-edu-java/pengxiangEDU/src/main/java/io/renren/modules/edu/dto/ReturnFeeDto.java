@@ -92,6 +92,10 @@ public class ReturnFeeDto extends StuBaseInfoEntity{
    private String depositBank;
 
    private String remark;
+   /*退费合计*/
+   private BigDecimal returnFeeSum;
+   /*   退费次数*/
+   private BigDecimal returnFeeTime;
 
 /*   private byte isDeleted;*/
 }
